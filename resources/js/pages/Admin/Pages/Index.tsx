@@ -1,7 +1,7 @@
 import { Head, Link, router } from '@inertiajs/react';
 import { Plus } from 'lucide-react';
+import * as pageRoutes from '@/lib/adminPageRoutes';
 import { withAdminLayout } from '@/pages/Admin/AdminLayout';
-import * as pageRoutes from '@/routes/admin/pages';
 import type { Page, PaginatedResponse } from '@/types/cms';
 
 type Props = {

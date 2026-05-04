@@ -3,10 +3,10 @@ import { Head, Link } from '@inertiajs/react';
 import { Monitor, Smartphone, Tablet, Loader2, Undo2, Redo2, Eye, Save, ArrowLeft, Menu, X } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import * as pageRoutes from '@/lib/adminPageRoutes';
 import Canvas from '@/pages/Admin/Builder/Canvas';
 import LeftPanel from '@/pages/Admin/Builder/LeftPanel';
 import RightPanel from '@/pages/Admin/Builder/RightPanel';
-import * as pageRoutes from '@/routes/admin/pages';
 import { useBuilderStore } from '@/stores/builderStore';
 import type { BuilderLayout, WidgetType } from '@/types/builder';
 

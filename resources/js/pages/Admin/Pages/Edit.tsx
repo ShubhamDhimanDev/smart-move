@@ -6,8 +6,8 @@ import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import * as pageRoutes from '@/lib/adminPageRoutes';
 import { withAdminLayout } from '@/pages/Admin/AdminLayout';
-import * as pageRoutes from '@/routes/admin/pages';
 import type { Page, PageBuilderBlock } from '@/types/cms';
 
 function blocksToFallbackContent(blocks: PageBuilderBlock[]): string {

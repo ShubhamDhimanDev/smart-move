@@ -41,7 +41,7 @@ it('seeds the admin user and sample published content', function () {
         'name' => 'Admin',
     ]);
 
-    expect(User::query()->where('email', 'admin@cms.test')->firstOrFail()->hasRole('admin'))->toBeTrue();
+    expect(User::query()->where('email', 'admin@cms.test')->firstOrFail()->hasRole('super-admin'))->toBeTrue();
 
     expect(Page::query()->count())->toBe(3);
     expect(Post::query()->count())->toBe(3);

@@ -3,10 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Services\AdminPermissionService;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\PermissionRegistrar;
 
 class AdminUserSeeder extends Seeder
 {
@@ -15,9 +14,7 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
-        app(PermissionRegistrar::class)->forgetCachedPermissions();
-
-        Role::findOrCreate('admin', 'web');
+        AdminPermissionService::synchronizeRolesAndPermissions();
 
         $user = User::query()->updateOrCreate(
             ['email' => 'admin@cms.test'],
@@ -28,6 +25,6 @@ class AdminUserSeeder extends Seeder
             ],
         );
 
-        $user->syncRoles(['admin']);
+        $user->syncRoles(['super-admin']);
     }
 }

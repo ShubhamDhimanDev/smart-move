@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminPermissionController;
+use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EventController;
@@ -55,33 +57,65 @@ Route::get('/', function () {
 })->name('home');
 
 Route::inertia('/about', 'Public/About')->name('about');
+Route::inertia('/services', 'Public/Services')->name('services');
 Route::inertia('/contact', 'Public/Contact')->name('contact');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
 });
 
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'admin.access'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', DashboardController::class)->name('dashboard');
-    Route::post('pages/builder-create', [PageController::class, 'builderCreate'])->name('pages.builder-create');
-    Route::get('pages/{page}/builder', [PageController::class, 'builder'])->name('pages.builder');
-    Route::get('pages/{page}/builder-load', [PageController::class, 'builderLoad'])->name('pages.builder-load');
-    Route::post('pages/{page}/builder-save', [PageController::class, 'builderSave'])->name('pages.builder-save');
-    Route::resource('pages', PageController::class);
-    Route::resource('posts', PostController::class);
-    Route::resource('categories', CategoryController::class)->except(['create', 'edit', 'show']);
-    Route::post('media/upload', [MediaUploadController::class, 'store'])->name('media.upload');
-    Route::get('media/library', [MediaController::class, 'library'])->name('media.library');
-    Route::resource('media', MediaController::class)->only(['index', 'destroy']);
-    Route::get('comments', [PostCommentController::class, 'index'])->name('comments.index');
-    Route::patch('comments/{comment}/approve', [PostCommentController::class, 'approve'])->name('comments.approve');
-    Route::delete('comments/{comment}', [PostCommentController::class, 'destroy'])->name('comments.destroy');
 
-    Route::resource('events', EventController::class)->except(['show']);
-    Route::patch('events/{event}/cancel', [EventController::class, 'cancel'])->name('events.cancel');
-    Route::get('events/{event}/registrants', [EventRegistrantController::class, 'index'])->name('events.registrants.index');
-    Route::patch('events/{event}/registrants/{registrant}/cancel', [EventRegistrantController::class, 'cancel'])->name('events.registrants.cancel');
-    Route::delete('events/{event}/registrants/{registrant}', [EventRegistrantController::class, 'destroy'])->name('events.registrants.destroy');
+    // Page builder is temporarily disabled
+    // Route::middleware('admin.access:manage pages')->group(function () {
+    //     Route::post('pages/builder-create', [PageController::class, 'builderCreate'])->name('pages.builder-create');
+    //     Route::get('pages/{page}/builder', [PageController::class, 'builder'])->name('pages.builder');
+    //     Route::get('pages/{page}/builder-load', [PageController::class, 'builderLoad'])->name('pages.builder-load');
+    //     Route::post('pages/{page}/builder-save', [PageController::class, 'builderSave'])->name('pages.builder-save');
+    //     Route::resource('pages', PageController::class);
+    // });
+
+    Route::middleware('admin.access:manage posts')->group(function () {
+        Route::resource('posts', PostController::class);
+    });
+
+    Route::middleware('admin.access:manage categories')->group(function () {
+        Route::resource('categories', CategoryController::class)->except(['create', 'edit', 'show']);
+    });
+
+    Route::middleware('admin.access:manage media')->group(function () {
+        Route::post('media/upload', [MediaUploadController::class, 'store'])->name('media.upload');
+        Route::get('media/library', [MediaController::class, 'library'])->name('media.library');
+        Route::resource('media', MediaController::class)->only(['index', 'destroy']);
+    });
+
+    Route::middleware('admin.access:manage comments')->group(function () {
+        Route::get('comments', [PostCommentController::class, 'index'])->name('comments.index');
+        Route::patch('comments/{comment}/approve', [PostCommentController::class, 'approve'])->name('comments.approve');
+        Route::delete('comments/{comment}', [PostCommentController::class, 'destroy'])->name('comments.destroy');
+    });
+
+    Route::middleware('admin.access:manage events')->group(function () {
+        Route::resource('events', EventController::class)->except(['show']);
+        Route::patch('events/{event}/cancel', [EventController::class, 'cancel'])->name('events.cancel');
+        Route::get('events/{event}/registrants', [EventRegistrantController::class, 'index'])->name('events.registrants.index');
+        Route::patch('events/{event}/registrants/{registrant}/cancel', [EventRegistrantController::class, 'cancel'])->name('events.registrants.cancel');
+        Route::delete('events/{event}/registrants/{registrant}', [EventRegistrantController::class, 'destroy'])->name('events.registrants.destroy');
+    });
+
+    Route::middleware(['role:super-admin', 'admin.access:manage users'])->group(function () {
+        Route::get('users', [AdminUserController::class, 'index'])->name('users.index');
+        Route::post('users', [AdminUserController::class, 'store'])->name('users.store');
+        Route::patch('users/{user}/access', [AdminUserController::class, 'updateAccess'])->name('users.update-access');
+        Route::delete('users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
+    });
+
+    Route::middleware(['role:super-admin', 'admin.access:manage permissions'])->group(function () {
+        Route::get('permissions', [AdminPermissionController::class, 'index'])->name('permissions.index');
+        Route::post('permissions', [AdminPermissionController::class, 'store'])->name('permissions.store');
+        Route::delete('permissions/{permission}', [AdminPermissionController::class, 'destroy'])->name('permissions.destroy');
+    });
 });
 
 require __DIR__.'/settings.php';

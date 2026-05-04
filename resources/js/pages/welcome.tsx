@@ -299,7 +299,7 @@ export default function Welcome({ upcomingEvents }: Props) {
                             <span className="text-white text-[clamp(3rem,8vw,6.5rem)] block animate-fadeUp-d1">Starts Here.</span>
                         </h1>
                         <p className="text-white/75 text-lg md:text-xl xl:text-2xl leading-relaxed max-w-xl font-body mt-8 mb-10 animate-fadeUp-d2">
-                            Empowering ambitious students to access top UK universities—guiding you from your first enquiry to the right course and a successful career.
+                            Empowering ambitious students to access top UK universities guiding you from your first enquiry to the right course and a successful career.
                         </p>
                         <div className="flex flex-wrap gap-4 animate-fadeUp-d2">
                             <a
@@ -354,7 +354,7 @@ export default function Welcome({ upcomingEvents }: Props) {
                             <img
                                 src="/images/kampus-logo.png"
                                 alt="Kampus Group logo"
-                                className="h-12 w-auto rounded-md bg-white/95 p-2"
+                                className="h-20 w-auto rounded-md bg-white/95 p-2"
                             />
                         </div>
                         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-white/75 md:text-base">
@@ -383,13 +383,12 @@ export default function Welcome({ upcomingEvents }: Props) {
                             <div className="absolute -bottom-6 -right-4 glass-card rounded-xl p-5 w-52 shadow-2xl">
                                 <div className="flex items-center gap-3 mb-2">
                                     <span className="material-symbols-outlined text-secondary-container text-2xl">verified</span>
-                                    <span className="text-white font-bold text-sm font-headline">Lorem Ipsum</span>
+                                    <span className="text-white font-bold text-sm font-headline">British Council Certified</span>
                                 </div>
-                                <p className="text-on-surface-variant text-xs leading-relaxed">British Council certified agent. Fully compliant.</p>
                             </div>
                             <div className="absolute -top-5 -left-4 glass-card rounded-xl p-4 shadow-2xl">
-                                <div className="text-4xl font-headline font-black text-white">98%</div>
-                                <div className="text-on-surface-variant text-xs font-label uppercase tracking-wider mt-0.5">lorem ipsum</div>
+                                <div className="text-4xl font-headline font-black text-white">50+</div>
+                                <div className="text-on-surface-variant text-xs font-label uppercase tracking-wider mt-0.5">Partner Institutions</div>
                             </div>
                         </div>
                         <div className="reveal reveal-d1">

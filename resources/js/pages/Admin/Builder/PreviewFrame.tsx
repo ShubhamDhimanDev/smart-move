@@ -2,7 +2,7 @@ import { Head, Link } from '@inertiajs/react';
 import { ArrowLeft, Monitor, Smartphone, Tablet } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import PageRenderer from '@/components/Builder/PageRenderer';
-import * as pageRoutes from '@/routes/admin/pages';
+import * as pageRoutes from '@/lib/adminPageRoutes';
 import type { BuilderLayout } from '@/types/builder';
 
 type Device = 'desktop' | 'tablet' | 'mobile';

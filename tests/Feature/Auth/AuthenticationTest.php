@@ -38,6 +38,21 @@ test('admin users are redirected to the admin dashboard after login', function (
     $response->assertRedirect(route('admin.dashboard', absolute: false));
 });
 
+test('super-admin users are redirected to the admin dashboard after login', function () {
+    Role::findOrCreate('super-admin', 'web');
+
+    $user = User::factory()->create();
+    $user->assignRole('super-admin');
+
+    $response = $this->post(route('login.store'), [
+        'email' => $user->email,
+        'password' => 'password',
+    ]);
+
+    $this->assertAuthenticated();
+    $response->assertRedirect(route('admin.dashboard', absolute: false));
+});
+
 test('users with two factor enabled are redirected to two factor challenge', function () {
     $this->skipUnlessFortifyHas(Features::twoFactorAuthentication());
 

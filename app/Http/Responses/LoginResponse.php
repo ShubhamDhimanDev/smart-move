@@ -15,7 +15,7 @@ class LoginResponse implements LoginResponseContract
         /** @var Request $request */
         $user = $request->user();
 
-        $fallback = $user !== null && $user->hasRole('admin')
+        $fallback = $user !== null && $user->hasAnyRole(['admin', 'super-admin'])
             ? route('admin.dashboard')
             : route('dashboard');
 

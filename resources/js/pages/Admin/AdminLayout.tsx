@@ -1,11 +1,21 @@
-import { Link, usePage } from '@inertiajs/react';
-import { LayoutDashboard, FileText, Newspaper, Tags, Image, MessageSquare, Calendar } from 'lucide-react';
+import { Link, router, usePage } from '@inertiajs/react';
+import { LayoutDashboard, FileText, Newspaper, Tags, Image, MessageSquare, Calendar, Users, Shield, LogOut } from 'lucide-react';
 import type { ReactNode } from 'react';
 import admin from '@/routes/admin';
+import { logout } from '@/routes';
 
 type SharedProps = {
+    auth: {
+        user?: {
+            name?: string;
+            email?: string;
+            roles?: string[];
+            permissions?: string[];
+        } | null;
+    };
     flash?: {
         success?: string;
+        error?: string;
     };
 };
 
@@ -13,16 +23,20 @@ type NavItem = {
     label: string;
     href: string;
     icon: typeof LayoutDashboard;
+    permission?: string;
+    role?: string;
 };
 
 const navItems: NavItem[] = [
     { label: 'Dashboard', href: admin.dashboard.url(), icon: LayoutDashboard },
-    { label: 'Pages', href: admin.pages.index.url(), icon: FileText },
-    { label: 'Posts', href: admin.posts.index.url(), icon: Newspaper },
-    { label: 'Events', href: admin.events.index.url(), icon: Calendar },
-    { label: 'Categories', href: admin.categories.index.url(), icon: Tags },
-    { label: 'Media', href: admin.media.index.url(), icon: Image },
-    { label: 'Comments', href: admin.comments.index.url(), icon: MessageSquare },
+    // { label: 'Pages', href: admin.pages.index.url(), icon: FileText },
+    { label: 'Posts', href: admin.posts.index.url(), icon: Newspaper, permission: 'manage posts' },
+    { label: 'Events', href: admin.events.index.url(), icon: Calendar, permission: 'manage events' },
+    { label: 'Categories', href: admin.categories.index.url(), icon: Tags, permission: 'manage categories' },
+    { label: 'Media', href: admin.media.index.url(), icon: Image, permission: 'manage media' },
+    { label: 'Comments', href: admin.comments.index.url(), icon: MessageSquare, permission: 'manage comments' },
+    { label: 'Users', href: admin.users.index.url(), icon: Users, role: 'super-admin' },
+    { label: 'Permissions', href: admin.permissions.index.url(), icon: Shield, role: 'super-admin' },
 ];
 
 export function withAdminLayout({ children }: { children: ReactNode }) {
@@ -32,6 +46,28 @@ export function withAdminLayout({ children }: { children: ReactNode }) {
 export default function AdminLayout({ children }: { children: ReactNode }) {
     const page = usePage<SharedProps>();
     const currentPath = page.url.split('?')[0].replace(/\/$/, '') || '/';
+    const userRoles = page.props.auth?.user?.roles ?? [];
+    const userPermissions = page.props.auth?.user?.permissions ?? [];
+    const userName = page.props.auth?.user?.name ?? '';
+    const userEmail = page.props.auth?.user?.email ?? '';
+
+    const hasGlobalAdminAccess = userRoles.includes('admin') || userRoles.includes('super-admin');
+
+    const handleLogout = () => {
+        router.post(logout().url);
+    };
+
+    const visibleNavItems = navItems.filter((item) => {
+        if (item.role && !userRoles.includes(item.role)) {
+            return false;
+        }
+
+        if (item.permission && !hasGlobalAdminAccess && !userPermissions.includes(item.permission)) {
+            return false;
+        }
+
+        return true;
+    });
 
     return (
         <div className="min-h-screen bg-neutral-50 text-neutral-900">
@@ -41,8 +77,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                         CMS Admin
                     </p>
 
-                    <nav className="mt-4 flex flex-1 flex-col gap-1">
-                        {navItems.map((item) => {
+                    <nav className="mt-4 flex flex-1 flex-col gap-1 overflow-y-auto">
+                        {visibleNavItems.map((item) => {
                             const itemPath = item.href.replace(/\/$/, '') || '/';
                             const isDashboard = item.label === 'Dashboard';
                             const isActive = isDashboard
@@ -65,12 +101,32 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                             );
                         })}
                     </nav>
+
+                    <div className="mt-4 border-t border-neutral-100 pt-4">
+                        <div className="mb-3 px-2">
+                            <p className="text-sm font-medium text-neutral-900 truncate">{userName}</p>
+                            <p className="text-xs text-neutral-500 truncate">{userEmail}</p>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={handleLogout}
+                            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-neutral-700 transition hover:bg-neutral-100"
+                        >
+                            <LogOut className="h-4 w-4" />
+                            Log out
+                        </button>
+                    </div>
                 </aside>
 
                 <main className="min-w-0 flex-1">
                     {page.props.flash?.success ? (
                         <div className="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
                             {page.props.flash.success}
+                        </div>
+                    ) : null}
+                    {page.props.flash?.error ? (
+                        <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                            {page.props.flash.error}
                         </div>
                     ) : null}
 

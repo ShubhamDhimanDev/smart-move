@@ -85,6 +85,16 @@ export default function SiteFooter() {
                                 </a>
                             </li>
                         </ul>
+                        <div className="mt-6 pt-6 border-t border-white/[0.06]">
+                            <p className="text-[10px] font-label font-bold uppercase tracking-[0.15em] text-white mb-3">Official Partner</p>
+                            <div className="flex items-center gap-3">
+                                <img
+                                    src="/images/kampus-logo.png"
+                                    alt="Kampus Group logo"
+                                    className="h-10 w-auto rounded bg-white/90 p-1.5"
+                                />
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

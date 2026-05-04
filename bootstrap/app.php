@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnsureAdminAccess;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Foundation\Application;
@@ -23,6 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => RoleMiddleware::class,
             'permission' => PermissionMiddleware::class,
             'role_or_permission' => RoleOrPermissionMiddleware::class,
+            'admin.access' => EnsureAdminAccess::class,
         ]);
 
         $middleware->web(append: [

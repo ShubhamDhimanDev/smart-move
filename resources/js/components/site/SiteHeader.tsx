@@ -116,10 +116,10 @@ export default function SiteHeader({ activePage = 'home' }: { activePage?: strin
                                 </div>
                             </div>
                         </div>
-                        <a className={`nav-link ${activePage === 'destinations' ? 'active text-white' : 'text-white/60 hover:text-white transition-colors'}`} href="#">
+                        {/* <a className={`nav-link ${activePage === 'destinations' ? 'active text-white' : 'text-white/60 hover:text-white transition-colors'}`} href="#">
                             Destinations
-                        </a>
-                        <a className={`nav-link ${activePage === 'services' ? 'active text-white' : 'text-white/60 hover:text-white transition-colors'}`} href="#">
+                        </a> */}
+                        <a className={`nav-link ${activePage === 'services' ? 'active text-white' : 'text-white/60 hover:text-white transition-colors'}`} href="/services">
                             Services
                         </a>
                         <a className={`nav-link ${activePage === 'blog' ? 'active text-white' : 'text-white/60 hover:text-white transition-colors'}`} href="/blog">
@@ -169,7 +169,7 @@ export default function SiteHeader({ activePage = 'home' }: { activePage?: strin
                         <a className="block text-white/60 font-semibold" href="#">
                             Destinations
                         </a>
-                        <a className="block text-white/60 font-semibold" href="#">
+                        <a className="block text-white/60 font-semibold" href="/services">
                             Services
                         </a>
                         <a className="block text-white/60 font-semibold" href="/blog">

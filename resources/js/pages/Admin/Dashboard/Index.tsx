@@ -1,16 +1,16 @@
 import { Head } from '@inertiajs/react';
-import { FileText, Image, Newspaper } from 'lucide-react';
+import { ClipboardList, Image, Newspaper } from 'lucide-react';
 import { withAdminLayout } from '@/pages/Admin/AdminLayout';
 
 type DashboardProps = {
-    totalPages: number;
+    totalApplications: number;
     totalPosts: number;
     totalMedia: number;
 };
 
-export default function AdminDashboard({ totalPages, totalPosts, totalMedia }: DashboardProps) {
+export default function AdminDashboard({ totalApplications, totalPosts, totalMedia }: DashboardProps) {
     const stats = [
-        { label: 'Total Pages', value: totalPages, icon: FileText },
+        { label: 'Total Applications', value: totalApplications, icon: ClipboardList },
         { label: 'Total Posts', value: totalPosts, icon: Newspaper },
         { label: 'Total Media', value: totalMedia, icon: Image },
     ];

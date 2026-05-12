@@ -304,7 +304,7 @@ export default function Welcome({ upcomingEvents }: Props) {
                         <div className="flex flex-wrap gap-4 animate-fadeUp-d2">
                             <a
                                 className="bg-secondary-container text-on-secondary px-8 py-4 rounded-full font-headline font-bold text-base hover:scale-105 transition-transform shadow-2xl shadow-secondary-container/20 flex items-center gap-2"
-                                href="#"
+                                href="/apply-now"
                             >
                                 Start Your Application{' '}
                                 <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
@@ -351,11 +351,13 @@ export default function Welcome({ upcomingEvents }: Props) {
                                 <span className="material-symbols-outlined text-secondary-container">handshake</span>
                                 <p className="text-xl font-headline font-extrabold text-white md:text-2xl">Kampus Group</p>
                             </div>
-                            <img
-                                src="/images/kampus-logo.png"
-                                alt="Kampus Group logo"
-                                className="h-20 w-auto rounded-md bg-white/95 p-2"
-                            />
+                            <a href="https://www.kampus-group.com/" target="_blank" rel="noopener noreferrer">
+                                <img
+                                    src="/images/kampus-logo.png"
+                                    alt="Kampus Group logo"
+                                    className="h-20 w-auto rounded-md bg-white/95 p-2"
+                                />
+                            </a>
                         </div>
                         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-white/75 md:text-base">
                             Working in partnership to connect international students with trusted pathways to UK degree programmes.
@@ -910,7 +912,7 @@ export default function Welcome({ upcomingEvents }: Props) {
                     <div className="flex flex-wrap justify-center gap-5 mb-20">
                         <a
                             className="bg-secondary-container text-on-secondary px-10 py-4 rounded-full font-headline font-bold text-lg hover:scale-105 transition-transform shadow-2xl shadow-secondary-container/20 flex items-center gap-2"
-                            href="#"
+                            href="/apply-now"
                         >
                             Start Application <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
                         </a>

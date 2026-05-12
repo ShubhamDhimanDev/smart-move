@@ -106,7 +106,7 @@ export default function SiteHeader({ activePage = 'home' }: { activePage?: strin
                                                 </div>
                                             </div>
                                             <a
-                                                href="#"
+                                                href="/apply-now"
                                                 className="mt-5 bg-secondary-container text-on-secondary py-2.5 px-4 rounded-full text-xs font-bold w-fit hover:scale-105 transition-transform inline-block"
                                             >
                                                 Apply Now &rarr;
@@ -142,7 +142,7 @@ export default function SiteHeader({ activePage = 'home' }: { activePage?: strin
                         </a>
                         <a
                             className="bg-secondary-container text-on-secondary px-5 py-2 rounded-full font-headline font-bold text-sm hover:scale-105 transition-transform duration-200 shadow-lg shadow-secondary-container/20"
-                            href="#"
+                            href="/apply-now"
                         >
                             Apply Now
                         </a>
@@ -180,6 +180,12 @@ export default function SiteHeader({ activePage = 'home' }: { activePage?: strin
                         </a>
                         <a className="block text-white/60 font-semibold" href="/contact">
                             Contact
+                        </a>
+                        <a
+                            className="inline-flex w-full items-center justify-center rounded-full bg-secondary-container px-5 py-2 text-sm font-headline font-bold text-on-secondary"
+                            href="/apply-now"
+                        >
+                            Apply Now
                         </a>
                         <div className="pt-2 border-t border-white/10 text-sm text-on-surface-variant">020 7790 9233 &nbsp; info@smartmove.org</div>
                     </div>

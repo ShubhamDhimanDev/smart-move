@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminPermissionController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\CourseApplicationController as AdminCourseApplicationController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\EventRegistrantController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\Admin\MediaUploadController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\PostCommentController;
 use App\Http\Controllers\Admin\PostController;
+use App\Http\Controllers\CourseApplicationController;
 use App\Http\Controllers\PublicEventController;
 use App\Http\Controllers\PublicEventRegistrationController;
 use App\Http\Controllers\PublicPageController;
@@ -59,6 +61,8 @@ Route::get('/', function () {
 Route::inertia('/about', 'Public/About')->name('about');
 Route::inertia('/services', 'Public/Services')->name('services');
 Route::inertia('/contact', 'Public/Contact')->name('contact');
+Route::get('/apply-now', [CourseApplicationController::class, 'create'])->name('applications.create');
+Route::post('/apply-now', [CourseApplicationController::class, 'store'])->name('applications.store');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
@@ -102,6 +106,11 @@ Route::middleware(['auth', 'admin.access'])->prefix('admin')->name('admin.')->gr
         Route::get('events/{event}/registrants', [EventRegistrantController::class, 'index'])->name('events.registrants.index');
         Route::patch('events/{event}/registrants/{registrant}/cancel', [EventRegistrantController::class, 'cancel'])->name('events.registrants.cancel');
         Route::delete('events/{event}/registrants/{registrant}', [EventRegistrantController::class, 'destroy'])->name('events.registrants.destroy');
+    });
+
+    Route::middleware('admin.access:manage applications')->group(function () {
+        Route::get('applications', [AdminCourseApplicationController::class, 'index'])->name('applications.index');
+        Route::patch('applications/settings', [AdminCourseApplicationController::class, 'updateSettings'])->name('applications.settings.update');
     });
 
     Route::middleware(['role:super-admin', 'admin.access:manage users'])->group(function () {

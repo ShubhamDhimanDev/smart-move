@@ -256,9 +256,7 @@ export default function About() {
                         Book a free consultation with one of our expert counsellors and take the first step towards your UK education today.
                     </p>
                     <a
-                        href="https://apply.smartmove-sm.com/"
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        href="/apply-now"
                         className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-secondary-container text-on-secondary font-headline font-bold text-sm hover:opacity-90 transition-opacity shadow-[0_0_32px_rgba(239,165,0,0.3)]"
                     >
                         Apply Now <span className="material-symbols-outlined text-base">arrow_forward</span>

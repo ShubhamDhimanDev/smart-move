@@ -20,6 +20,7 @@ class AdminPermissionService
             ['name' => 'manage media', 'label' => 'Media'],
             ['name' => 'manage comments', 'label' => 'Comments'],
             ['name' => 'manage events', 'label' => 'Events'],
+            ['name' => 'manage applications', 'label' => 'Applications'],
             ['name' => 'manage users', 'label' => 'Users'],
             ['name' => 'manage permissions', 'label' => 'Permissions'],
         ];

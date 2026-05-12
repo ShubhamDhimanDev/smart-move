@@ -85,7 +85,7 @@
                                     <div class="mt-4 flex gap-3 text-xs"><div><div class="text-white font-bold font-headline text-lg leading-none">500+</div><div class="text-white/35 font-label uppercase tracking-wider text-[9px] mt-0.5">Placed</div></div><div class="w-px bg-white/10"></div><di
                                     v><div class="text-white font-bold font-headline text-lg leading-none">98%</div><div class="text-white/35 font-label uppercase tracking-wider text-[9px] mt-0.5"> rate</div></div></div>
                                 </div>
-                                <a href="#" class="mt-5 bg-secondary-container text-on-secondary py-2.5 px-4 rounded-full text-xs font-bold w-fit hover:scale-105 transition-transform inline-block">Apply Now &rarr;</a>
+                                <a href="/apply-now" class="mt-5 bg-secondary-container text-on-secondary py-2.5 px-4 rounded-full text-xs font-bold w-fit hover:scale-105 transition-transform inline-block">Apply Now &rarr;</a>
                             </div>
                         </div>
                     </div>
@@ -93,7 +93,7 @@
             </div>
             <div class="flex items-center gap-3">
                 <a class="hidden lg:flex items-center gap-1.5 text-white/50 hover:text-white text-sm font-semibold transition-colors" href="tel:02077909233"><span class="material-symbols-outlined text-[16px]">call</span><span>020 7790 9233</span></a>
-                <a class="bg-secondary-container text-on-secondary px-5 py-2 rounded-full font-headline font-bold text-sm hover:scale-105 transition-transform duration-200 shadow-lg shadow-secondary-container/20" href="#">Apply Now</a>
+                <a class="bg-secondary-container text-on-secondary px-5 py-2 rounded-full font-headline font-bold text-sm hover:scale-105 transition-transform duration-200 shadow-lg shadow-secondary-container/20" href="/apply-now">Apply Now</a>
                 <button class="lg:hidden w-9 h-9 flex items-center justify-center rounded-full bg-surface-container-high text-white" onclick="document.getElementById('mob-menu').classList.toggle('hidden')"><span class="material-symbols-outlined text-[20px]">menu</span></button>
             </div>
         </div>
@@ -138,7 +138,7 @@
                 Smart Move connects ambitious international students with leading UK universities &mdash; from first enquiry to graduation day.
             </p>
             <div class="flex flex-wrap gap-4 animate-fadeUp-d2">
-                <a class="bg-secondary-container text-on-secondary px-8 py-4 rounded-full font-headline font-bold text-base hover:scale-105 transition-transform shadow-2xl shadow-secondary-container/20 flex items-center gap-2" href="#">
+                <a class="bg-secondary-container text-on-secondary px-8 py-4 rounded-full font-headline font-bold text-base hover:scale-105 transition-transform shadow-2xl shadow-secondary-container/20 flex items-center gap-2" href="/apply-now">
                     Start Your Application <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
                 </a>
                 <a class="border border-white/20 text-white px-8 py-4 rounded-full font-headline font-bold text-base hover:bg-white/10 transition-colors backdrop-blur-sm" href="#">Explore Courses</a>
@@ -539,7 +539,7 @@
         <h2 class="text-white font-headline font-black text-[clamp(2.5rem,6vw,5rem)] leading-[1.02] tracking-[-0.02em] mb-6">Ready to Take<br/><span class="text-gradient-gold">the Next Step?</span></h2>
         <p class="text-on-surface-variant text-xl mb-12 max-w-2xl mx-auto leading-relaxed">Speak to one of our expert consultants today and start your application for the March 2026 intake. Places are limited.</p>
         <div class="flex flex-wrap justify-center gap-5 mb-20">
-            <a class="bg-secondary-container text-on-secondary px-10 py-4 rounded-full font-headline font-bold text-lg hover:scale-105 transition-transform shadow-2xl shadow-secondary-container/20 flex items-center gap-2" href="#">Start Application <span class="material-symbols-outlined text-[20px]">arrow_forward</span></a>
+            <a class="bg-secondary-container text-on-secondary px-10 py-4 rounded-full font-headline font-bold text-lg hover:scale-105 transition-transform shadow-2xl shadow-secondary-container/20 flex items-center gap-2" href="/apply-now">Start Application <span class="material-symbols-outlined text-[20px]">arrow_forward</span></a>
             <a class="border border-outline-variant/30 text-white px-10 py-4 rounded-full font-headline font-bold text-lg hover:bg-white/5 hover:border-outline-variant/60 transition-all flex items-center gap-2" href="#"><span class="material-symbols-outlined text-[20px]">call</span>Speak to a Consultant</a>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-2xl mx-auto text-sm font-label tracking-wide">

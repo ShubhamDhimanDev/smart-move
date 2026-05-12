@@ -1,8 +1,8 @@
 import { Link, router, usePage } from '@inertiajs/react';
-import { LayoutDashboard, FileText, Newspaper, Tags, Image, MessageSquare, Calendar, Users, Shield, LogOut } from 'lucide-react';
+import { LayoutDashboard, Newspaper, Tags, Image, MessageSquare, Calendar, Users, Shield, LogOut, ClipboardList } from 'lucide-react';
 import type { ReactNode } from 'react';
-import admin from '@/routes/admin';
 import { logout } from '@/routes';
+import admin from '@/routes/admin';
 
 type SharedProps = {
     auth: {
@@ -32,6 +32,7 @@ const navItems: NavItem[] = [
     // { label: 'Pages', href: admin.pages.index.url(), icon: FileText },
     { label: 'Posts', href: admin.posts.index.url(), icon: Newspaper, permission: 'manage posts' },
     { label: 'Events', href: admin.events.index.url(), icon: Calendar, permission: 'manage events' },
+    { label: 'Applications', href: '/admin/applications', icon: ClipboardList, permission: 'manage applications' },
     { label: 'Categories', href: admin.categories.index.url(), icon: Tags, permission: 'manage categories' },
     { label: 'Media', href: admin.media.index.url(), icon: Image, permission: 'manage media' },
     { label: 'Comments', href: admin.comments.index.url(), icon: MessageSquare, permission: 'manage comments' },

@@ -1,5 +1,5 @@
-import SiteLayout from '@/layouts/site-layout';
 import { useState } from 'react';
+import SiteLayout from '@/layouts/site-layout';
 
 const socialLinks = [
     { label: 'Facebook', icon: 'M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z', href: 'https://www.facebook.com/SmartMoveEducationGroup' },
@@ -113,7 +113,10 @@ export default function Contact() {
                                     <p className="text-[#a09a97] text-sm">Thank you for reaching out. One of our counsellors will be in touch shortly.</p>
                                     <button
                                         type="button"
-                                        onClick={() => { setSubmitted(false); setForm({ name: '', email: '', phone: '', subject: '', message: '' }); }}
+                                        onClick={() => {
+                                            setSubmitted(false);
+                                            setForm({ name: '', email: '', phone: '', subject: '', message: '' });
+                                        }}
                                         className="mt-2 text-secondary-container text-sm font-semibold hover:underline"
                                     >
                                         Send another message
@@ -317,9 +320,7 @@ export default function Contact() {
                         Skip the queue — apply directly through our online portal and one of our counsellors will guide you every step of the way.
                     </p>
                     <a
-                        href="https://apply.smartmove-sm.com/"
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        href="/apply-now"
                         className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-secondary-container text-on-secondary font-headline font-bold text-sm hover:opacity-90 transition-opacity shadow-[0_0_32px_rgba(239,165,0,0.3)]"
                     >
                         Apply Now <span className="material-symbols-outlined text-base">arrow_forward</span>

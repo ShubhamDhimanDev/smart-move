@@ -137,9 +137,14 @@ export interface CourseApplication {
     dob: string;
     phone: string;
     email: string;
-    nationality_immigration_status: string;
-    preferred_course_location: string;
+    nationality: string;
+    immigration_status: string;
+    preferred_course: string;
+    preferred_location: string;
     has_taken_sfe_before: boolean;
-    previous_qualification_work_experience: string;
+    previous_qualification_work_experience: {
+        qualification: string;
+        work_experience: string;
+    };
     created_at: string;
 }

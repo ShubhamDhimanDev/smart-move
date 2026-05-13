@@ -37,10 +37,18 @@ it('stores course application and sends notification email', function () {
         'dob' => '2001-02-15',
         'phone' => '07123456789',
         'email' => 'ava@example.com',
-        'nationality_immigration_status' => 'Indian - Student Visa',
-        'preferred_course_location' => 'MSc Data Science - London',
+        'nationality' => 'Indian',
+        'immigration_status' => 'Student Visa',
+        'preferred_course' => 'MSc Data Science',
+        'selected_courses' => ['certhe_business', 'certhe_it_computing'],
+        'other_course' => null,
+        'selected_locations' => ['London', 'Manchester'],
+        'preferred_location' => 'London',
         'has_taken_sfe_before' => false,
-        'previous_qualification_work_experience' => 'BSc Computer Science with 2 years internship experience.',
+        'previous_qualification_work_experience' => [
+            'qualification' => 'BSc Computer Science',
+            'work_experience' => '2 years internship experience',
+        ],
     ]);
 
     $response
@@ -51,6 +59,16 @@ it('stores course application and sends notification email', function () {
 
     expect($application->email)->toBe('ava@example.com');
     expect($application->first_name)->toBe('Ava');
+    expect($application->nationality)->toBe('Indian');
+    expect($application->immigration_status)->toBe('Student Visa');
+    expect($application->preferred_course)->toBe('Business, IT/Computing');
+    expect($application->preferred_location)->toBe('London, Manchester');
+    expect($application->previous_qualification_work_experience)
+        ->toBeArray()
+        ->toMatchArray([
+            'qualification' => 'BSc Computer Science',
+            'work_experience' => '2 years internship experience',
+        ]);
 
     Mail::assertSent(CourseApplicationSubmitted::class, function (CourseApplicationSubmitted $mail) use ($application): bool {
         return $mail->hasTo('admin@example.com')
@@ -61,16 +79,23 @@ it('stores course application and sends notification email', function () {
 it('shows applications in admin panel and updates notification email', function () {
     $admin = createAdminForApplications();
 
-    CourseApplication::query()->create([
+    $application = CourseApplication::query()->create([
         'first_name' => 'Liam',
         'last_name' => 'Smith',
         'dob' => '1999-07-10',
         'phone' => '07987654321',
         'email' => 'liam@example.com',
+        'nationality' => 'British',
+        'immigration_status' => 'Settled',
         'nationality_immigration_status' => 'British - Settled',
+        'preferred_course' => 'MBA',
+        'preferred_location' => 'Birmingham',
         'preferred_course_location' => 'MBA - Birmingham',
         'has_taken_sfe_before' => true,
-        'previous_qualification_work_experience' => 'BBA and 3 years work experience in operations.',
+        'previous_qualification_work_experience' => [
+            'qualification' => 'BBA',
+            'work_experience' => '3 years work experience in operations',
+        ],
     ]);
 
     AppSetting::setValue('application_notification_email', 'old-admin@example.com');
@@ -83,6 +108,17 @@ it('shows applications in admin panel and updates notification email', function 
             ->where('notificationEmail', 'old-admin@example.com')
             ->has('applications.data', 1)
             ->where('applications.data.0.first_name', 'Liam')
+        );
+
+    $this->actingAs($admin)
+        ->get(route('admin.applications.show', $application))
+        ->assertOk()
+        ->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page
+            ->component('Admin/Applications/Show')
+            ->where('application.id', $application->id)
+            ->where('application.first_name', 'Liam')
+            ->where('application.previous_qualification_work_experience.qualification', 'BBA')
+            ->where('application.previous_qualification_work_experience.work_experience', '3 years work experience in operations')
         );
 
     $this->actingAs($admin)

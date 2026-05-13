@@ -20,7 +20,35 @@ class CourseApplicationController extends Controller
 
     public function store(StoreCourseApplicationRequest $request): RedirectResponse
     {
-        $application = CourseApplication::query()->create($request->validated());
+        $validated = $request->validated();
+        $courseLabelMap = [
+            'certhe_business' => 'Business',
+            'certhe_health_social_care' => 'Health & Social Care',
+            'certhe_it_computing' => 'IT/Computing',
+            'foundation_business' => 'Business',
+            'foundation_health' => 'Health',
+            'foundation_law' => 'Law',
+            'foundation_it' => 'IT',
+            'foundation_others' => 'Others',
+        ];
+        $preferredCourses = collect($validated['selected_courses'])
+            ->map(function (string $course) use ($validated, $courseLabelMap): string {
+                if ($course === 'foundation_others' && filled($validated['other_course'] ?? null)) {
+                    return sprintf('Others: %s', trim((string) $validated['other_course']));
+                }
+
+                return $courseLabelMap[$course] ?? $course;
+            })
+            ->implode(', ');
+        $preferredLocations = collect($validated['selected_locations'])->implode(', ');
+
+        $application = CourseApplication::query()->create([
+            ...$validated,
+            'preferred_course' => $preferredCourses,
+            'preferred_location' => $preferredLocations,
+            'nationality_immigration_status' => sprintf('%s - %s', $validated['nationality'], $validated['immigration_status']),
+            'preferred_course_location' => sprintf('%s - %s', $preferredCourses, $preferredLocations),
+        ]);
 
         $recipient = AppSetting::getValue('application_notification_email', config('mail.from.address'));
 

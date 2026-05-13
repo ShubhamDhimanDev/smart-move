@@ -15,7 +15,11 @@ class CourseApplication extends Model
         'dob',
         'phone',
         'email',
+        'nationality',
+        'immigration_status',
         'nationality_immigration_status',
+        'preferred_course',
+        'preferred_location',
         'preferred_course_location',
         'has_taken_sfe_before',
         'previous_qualification_work_experience',
@@ -29,6 +33,7 @@ class CourseApplication extends Model
         return [
             'dob' => 'date',
             'has_taken_sfe_before' => 'boolean',
+            'previous_qualification_work_experience' => 'array',
         ];
     }
 }

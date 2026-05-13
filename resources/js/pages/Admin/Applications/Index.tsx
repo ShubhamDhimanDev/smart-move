@@ -77,9 +77,9 @@ export default function ApplicationsIndex({ applications, notificationEmail }: P
                             <tr className="text-left text-neutral-600">
                                 <th className="px-4 py-3 font-medium">Applicant</th>
                                 <th className="px-4 py-3 font-medium">Contact</th>
-                                <th className="px-4 py-3 font-medium">Course &amp; Status</th>
                                 <th className="px-4 py-3 font-medium">SFE</th>
                                 <th className="px-4 py-3 font-medium">Submitted</th>
+                                <th className="px-4 py-3 font-medium">Action</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-neutral-100">
@@ -89,7 +89,10 @@ export default function ApplicationsIndex({ applications, notificationEmail }: P
                                         <p className="font-medium text-neutral-900">{application.first_name} {application.last_name}</p>
                                         <p className="text-xs text-neutral-500">DOB: {application.dob}</p>
                                         <p className="mt-1 text-xs text-neutral-600">
-                                            {application.previous_qualification_work_experience}
+                                            Qualification: {application.previous_qualification_work_experience.qualification}
+                                        </p>
+                                        <p className="mt-1 text-xs text-neutral-600">
+                                            Work Experience: {application.previous_qualification_work_experience.work_experience}
                                         </p>
                                     </td>
                                     <td className="px-4 py-3 align-top text-neutral-700">
@@ -97,14 +100,18 @@ export default function ApplicationsIndex({ applications, notificationEmail }: P
                                         <p className="text-xs text-neutral-500">{application.phone}</p>
                                     </td>
                                     <td className="px-4 py-3 align-top text-neutral-700">
-                                        <p>{application.preferred_course_location}</p>
-                                        <p className="mt-1 text-xs text-neutral-500">{application.nationality_immigration_status}</p>
-                                    </td>
-                                    <td className="px-4 py-3 align-top text-neutral-700">
                                         {application.has_taken_sfe_before ? 'Yes' : 'No'}
                                     </td>
                                     <td className="px-4 py-3 align-top text-neutral-700">
                                         {formatDate(application.created_at)}
+                                    </td>
+                                    <td className="px-4 py-3 align-top text-neutral-700">
+                                        <Link
+                                            href={`/admin/applications/${application.id}`}
+                                            className="inline-flex items-center rounded-md border border-neutral-300 px-2.5 py-1 text-xs font-medium text-neutral-700 transition hover:bg-neutral-100"
+                                        >
+                                            View details
+                                        </Link>
                                     </td>
                                 </tr>
                             ))}

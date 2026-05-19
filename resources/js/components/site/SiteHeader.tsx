@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 const logo = '/images/smartmove_logo.png';
+const whatsapp = '/images/whatsapp.svg';
 
 export default function SiteHeader({ activePage = 'home' }: { activePage?: string }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -139,6 +140,19 @@ export default function SiteHeader({ activePage = 'home' }: { activePage?: strin
                         >
                             <span className="material-symbols-outlined text-[16px]">call</span>
                             <span>020 7790 9233</span>
+                        </a><span className='hidden lg:flex'> /</span>
+                        <a
+                            className="hidden lg:flex items-center gap-1.5 text-white/50 hover:text-white text-sm font-semibold transition-colors"
+                            href="https://wa.me/447894867772"
+                            target='_blank'
+                        >
+                            <img
+                                src={whatsapp}
+                                alt="WhatsApp"
+                                width={25}
+                                height={25}
+                            />
+                            <span>+44 7894 867772</span>
                         </a>
                         <a
                             className="bg-secondary-container text-on-secondary px-5 py-2 rounded-full font-headline font-bold text-sm hover:scale-105 transition-transform duration-200 shadow-lg shadow-secondary-container/20"
@@ -187,7 +201,40 @@ export default function SiteHeader({ activePage = 'home' }: { activePage?: strin
                         >
                             Apply Now
                         </a>
-                        <div className="pt-2 border-t border-white/10 text-sm text-on-surface-variant">020 7790 9233 &nbsp; info@smartmove.org</div>
+                        <div className="pt-3 border-t border-white/10 text-sm text-on-surface-variant flex flex-col gap-3">
+
+                            <a
+                                href="tel:02077909233"
+                                className="flex items-center justify-center gap-2"
+                            >
+                                <span className="material-symbols-outlined text-[14px]">
+                                    call
+                                </span>
+                                <span>+44 207790 9233</span>
+                            </a>
+                            <a
+                                href="https://wa.me/447894867772"
+                                target='_blank'
+                                className="flex items-center justify-center gap-2"
+                            >
+                                <img
+                                    src={whatsapp}
+                                    alt="WhatsApp"
+                                    className="w-5 h-5 object-contain"
+                                />
+
+                                <span>+44 789486 7772</span>
+                            </a>
+                            <a
+                                href="mailto:info@smartmove.org"
+                                className="flex items-center justify-center gap-2"
+                            >
+                                <span className="material-symbols-outlined text-[14px] ">
+                                    mail
+                                </span>
+                                info@smartmove.org
+                            </a>
+                        </div>
                     </div>
                 )}
             </nav>

@@ -52,7 +52,7 @@ export default function SiteHeader({ activePage = 'home' }: { activePage?: strin
                                         <div>
                                             <p className="font-label text-[10px] text-secondary-container mb-5 uppercase tracking-[.18em]">Programmes</p>
                                             <ul className="space-y-0 text-sm">
-                                                {['Postgraduate Programs', 'Undergraduate Degrees', 'Foundation Courses', 'Top-up Degrees', 'Short Courses'].map(
+                                                {['Postgraduate Programs', 'Undergraduate Degrees', 'Foundation Courses', 'Top-up Degrees', 'CertHE Programs'].map(
                                                     (item, i) => (
                                                         <li key={item}>
                                                             <a

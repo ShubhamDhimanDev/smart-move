@@ -16,6 +16,14 @@ class AdminUserController extends Controller
     public function index(): Response
     {
         AdminPermissionService::synchronizeRolesAndPermissions();
+        $roles = collect(AdminPermissionService::roleDefinitions())
+                ->except('super-admin')
+                ->toArray();
+
+        $permissions = collect(AdminPermissionService::featureDefinitions())
+                        ->reject(fn ($permission) => $permission['name'] === 'manage pages')
+                        ->values()
+                        ->toArray();
 
         return Inertia::render('Admin/Users/Index', [
             'users' => User::query()
@@ -31,8 +39,8 @@ class AdminUserController extends Controller
                 ])
                 ->values()
                 ->all(),
-            'roles' => ['admin', 'super-admin'],
-            'availablePermissions' => AdminPermissionService::featureDefinitions(),
+            'roles' => $roles,
+            'availablePermissions' => $permissions,
         ]);
     }
 
@@ -55,7 +63,7 @@ class AdminUserController extends Controller
         return to_route('admin.users.index')->with('success', 'User created successfully.');
     }
 
-    public function updateAccess(UpdateAdminUserPermissionsRequest $request, User $user): RedirectResponse
+    public function updateAccess(UpdateAdminUserPermissionsRequest $request, User $user)
     {
         if ($user->hasRole('super-admin')) {
             return to_route('admin.users.index')->with('error', 'Super-admin access cannot be modified.');

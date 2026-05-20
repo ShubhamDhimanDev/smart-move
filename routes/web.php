@@ -9,7 +9,7 @@ use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\EventRegistrantController;
 use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\MediaUploadController;
-use App\Http\Controllers\Admin\PageController;
+// use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\PostCommentController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\CourseApplicationController;
@@ -26,7 +26,7 @@ Route::get('/', function () {
     $upcomingEvents = Event::query()
         ->where('status', 'published')
         ->where('starts_at', '>=', now())
-        ->orderBy('starts_at')
+        ->orderBy('starts_at', 'DESC')
         ->limit(3)
         ->get([
             'id',
@@ -114,14 +114,14 @@ Route::middleware(['auth', 'admin.access'])->prefix('admin')->name('admin.')->gr
         Route::patch('applications/settings', [AdminCourseApplicationController::class, 'updateSettings'])->name('applications.settings.update');
     });
 
-    Route::middleware(['role:super-admin', 'admin.access:manage users'])->group(function () {
+    Route::middleware(['admin.access:manage users'])->group(function () {
         Route::get('users', [AdminUserController::class, 'index'])->name('users.index');
         Route::post('users', [AdminUserController::class, 'store'])->name('users.store');
         Route::patch('users/{user}/access', [AdminUserController::class, 'updateAccess'])->name('users.update-access');
         Route::delete('users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
     });
 
-    Route::middleware(['role:super-admin', 'admin.access:manage permissions'])->group(function () {
+    Route::middleware(['admin.access:manage permissions'])->group(function () {
         Route::get('permissions', [AdminPermissionController::class, 'index'])->name('permissions.index');
         Route::post('permissions', [AdminPermissionController::class, 'store'])->name('permissions.store');
         Route::delete('permissions/{permission}', [AdminPermissionController::class, 'destroy'])->name('permissions.destroy');

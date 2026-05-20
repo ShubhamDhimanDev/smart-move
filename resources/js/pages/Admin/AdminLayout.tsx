@@ -36,8 +36,8 @@ const navItems: NavItem[] = [
     { label: 'Categories', href: admin.categories.index.url(), icon: Tags, permission: 'manage categories' },
     { label: 'Media', href: admin.media.index.url(), icon: Image, permission: 'manage media' },
     { label: 'Comments', href: admin.comments.index.url(), icon: MessageSquare, permission: 'manage comments' },
-    { label: 'Users', href: admin.users.index.url(), icon: Users, role: 'super-admin' },
-    { label: 'Permissions', href: admin.permissions.index.url(), icon: Shield, role: 'super-admin' },
+    { label: 'Users', href: admin.users.index.url(), icon: Users, permission: 'manage users' },
+    { label: 'Permissions', href: admin.permissions.index.url(), icon: Shield, permission: 'manage permissions' },
 ];
 
 export function withAdminLayout({ children }: { children: ReactNode }) {
@@ -52,7 +52,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     const userName = page.props.auth?.user?.name ?? '';
     const userEmail = page.props.auth?.user?.email ?? '';
 
-    const hasGlobalAdminAccess = userRoles.includes('admin') || userRoles.includes('super-admin');
+
+    const hasGlobalAdminAccess = userRoles.includes('super-admin');
 
     const handleLogout = () => {
         router.post(logout().url);

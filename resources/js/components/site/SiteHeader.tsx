@@ -1,3 +1,4 @@
+import { usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
 const logo = '/images/smartmove_logo.png';
@@ -5,6 +6,7 @@ const whatsapp = '/images/whatsapp.svg';
 
 export default function SiteHeader({ activePage = 'home' }: { activePage?: string }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const { featuredCategories, featuredCities } = usePage().props;
 
     return (
         <>
@@ -52,30 +54,28 @@ export default function SiteHeader({ activePage = 'home' }: { activePage?: strin
                                         <div>
                                             <p className="font-label text-[10px] text-secondary-container mb-5 uppercase tracking-[.18em]">Programmes</p>
                                             <ul className="space-y-0 text-sm">
-                                                {['Postgraduate Programs', 'Undergraduate Degrees', 'Foundation Courses', 'Top-up Degrees', 'CertHE Programs'].map(
-                                                    (item, i) => (
-                                                        <li key={item}>
-                                                            <a
-                                                                className={`text-white/55 hover:text-white hover:pl-2 transition-all block py-2 flex items-center gap-2 ${i < 4 ? 'border-b border-white/[0.05]' : ''}`}
-                                                                href="#"
-                                                            >
-                                                                {item}
-                                                            </a>
-                                                        </li>
-                                                    ),
-                                                )}
+                                                {featuredCategories.map((item, i) => (
+                                                    <li key={item.id}>
+                                                        <a
+                                                            className={`text-white/55 hover:text-white hover:pl-2 transition-all block py-2 flex items-center gap-2 ${i < featuredCategories.length - 1 ? 'border-b border-white/[0.05]' : ''}`}
+                                                            href={`/courses?category=${item.slug}`}
+                                                        >
+                                                            {item.name}
+                                                        </a>
+                                                    </li>
+                                                ))}
                                             </ul>
                                         </div>
                                         <div>
                                             <p className="font-label text-[10px] text-secondary-container mb-5 uppercase tracking-[.18em]">Study Destinations</p>
                                             <ul className="space-y-0 text-sm">
-                                                {['London', 'Birmingham', 'Manchester', 'Leeds', 'Wales'].map((item, i) => (
-                                                    <li key={item}>
+                                                {featuredCities.map((item, i) => (
+                                                    <li key={item.id}>
                                                         <a
-                                                            className={`text-white/55 hover:text-white hover:pl-2 transition-all block py-2 flex items-center gap-2 ${i < 4 ? 'border-b border-white/[0.05]' : ''}`}
-                                                            href="#"
+                                                            className={`text-white/55 hover:text-white hover:pl-2 transition-all block py-2 flex items-center gap-2 ${i < featuredCities.length - 1 ? 'border-b border-white/[0.05]' : ''}`}
+                                                            href={`/study/${item.slug}`}
                                                         >
-                                                            {item}
+                                                            {item.name}
                                                         </a>
                                                     </li>
                                                 ))}

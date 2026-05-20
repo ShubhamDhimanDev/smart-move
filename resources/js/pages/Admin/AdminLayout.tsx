@@ -1,5 +1,5 @@
 import { Link, router, usePage } from '@inertiajs/react';
-import { LayoutDashboard, Newspaper, Tags, Image, MessageSquare, Calendar, Users, Shield, LogOut, ClipboardList } from 'lucide-react';
+import { LayoutDashboard, Newspaper, Tags, Image, MessageSquare, Calendar, Users, Shield, LogOut, ClipboardList, GraduationCap, MapPin, Building2 } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { logout } from '@/routes';
 import admin from '@/routes/admin';
@@ -34,6 +34,10 @@ const navItems: NavItem[] = [
     { label: 'Events', href: admin.events.index.url(), icon: Calendar, permission: 'manage events' },
     { label: 'Applications', href: '/admin/applications', icon: ClipboardList, permission: 'manage applications' },
     { label: 'Categories', href: admin.categories.index.url(), icon: Tags, permission: 'manage categories' },
+    { label: 'Course Categories', href: '/admin/course-categories', icon: Tags, permission: 'manage course categories' },
+    { label: 'Cities', href: '/admin/cities', icon: MapPin, permission: 'manage course cities' },
+    // { label: 'Universities', href: '/admin/universities', icon: Building2, permission: 'manage courses' },
+    { label: 'Courses', href: '/admin/courses', icon: GraduationCap, permission: 'manage courses' },
     { label: 'Media', href: admin.media.index.url(), icon: Image, permission: 'manage media' },
     { label: 'Comments', href: admin.comments.index.url(), icon: MessageSquare, permission: 'manage comments' },
     { label: 'Users', href: admin.users.index.url(), icon: Users, permission: 'manage users' },

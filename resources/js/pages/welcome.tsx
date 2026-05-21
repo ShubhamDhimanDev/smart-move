@@ -1,5 +1,5 @@
 ﻿import { Link } from '@inertiajs/react';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import SiteLayout from '@/layouts/site-layout';
 import * as publicEventRoutes from '@/routes/events';
@@ -219,10 +219,48 @@ const StarFilled = () => (
 
 type WelcomeEvent = Pick<Event, 'id' | 'slug' | 'title' | 'type' | 'starts_at' | 'ends_at' | 'timezone' | 'location' | 'location_url'>;
 
+type FeaturedCourseCategory = {
+    id: number;
+    name: string;
+    slug: string;
+};
+
+type FeaturedCourse = {
+    id: number;
+    title: string;
+    slug: string;
+    excerpt: string | null;
+    duration: number | null;
+    duration_unit: string | null;
+    featured_image: string | null;
+    category: FeaturedCourseCategory | null;
+};
+
+type FeaturedCity = {
+    id: number;
+    name: string;
+    slug: string;
+    image: string | null;
+    description: string | null;
+};
+
 type Props = {
     canRegister: boolean;
     upcomingEvents: WelcomeEvent[];
+    featuredCourseCategories: FeaturedCourseCategory[];
+    featuredCourses: FeaturedCourse[];
+    featuredCities: FeaturedCity[];
 };
+
+function formatDuration(duration: number | null, durationUnit: string | null): string {
+    if (!duration || !durationUnit) {
+        return 'Duration to be confirmed';
+    }
+
+    const unit = duration === 1 ? durationUnit.slice(0, -1) : durationUnit;
+
+    return `${duration} ${unit}`;
+}
 
 function formatEventDateParts(dateString: string, timezone?: string) {
     const date = new Date(dateString);
@@ -263,10 +301,28 @@ function formatEventTimeRange(startsAt: string, endsAt: string | null, timezone?
     return `${startTime}-${endTime} ${timeZone}`;
 }
 
-export default function Welcome({ upcomingEvents }: Props) {
-    const [activeCity, setActiveCity] = useState<City>('london');
+export default function Welcome({ upcomingEvents, featuredCourseCategories, featuredCourses, featuredCities }: Props) {
+    const [activeCourseCategory, setActiveCourseCategory] = useState<'all' | string>('all');
+    const [activeCitySlug, setActiveCitySlug] = useState<string>(featuredCities[0]?.slug ?? '');
 
-    const city = cityData[activeCity];
+    useEffect(() => {
+        if (featuredCities.length > 0 && !featuredCities.some((city) => city.slug === activeCitySlug)) {
+            setActiveCitySlug(featuredCities[0].slug);
+        }
+    }, [featuredCities, activeCitySlug]);
+
+    const filteredCourses = useMemo(() => {
+        if (activeCourseCategory === 'all') {
+            return featuredCourses;
+        }
+
+        return featuredCourses.filter((course) => course.category?.slug === activeCourseCategory);
+    }, [featuredCourses, activeCourseCategory]);
+
+    const activeCity = useMemo(
+        () => featuredCities.find((city) => city.slug === activeCitySlug) ?? featuredCities[0] ?? null,
+        [featuredCities, activeCitySlug],
+    );
 
     return (
         <SiteLayout title="Smart Move Education Group | Your Journey to UK Degree" activePage="home">
@@ -433,52 +489,76 @@ export default function Welcome({ upcomingEvents }: Props) {
                             <h2 className="text-white font-headline font-bold text-[clamp(2rem,4vw,3.5rem)] tracking-tight leading-[1.1]">Choose Your <span className="text-gradient-gold">Course</span>, Build Your <span className="text-gradient-gold">Career</span></h2>
                         </div>
                         <div className="flex flex-wrap gap-2 reveal reveal-d1">
-                            <button type="button" className="bg-secondary-container text-on-secondary px-5 py-2 rounded-full font-bold text-xs font-label">
+                            <button
+                                type="button"
+                                onClick={() => setActiveCourseCategory('all')}
+                                className={`px-5 py-2 rounded-full font-bold text-xs font-label ${
+                                    activeCourseCategory === 'all'
+                                        ? 'bg-secondary-container text-on-secondary'
+                                        : 'bg-surface-container-highest text-white/60 hover:text-white'
+                                }`}
+                            >
                                 All
                             </button>
-                            {['Foundation', 'Certificate of Higher Education (CertHE)', 'Bachelor’s Degrees', 'Master’s Degrees'].map((f) => (
+                            {featuredCourseCategories.map((category) => (
                                 <button
-                                    key={f}
+                                    key={category.id}
                                     type="button"
-                                    className="bg-surface-container-highest text-white/60 px-5 py-2 rounded-full font-bold text-xs font-label hover:text-white transition-colors"
+                                    onClick={() => setActiveCourseCategory(category.slug)}
+                                    className={`px-5 py-2 rounded-full font-bold text-xs font-label transition-colors ${
+                                        activeCourseCategory === category.slug
+                                            ? 'bg-secondary-container text-on-secondary'
+                                            : 'bg-surface-container-highest text-white/60 hover:text-white'
+                                    }`}
                                 >
-                                    {f}
+                                    {category.name}
                                 </button>
                             ))}
                         </div>
                     </div>
                     <div className="space-y-4">
-                        {courses.map((course) => (
+                        {filteredCourses.map((course, index) => (
                             <a
-                                key={course.title}
+                                key={course.id}
                                 href="#"
-                                className={`group relative bg-surface-container-high rounded-lg overflow-hidden flex flex-col md:flex-row ${course.shadow} transition-all duration-300 course-card-line block reveal ${course.revealDelay}`}
+                                className={`group relative bg-surface-container-high rounded-lg overflow-hidden flex flex-col md:flex-row hover:shadow-[0_4px_40px_rgba(239,165,0,.1)] transition-all duration-300 course-card-line block reveal ${index > 0 ? 'reveal-d1' : ''}`}
                             >
                                 <div className="md:w-64 h-52 md:h-auto overflow-hidden flex-shrink-0">
-                                    <img
-                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                                        alt={course.imageAlt}
-                                        src={course.image}
-                                    />
+                                    {course.featured_image ? (
+                                        <img
+                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                            alt={course.title}
+                                            src={course.featured_image}
+                                        />
+                                    ) : (
+                                        <div className="w-full h-full bg-surface-container-low flex items-center justify-center">
+                                            <span className="material-symbols-outlined text-6xl text-on-surface-variant/20">school</span>
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="flex-1 p-8 md:p-10 flex flex-col justify-between">
                                     <div>
                                         <div className="flex items-center gap-3 mb-4">
-                                            <span className={`${course.tagClass} px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider font-label`}>
-                                                {course.tag}
+                                            <span className="bg-primary-container/25 text-[#bcc2ff] px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider font-label">
+                                                {course.category?.name ?? 'General'}
                                             </span>
-                                            <span className="text-on-surface-variant text-xs font-label">{course.duration}</span>
+                                            <span className="text-on-surface-variant text-xs font-label">{formatDuration(course.duration, course.duration_unit)}</span>
                                         </div>
-                                        <h3 className={`text-white font-headline font-bold text-2xl mb-3 ${course.hoverClass} transition-colors`}>{course.title}</h3>
-                                        <p className="text-on-surface-variant text-sm leading-relaxed max-w-xl">{course.description}</p>
+                                        <h3 className="text-white font-headline font-bold text-2xl mb-3 group-hover:text-secondary-container transition-colors">{course.title}</h3>
+                                        <p className="text-on-surface-variant text-sm leading-relaxed max-w-xl">{course.excerpt || 'Explore this featured course and its latest entry requirements.'}</p>
                                     </div>
-                                    <div className={`flex items-center gap-2 mt-6 ${course.linkClass} font-bold text-sm font-headline`}>
+                                    <div className="flex items-center gap-2 mt-6 text-secondary-container font-bold text-sm font-headline">
                                         View course{' '}
                                         <span className="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
                                     </div>
                                 </div>
                             </a>
                         ))}
+                        {filteredCourses.length === 0 && (
+                            <div className="rounded-lg border border-outline-variant/30 bg-surface-container-high p-8 text-center text-on-surface-variant">
+                                No featured courses found in this category yet.
+                            </div>
+                        )}
                     </div>
                     <div className="mt-10 flex justify-center reveal">
                         <a
@@ -504,21 +584,21 @@ export default function Welcome({ upcomingEvents }: Props) {
                     </div>
                     <div className="flex flex-col lg:flex-row gap-8 items-start">
                         <div className="w-full lg:w-56 flex lg:flex-col overflow-x-auto no-scrollbar gap-1.5 flex-shrink-0 reveal">
-                            {cities.map((c) => (
+                            {featuredCities.map((cityItem) => (
                                 <button
-                                    key={c}
+                                    key={cityItem.id}
                                     type="button"
-                                    onClick={() => setActiveCity(c)}
+                                    onClick={() => setActiveCitySlug(cityItem.slug)}
                                     className={`px-5 py-4 rounded-xl text-left font-headline font-bold text-base flex items-center justify-between transition-all capitalize ${
-                                        activeCity === c
+                                        activeCitySlug === cityItem.slug
                                             ? 'bg-surface-container-high text-white border-l-[3px] border-secondary-container'
                                             : 'text-white/50 hover:bg-surface-container-low hover:text-white/80'
                                     }`}
                                 >
-                                    {c.charAt(0).toUpperCase() + c.slice(1)}
+                                    {cityItem.name}
                                     <span
                                         className="material-symbols-outlined text-[18px] text-secondary-container"
-                                        style={{ opacity: activeCity === c ? 1 : 0 }}
+                                        style={{ opacity: activeCitySlug === cityItem.slug ? 1 : 0 }}
                                     >
                                         arrow_forward
                                     </span>
@@ -529,31 +609,26 @@ export default function Welcome({ upcomingEvents }: Props) {
                             <div className="bg-surface-container-low rounded-lg overflow-hidden flex flex-col md:flex-row shadow-2xl">
                                 <div className="md:w-1/2 p-10 lg:p-12 flex flex-col justify-center">
                                     <h3 className="text-3xl font-headline font-bold text-white mb-5">
-                                        Study in <span className="text-gradient-gold">{city.title}</span>
+                                        Study in <span className="text-gradient-gold">{activeCity?.name ?? 'UK'}</span>
                                     </h3>
-                                    <p className="text-on-surface-variant leading-relaxed mb-5 text-sm">{city.description}</p>
-                                    <ul className="space-y-2 mb-8 text-sm text-on-surface-variant">
-                                        {city.points.map((point) => (
-                                            <li key={point} className="flex items-center gap-2">
-                                                <span className="material-symbols-outlined text-secondary-container text-[16px]">check_circle</span>
-                                                {point}
-                                            </li>
-                                        ))}
-                                    </ul>
+                                    <p className="text-on-surface-variant leading-relaxed mb-8 text-sm">
+                                        {activeCity?.description ||
+                                            `Discover study opportunities and university pathways in ${activeCity?.name ?? 'this city'}.`}
+                                    </p>
                                     <a
                                         className="inline-flex items-center gap-2 text-secondary-container font-bold hover:gap-4 transition-all font-headline text-sm group"
                                         href="#"
                                     >
-                                        {city.linkLabel}{' '}
+                                        Explore {activeCity?.name ?? 'city'} courses{' '}
                                         <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
                                     </a>
                                 </div>
                                 <div className="md:w-1/2 h-72 md:h-auto">
-                                    {city.image ? (
-                                        <img className="w-full h-full object-cover" alt={city.imageAlt!} src={city.image} />
+                                    {activeCity?.image ? (
+                                        <img className="w-full h-full object-cover" alt={activeCity.name} src={activeCity.image} />
                                     ) : (
                                         <div className="w-full h-full bg-surface-container-high flex items-center justify-center">
-                                            <span className="material-symbols-outlined text-6xl text-on-surface-variant/20">{city.placeholderIcon}</span>
+                                            <span className="material-symbols-outlined text-6xl text-on-surface-variant/20">location_city</span>
                                         </div>
                                     )}
                                 </div>

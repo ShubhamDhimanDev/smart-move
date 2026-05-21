@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCourseApplicationRequest;
 use App\Mail\CourseApplicationSubmitted;
 use App\Models\AppSetting;
+use App\Models\Country;
 use App\Models\CourseApplication;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Mail;
@@ -15,7 +16,11 @@ class CourseApplicationController extends Controller
 {
     public function create(): Response
     {
-        return Inertia::render('Public/ApplyNow');
+        $countries = Country::query()
+            ->where('is_active', true)
+            ->orderBy('nationality', 'ASC')
+            ->get(['id', 'name', 'nationality']);
+        return Inertia::render('Public/ApplyNow', compact('countries'));
     }
 
     public function store(StoreCourseApplicationRequest $request): RedirectResponse

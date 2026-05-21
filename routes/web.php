@@ -3,60 +3,28 @@
 use App\Http\Controllers\Admin\AdminPermissionController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\CityController;
 use App\Http\Controllers\Admin\CourseApplicationController as AdminCourseApplicationController;
+use App\Http\Controllers\Admin\CourseCategoryController;
+use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\EventRegistrantController;
 use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\MediaUploadController;
-use App\Http\Controllers\Admin\PageController;
+// use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\PostCommentController;
 use App\Http\Controllers\Admin\PostController;
+// use App\Http\Controllers\Admin\UniversityController;
 use App\Http\Controllers\CourseApplicationController;
 use App\Http\Controllers\PublicEventController;
 use App\Http\Controllers\PublicEventRegistrationController;
 use App\Http\Controllers\PublicPageController;
 use App\Http\Controllers\PublicPostCommentController;
 use App\Http\Controllers\PublicPostController;
-use App\Models\Event;
 use Illuminate\Support\Facades\Route;
-use Laravel\Fortify\Features;
 
-Route::get('/', function () {
-    $upcomingEvents = Event::query()
-        ->where('status', 'published')
-        ->where('starts_at', '>=', now())
-        ->orderBy('starts_at')
-        ->limit(3)
-        ->get([
-            'id',
-            'title',
-            'slug',
-            'type',
-            'starts_at',
-            'ends_at',
-            'timezone',
-            'location',
-            'location_url',
-        ])
-        ->map(fn (Event $event): array => [
-            'id' => $event->id,
-            'title' => $event->title,
-            'slug' => $event->slug,
-            'type' => $event->type,
-            'starts_at' => $event->starts_at?->toIso8601String(),
-            'ends_at' => $event->ends_at?->toIso8601String(),
-            'timezone' => $event->timezone,
-            'location' => $event->location,
-            'location_url' => $event->location_url,
-        ])
-        ->values();
-
-    return inertia('welcome', [
-        'canRegister' => Features::enabled(Features::registration()),
-        'upcomingEvents' => $upcomingEvents,
-    ]);
-})->name('home');
+Route::get('/', [PublicPageController::class, 'homePage'])->name('home');
 
 Route::inertia('/about', 'Public/About')->name('about');
 Route::inertia('/services', 'Public/Services')->name('services');
@@ -88,6 +56,21 @@ Route::middleware(['auth', 'admin.access'])->prefix('admin')->name('admin.')->gr
         Route::resource('categories', CategoryController::class)->except(['create', 'edit', 'show']);
     });
 
+    Route::middleware('admin.access:manage course categories')->group(function () {
+        Route::post('course-categories/reorder', [CourseCategoryController::class, 'reorder'])->name('course-categories.reorder');
+        Route::resource('course-categories', CourseCategoryController::class)->except(['create', 'show']);
+    });
+
+    Route::middleware('admin.access:manage course cities')->group(function () {
+        Route::post('cities/reorder', [CityController::class, 'reorder'])->name('cities.reorder');
+        Route::resource('cities', CityController::class)->except(['create', 'show']);
+    });
+
+    Route::middleware('admin.access:manage courses')->group(function () {
+        // Route::resource('universities', UniversityController::class)->except(['create', 'edit', 'show']);
+        Route::resource('courses', CourseController::class)->except(['show']);
+    });
+
     Route::middleware('admin.access:manage media')->group(function () {
         Route::post('media/upload', [MediaUploadController::class, 'store'])->name('media.upload');
         Route::get('media/library', [MediaController::class, 'library'])->name('media.library');
@@ -114,14 +97,14 @@ Route::middleware(['auth', 'admin.access'])->prefix('admin')->name('admin.')->gr
         Route::patch('applications/settings', [AdminCourseApplicationController::class, 'updateSettings'])->name('applications.settings.update');
     });
 
-    Route::middleware(['role:super-admin', 'admin.access:manage users'])->group(function () {
+    Route::middleware(['admin.access:manage users'])->group(function () {
         Route::get('users', [AdminUserController::class, 'index'])->name('users.index');
         Route::post('users', [AdminUserController::class, 'store'])->name('users.store');
         Route::patch('users/{user}/access', [AdminUserController::class, 'updateAccess'])->name('users.update-access');
         Route::delete('users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
     });
 
-    Route::middleware(['role:super-admin', 'admin.access:manage permissions'])->group(function () {
+    Route::middleware(['admin.access:manage permissions'])->group(function () {
         Route::get('permissions', [AdminPermissionController::class, 'index'])->name('permissions.index');
         Route::post('permissions', [AdminPermissionController::class, 'store'])->name('permissions.store');
         Route::delete('permissions/{permission}', [AdminPermissionController::class, 'destroy'])->name('permissions.destroy');

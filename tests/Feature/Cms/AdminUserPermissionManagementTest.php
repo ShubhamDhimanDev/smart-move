@@ -86,3 +86,27 @@ it('allows super-admin users to create custom permissions', function () {
 
     expect(Permission::query()->where('name', 'manage seo')->exists())->toBeTrue();
 });
+
+it('allows super-admin users to update an existing user role and permissions', function () {
+    $superAdmin = createSuperAdminUser();
+
+    $targetUser = User::factory()->create();
+    $targetUser->assignRole('admin');
+    $targetUser->syncPermissions(['manage posts']);
+
+    $response = $this->actingAs($superAdmin)
+        ->patch(route('admin.users.update-access', ['user' => $targetUser->id]), [
+            'role' => 'blogger',
+            'permissions' => ['manage posts', 'manage media'],
+        ]);
+
+    $response
+        ->assertSessionHasNoErrors()
+        ->assertRedirect(route('admin.users.index'));
+
+    $targetUser->refresh();
+
+    expect($targetUser->hasRole('blogger'))->toBeTrue();
+    expect($targetUser->getAllPermissions()->pluck('name')->all())
+        ->toContain('manage posts', 'manage media');
+});

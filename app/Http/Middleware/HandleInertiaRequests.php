@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\City;
+use App\Models\CourseCategory;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -59,6 +61,8 @@ class HandleInertiaRequests extends Middleware
                 'error' => fn (): ?string => $request->session()->get('error'),
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            'featuredCategories' => fn () => CourseCategory::active()->featuredNav()->ordered()->get(['id', 'name', 'slug'])->toArray(),
+            'featuredCities' => fn () => City::active()->featuredNav()->ordered()->get(['id', 'name', 'slug'])->toArray(),
         ];
     }
 }

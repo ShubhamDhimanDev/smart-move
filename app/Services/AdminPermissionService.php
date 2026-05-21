@@ -9,24 +9,35 @@ use Spatie\Permission\PermissionRegistrar;
 class AdminPermissionService
 {
     /**
+     * All system permissions
+     *
      * @return array<int, array{name: string, label: string}>
      */
     public static function featureDefinitions(): array
     {
         return [
             ['name' => 'manage pages', 'label' => 'Pages'],
+
             ['name' => 'manage posts', 'label' => 'Posts'],
             ['name' => 'manage categories', 'label' => 'Categories'],
             ['name' => 'manage media', 'label' => 'Media'],
             ['name' => 'manage comments', 'label' => 'Comments'],
+
             ['name' => 'manage events', 'label' => 'Events'],
             ['name' => 'manage applications', 'label' => 'Applications'],
+
+            ['name' => 'manage courses', 'label' => 'Courses'],
+            ['name' => 'manage course categories', 'label' => 'Course Categories'],
+            ['name' => 'manage course cities', 'label' => 'Course Cities'],
+
             ['name' => 'manage users', 'label' => 'Users'],
             ['name' => 'manage permissions', 'label' => 'Permissions'],
         ];
     }
 
     /**
+     * Get all permission names
+     *
      * @return array<int, string>
      */
     public static function featurePermissions(): array
@@ -35,14 +46,86 @@ class AdminPermissionService
     }
 
     /**
-     * @return array<int, string>
+     * Role definitions
+     *
+     * @return array<string, array<int, string>>
      */
-    public static function adminRolePermissions(): array
+    public static function roleDefinitions(): array
     {
-        return array_values(array_filter(
-            self::featurePermissions(),
-            fn (string $permission): bool => ! in_array($permission, ['manage users', 'manage permissions'], true),
-        ));
+        return [
+
+            /*
+            |--------------------------------------------------------------------------
+            | Blogger
+            |--------------------------------------------------------------------------
+            */
+            'blogger' => [
+                'manage posts',
+                'manage categories',
+                'manage media',
+                'manage comments',
+            ],
+
+            /*
+            |--------------------------------------------------------------------------
+            | Event Manager
+            |--------------------------------------------------------------------------
+            */
+            'event-manager' => [
+                'manage events',
+            ],
+
+            /*
+            |--------------------------------------------------------------------------
+            | Application Manager
+            |--------------------------------------------------------------------------
+            */
+            'application-manager' => [
+                'manage applications',
+            ],
+
+            /*
+            |--------------------------------------------------------------------------
+            | Course Manager
+            |--------------------------------------------------------------------------
+            */
+            'course-manager' => [
+                'manage courses',
+                'manage course categories',
+                'manage course cities',
+            ],
+
+            /*
+            |--------------------------------------------------------------------------
+            | Admin
+            |--------------------------------------------------------------------------
+            */
+            'admin' => [
+                // Blog
+                'manage posts',
+                'manage categories',
+                'manage media',
+                'manage comments',
+
+                // Events
+                'manage events',
+
+                // Applications
+                'manage applications',
+
+                // Courses
+                'manage courses',
+                'manage course categories',
+                'manage course cities',
+            ],
+
+            /*
+            |--------------------------------------------------------------------------
+            | Super Admin
+            |--------------------------------------------------------------------------
+            */
+            'super-admin' => self::featurePermissions(),
+        ];
     }
 
     public static function isCorePermission(string $permission): bool
@@ -50,18 +133,32 @@ class AdminPermissionService
         return in_array($permission, self::featurePermissions(), true);
     }
 
+    /**
+     * Create/update all roles and permissions
+     */
     public static function synchronizeRolesAndPermissions(): void
     {
         app(PermissionRegistrar::class)->forgetCachedPermissions();
 
+        /*
+        |--------------------------------------------------------------------------
+        | Create Permissions
+        |--------------------------------------------------------------------------
+        */
         foreach (self::featurePermissions() as $permission) {
             Permission::findOrCreate($permission, 'web');
         }
 
-        $adminRole = Role::findOrCreate('admin', 'web');
-        $superAdminRole = Role::findOrCreate('super-admin', 'web');
+        /*
+        |--------------------------------------------------------------------------
+        | Create Roles + Assign Permissions
+        |--------------------------------------------------------------------------
+        */
+        foreach (self::roleDefinitions() as $roleName => $permissions) {
 
-        $adminRole->syncPermissions(self::adminRolePermissions());
-        $superAdminRole->syncPermissions(self::featurePermissions());
+            $role = Role::findOrCreate($roleName, 'web');
+
+            $role->syncPermissions($permissions);
+        }
     }
 }

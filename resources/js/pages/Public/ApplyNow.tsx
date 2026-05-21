@@ -2,12 +2,6 @@ import { Head, useForm, usePage } from '@inertiajs/react';
 import SiteLayout from '@/layouts/site-layout';
 import * as applicationRoutes from '@/routes/applications';
 
-type FlashProps = {
-    flash?: {
-        success?: string;
-    };
-};
-
 type ApplyNowForm = {
     first_name: string;
     last_name: string;
@@ -26,6 +20,19 @@ type ApplyNowForm = {
     work_experience_summary: string;
 };
 
+type Country = {
+    id: number;
+    name: string;
+    nationality: string | null;
+};
+
+type PageProps = {
+    flash?: {
+        success?: string;
+    };
+    countries: Country[];
+};
+
 export default function ApplyNow() {
     const courseGroups = [
         {
@@ -37,7 +44,7 @@ export default function ApplyNow() {
             ],
         },
         {
-            title: 'Foundation Program (Level 3)',
+            title: '4 years with Foundation',
             options: [
                 { label: 'Business', value: 'foundation_business' },
                 { label: 'Health', value: 'foundation_health' },
@@ -57,9 +64,9 @@ export default function ApplyNow() {
         foundation_it: 'IT',
         foundation_others: 'Others',
     };
-    const operatingLocations = ['London', 'Manchester', 'Birmingham', 'Cardiff', 'Swansea', 'Leeds', 'Nottingham', 'Newcastle'] as const;
+    const operatingLocations = ['London', 'Manchester', 'Birmingham', 'Cardiff', 'Swansea', 'Leeds', 'Nottingham', 'Newcastle', 'Leicester'] as const;
 
-    const { flash } = usePage<FlashProps>().props;
+    const { flash, countries } = usePage<PageProps>().props;
     const form = useForm<ApplyNowForm>({
         first_name: '',
         last_name: '',
@@ -223,23 +230,38 @@ export default function ApplyNow() {
                                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                     <div>
                                         <label className="mb-1.5 block text-sm font-medium text-white/70">Nationality *</label>
-                                        <input
-                                            type="text"
+                                        <select
                                             value={form.data.nationality}
                                             onChange={(e) => form.setData('nationality', e.target.value)}
-                                            className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-white/35 focus:border-secondary-container focus:outline-none"
-                                        />
+                                            className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-secondary-container focus:outline-none"
+                                        >
+                                            <option value="" className="bg-slate-900">Select nationality</option>
+                                            {countries.map((country) => (
+                                                <option
+                                                    key={country.id}
+                                                    value={country.nationality ?? country.name}
+                                                    className="bg-slate-900"
+                                                >
+                                                    {country.nationality ?? country.name}
+                                                </option>
+                                            ))}
+                                        </select>
                                         {form.errors.nationality && <p className="mt-1 text-xs text-red-300">{form.errors.nationality}</p>}
                                     </div>
 
                                     <div>
                                         <label className="mb-1.5 block text-sm font-medium text-white/70">Immigration Status *</label>
-                                        <input
-                                            type="text"
+                                        <select
                                             value={form.data.immigration_status}
                                             onChange={(e) => form.setData('immigration_status', e.target.value)}
-                                            className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-white/35 focus:border-secondary-container focus:outline-none"
-                                        />
+                                            className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-secondary-container focus:outline-none"
+                                        >
+                                            <option value="" className="bg-slate-900">Select immigration status</option>
+                                            <option value="British citizen" className="bg-slate-900">British citizen</option>
+                                            <option value="Pre settlement" className="bg-slate-900">Pre settlement</option>
+                                            <option value="Refugees" className="bg-slate-900">Refugees</option>
+                                            <option value="Others" className="bg-slate-900">Others</option>
+                                        </select>
                                         {form.errors.immigration_status && <p className="mt-1 text-xs text-red-300">{form.errors.immigration_status}</p>}
                                     </div>
                                 </div>

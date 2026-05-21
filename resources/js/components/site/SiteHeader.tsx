@@ -1,9 +1,12 @@
+import { usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
 const logo = '/images/smartmove_logo.png';
+const whatsapp = '/images/whatsapp.svg';
 
 export default function SiteHeader({ activePage = 'home' }: { activePage?: string }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const { featuredCategories, featuredCities } = usePage().props;
 
     return (
         <>
@@ -51,30 +54,28 @@ export default function SiteHeader({ activePage = 'home' }: { activePage?: strin
                                         <div>
                                             <p className="font-label text-[10px] text-secondary-container mb-5 uppercase tracking-[.18em]">Programmes</p>
                                             <ul className="space-y-0 text-sm">
-                                                {['Postgraduate Programs', 'Undergraduate Degrees', 'Foundation Courses', 'Top-up Degrees', 'Short Courses'].map(
-                                                    (item, i) => (
-                                                        <li key={item}>
-                                                            <a
-                                                                className={`text-white/55 hover:text-white hover:pl-2 transition-all block py-2 flex items-center gap-2 ${i < 4 ? 'border-b border-white/[0.05]' : ''}`}
-                                                                href="#"
-                                                            >
-                                                                {item}
-                                                            </a>
-                                                        </li>
-                                                    ),
-                                                )}
+                                                {featuredCategories.map((item, i) => (
+                                                    <li key={item.id}>
+                                                        <a
+                                                            className={`text-white/55 hover:text-white hover:pl-2 transition-all block py-2 flex items-center gap-2 ${i < featuredCategories.length - 1 ? 'border-b border-white/[0.05]' : ''}`}
+                                                            href={`/courses?category=${item.slug}`}
+                                                        >
+                                                            {item.name}
+                                                        </a>
+                                                    </li>
+                                                ))}
                                             </ul>
                                         </div>
                                         <div>
                                             <p className="font-label text-[10px] text-secondary-container mb-5 uppercase tracking-[.18em]">Study Destinations</p>
                                             <ul className="space-y-0 text-sm">
-                                                {['London', 'Birmingham', 'Manchester', 'Leeds', 'Wales'].map((item, i) => (
-                                                    <li key={item}>
+                                                {featuredCities.map((item, i) => (
+                                                    <li key={item.id}>
                                                         <a
-                                                            className={`text-white/55 hover:text-white hover:pl-2 transition-all block py-2 flex items-center gap-2 ${i < 4 ? 'border-b border-white/[0.05]' : ''}`}
-                                                            href="#"
+                                                            className={`text-white/55 hover:text-white hover:pl-2 transition-all block py-2 flex items-center gap-2 ${i < featuredCities.length - 1 ? 'border-b border-white/[0.05]' : ''}`}
+                                                            href={`/study/${item.slug}`}
                                                         >
-                                                            {item}
+                                                            {item.name}
                                                         </a>
                                                     </li>
                                                 ))}
@@ -139,6 +140,19 @@ export default function SiteHeader({ activePage = 'home' }: { activePage?: strin
                         >
                             <span className="material-symbols-outlined text-[16px]">call</span>
                             <span>020 7790 9233</span>
+                        </a><span className='hidden lg:flex'> /</span>
+                        <a
+                            className="hidden lg:flex items-center gap-1.5 text-white/50 hover:text-white text-sm font-semibold transition-colors"
+                            href="https://wa.me/447894867772"
+                            target='_blank'
+                        >
+                            <img
+                                src={whatsapp}
+                                alt="WhatsApp"
+                                width={25}
+                                height={25}
+                            />
+                            <span>+44 7894 867772</span>
                         </a>
                         <a
                             className="bg-secondary-container text-on-secondary px-5 py-2 rounded-full font-headline font-bold text-sm hover:scale-105 transition-transform duration-200 shadow-lg shadow-secondary-container/20"
@@ -187,7 +201,40 @@ export default function SiteHeader({ activePage = 'home' }: { activePage?: strin
                         >
                             Apply Now
                         </a>
-                        <div className="pt-2 border-t border-white/10 text-sm text-on-surface-variant">020 7790 9233 &nbsp; info@smartmove.org</div>
+                        <div className="pt-3 border-t border-white/10 text-sm text-on-surface-variant flex flex-col gap-3">
+
+                            <a
+                                href="tel:02077909233"
+                                className="flex items-center justify-center gap-2"
+                            >
+                                <span className="material-symbols-outlined text-[14px]">
+                                    call
+                                </span>
+                                <span>+44 207790 9233</span>
+                            </a>
+                            <a
+                                href="https://wa.me/447894867772"
+                                target='_blank'
+                                className="flex items-center justify-center gap-2"
+                            >
+                                <img
+                                    src={whatsapp}
+                                    alt="WhatsApp"
+                                    className="w-5 h-5 object-contain"
+                                />
+
+                                <span>+44 789486 7772</span>
+                            </a>
+                            <a
+                                href="mailto:info@smartmove.org"
+                                className="flex items-center justify-center gap-2"
+                            >
+                                <span className="material-symbols-outlined text-[14px] ">
+                                    mail
+                                </span>
+                                info@smartmove.org
+                            </a>
+                        </div>
                     </div>
                 )}
             </nav>

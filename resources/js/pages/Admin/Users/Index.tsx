@@ -23,7 +23,7 @@ type PermissionOption = {
 
 type Props = {
     users: AdminUser[];
-    roles: string[];
+    roles: Record<string, string[]>;
     availablePermissions: PermissionOption[];
 };
 
@@ -157,10 +157,18 @@ export default function UsersIndex({ users, roles, availablePermissions }: Props
                             <select
                                 id="role"
                                 value={createForm.data.role}
-                                onChange={(event) => createForm.setData('role', event.target.value)}
+                                onChange={(event) => {
+                                    const selectedRole = event.target.value;
+
+                                    createForm.setData((data) => ({
+                                        ...data,
+                                        role: selectedRole,
+                                        permissions: roles[selectedRole] ?? [],
+                                    }));
+                                }}
                                 className="h-10 rounded-md border border-neutral-300 bg-white px-3 text-sm"
                             >
-                                {roles.map((role) => (
+                                {Object.entries(roles).map(([role]) => (
                                     <option key={role} value={role}>
                                         {role}
                                     </option>
@@ -224,10 +232,14 @@ export default function UsersIndex({ users, roles, availablePermissions }: Props
                                             {isEditing ? (
                                                 <select
                                                     value={editingRole}
-                                                    onChange={(event) => setEditingRole(event.target.value)}
+                                                    onChange={(event) => {
+                                                        const selectedRole = event.target.value;
+                                                        setEditingRole(selectedRole);
+                                                        setEditingPermissions(roles[selectedRole] ?? []);
+                                                    }}
                                                     className="h-9 rounded-md border border-neutral-300 bg-white px-2 text-sm"
                                                 >
-                                                    {roles.map((role) => (
+                                                    {Object.entries(roles).map(([role]) => (
                                                         <option key={role} value={role}>
                                                             {role}
                                                         </option>

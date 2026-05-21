@@ -148,3 +148,73 @@ export interface CourseApplication {
     };
     created_at: string;
 }
+
+export interface PageContent {
+    page_title: string | null;
+    description: string | null;
+    body: string | null;
+    featured_image: string | null;
+    meta_title: string | null;
+    meta_description: string | null;
+    og_title: string | null;
+    og_description: string | null;
+    og_image: string | null;
+    schema_data: Record<string, unknown> | null;
+    custom_data: Record<string, unknown> | null;
+}
+
+export interface CourseCategoryTaxonomy {
+    id: number;
+    name: string;
+    slug: string;
+    description: string | null;
+    is_featured: boolean;
+    sort_order: number;
+    is_active: boolean;
+}
+
+export interface CityTaxonomy {
+    id: number;
+    name: string;
+    slug: string;
+    country_id: number | null;
+    country_name?: string | null;
+    is_featured: boolean;
+    sort_order: number;
+    is_active: boolean;
+}
+
+export interface UniversityTaxonomy {
+    id: number;
+    name: string;
+    slug: string;
+    city_id: number | null;
+    city_name?: string | null;
+    country_id: number | null;
+    country_name?: string | null;
+    website: string | null;
+    is_featured: boolean;
+    is_active: boolean;
+}
+
+export interface CourseEntity {
+    id: number;
+    title: string;
+    slug: string;
+    course_category_id: number | null;
+    category_name?: string | null;
+    excerpt: string | null;
+    status: 'draft' | 'published';
+    is_featured: boolean;
+    duration: number | null;
+    duration_unit: string | null;
+    level: string | null;
+    delivery_mode: string | null;
+    start_date: string | null;
+    sort_order: number;
+    city_ids: number[];
+    city_names?: string[];
+    university_ids: number[];
+    university_names?: string[];
+    page_content?: PageContent;
+}

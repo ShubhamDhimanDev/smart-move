@@ -1,0 +1,42 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('course_categories', function (Blueprint $table): void {
+            $table->dropIndex('course_categories_is_featured_index');
+            $table->dropColumn('is_featured');
+        });
+
+        Schema::table('cities', function (Blueprint $table): void {
+            $table->dropIndex('cities_is_featured_index');
+            $table->dropForeign(['country_id']);
+            $table->dropColumn(['is_featured', 'country_id']);
+            $table->string('image')->nullable()->after('slug');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('course_categories', function (Blueprint $table): void {
+            $table->boolean('is_featured')->default(false)->after('description');
+        });
+
+        Schema::table('cities', function (Blueprint $table): void {
+            $table->boolean('is_featured')->default(false)->after('slug');
+            $table->foreignId('country_id')->nullable()->constrained()->nullOnDelete();
+            $table->dropColumn('image');
+        });
+    }
+};

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Services\AdminPermissionService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -22,8 +23,11 @@ class UpdateAdminUserPermissionsRequest extends FormRequest
      */
     public function rules(): array
     {
+        $assignableRoles = array_keys(AdminPermissionService::roleDefinitions());
+        $assignableRoles = array_values(array_filter($assignableRoles, fn (string $role): bool => $role !== 'super-admin'));
+
         return [
-            'role' => ['required', 'string', Rule::in(['admin', 'super-admin'])],
+            'role' => ['required', 'string', Rule::in($assignableRoles)],
             'permissions' => ['sometimes', 'array'],
             'permissions.*' => ['string', Rule::exists('permissions', 'name')],
         ];

@@ -13,14 +13,16 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 
-function createAdminUser(): User
-{
-    Role::findOrCreate('admin', 'web');
+if (! function_exists('createAdminUser')) {
+    function createAdminUser(): User
+    {
+        Role::findOrCreate('admin', 'web');
 
-    $user = User::factory()->createOne();
-    $user->assignRole('admin');
+        $user = User::factory()->createOne();
+        $user->assignRole('admin');
 
-    return $user;
+        return $user;
+    }
 }
 
 it('registers the expected admin CMS routes', function () {

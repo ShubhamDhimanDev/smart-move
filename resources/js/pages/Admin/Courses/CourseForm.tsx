@@ -1,5 +1,6 @@
 import { Link, useForm } from '@inertiajs/react';
 import type { FormEvent } from 'react';
+import MediaUrlField from '@/components/cms/media-url-field';
 
 type Option = {
     id: number;
@@ -234,14 +235,20 @@ export default function CourseForm({ mode, course, categories, cities, submitUrl
                     <label className="mb-2 block text-sm font-medium text-neutral-700">Body Content</label>
                     <textarea className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm" rows={6} value={form.data.page_content.body} onChange={(e) => form.setData('page_content', { ...form.data.page_content, body: e.target.value })} />
                 </div>
-                <div>
-                    <label className="mb-2 block text-sm font-medium text-neutral-700">Featured Image URL</label>
-                    <input className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm" value={form.data.page_content.featured_image} onChange={(e) => form.setData('page_content', { ...form.data.page_content, featured_image: e.target.value })} />
-                </div>
-                <div>
-                    <label className="mb-2 block text-sm font-medium text-neutral-700">OG Image URL</label>
-                    <input className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm" value={form.data.page_content.og_image} onChange={(e) => form.setData('page_content', { ...form.data.page_content, og_image: e.target.value })} />
-                </div>
+                <MediaUrlField
+                    id="course-featured-image"
+                    label="Featured Image"
+                    value={form.data.page_content.featured_image}
+                    onChange={(value) => form.setData('page_content', { ...form.data.page_content, featured_image: value })}
+                    error={errorBag['page_content.featured_image']}
+                />
+                <MediaUrlField
+                    id="course-og-image"
+                    label="OG Image"
+                    value={form.data.page_content.og_image}
+                    onChange={(value) => form.setData('page_content', { ...form.data.page_content, og_image: value })}
+                    error={errorBag['page_content.og_image']}
+                />
                 <div>
                     <label className="mb-2 block text-sm font-medium text-neutral-700">OG Title</label>
                     <input className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm" value={form.data.page_content.og_title} onChange={(e) => form.setData('page_content', { ...form.data.page_content, og_title: e.target.value })} />

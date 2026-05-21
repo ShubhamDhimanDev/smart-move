@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\CityController;
 use App\Http\Controllers\Admin\CourseApplicationController as AdminCourseApplicationController;
 use App\Http\Controllers\Admin\CourseCategoryController;
 use App\Http\Controllers\Admin\CourseController;
+use App\Http\Controllers\Admin\CourseTypeController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\EventRegistrantController;
@@ -17,6 +18,7 @@ use App\Http\Controllers\Admin\PostCommentController;
 use App\Http\Controllers\Admin\PostController;
 // use App\Http\Controllers\Admin\UniversityController;
 use App\Http\Controllers\CourseApplicationController;
+use App\Http\Controllers\PublicCourseController;
 use App\Http\Controllers\PublicEventController;
 use App\Http\Controllers\PublicEventRegistrationController;
 use App\Http\Controllers\PublicPageController;
@@ -59,6 +61,11 @@ Route::middleware(['auth', 'admin.access'])->prefix('admin')->name('admin.')->gr
     Route::middleware('admin.access:manage course categories')->group(function () {
         Route::post('course-categories/reorder', [CourseCategoryController::class, 'reorder'])->name('course-categories.reorder');
         Route::resource('course-categories', CourseCategoryController::class)->except(['create', 'show']);
+    });
+
+    Route::middleware('admin.access:manage course types')->group(function () {
+        Route::post('course-types/reorder', [CourseTypeController::class, 'reorder'])->name('course-types.reorder');
+        Route::resource('course-types', CourseTypeController::class)->except(['create', 'show']);
     });
 
     Route::middleware('admin.access:manage course cities')->group(function () {
@@ -104,11 +111,11 @@ Route::middleware(['auth', 'admin.access'])->prefix('admin')->name('admin.')->gr
         Route::delete('users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
     });
 
-    Route::middleware(['admin.access:manage permissions'])->group(function () {
-        Route::get('permissions', [AdminPermissionController::class, 'index'])->name('permissions.index');
-        Route::post('permissions', [AdminPermissionController::class, 'store'])->name('permissions.store');
-        Route::delete('permissions/{permission}', [AdminPermissionController::class, 'destroy'])->name('permissions.destroy');
-    });
+    // Route::middleware(['admin.access:manage permissions'])->group(function () {
+    //     Route::get('permissions', [AdminPermissionController::class, 'index'])->name('permissions.index');
+    //     Route::post('permissions', [AdminPermissionController::class, 'store'])->name('permissions.store');
+    //     Route::delete('permissions/{permission}', [AdminPermissionController::class, 'destroy'])->name('permissions.destroy');
+    // });
 });
 
 require __DIR__.'/settings.php';
@@ -120,6 +127,14 @@ Route::post('/blog/{post:slug}/comments', [PublicPostCommentController::class, '
 Route::get('/events', [PublicEventController::class, 'index'])->name('events.index');
 Route::get('/events/{event:slug}', [PublicEventController::class, 'show'])->name('events.show');
 Route::post('/events/{event:slug}/register', [PublicEventRegistrationController::class, 'store'])->name('events.register');
+
+Route::get('/courses', [PublicCourseController::class, 'index'])->name('courses.index');
+Route::get('/programmes/{courseCategory:slug}', [PublicCourseController::class, 'byCategory'])->name('courses.category');
+Route::get('/programmes-in-{city:slug}', [PublicCourseController::class, 'byCity'])->name('courses.city');
+Route::get('/{categorySlug}-in-{citySlug}', [PublicCourseController::class, 'byCategoryAndCity'])
+    ->where('categorySlug', '[A-Za-z0-9-]+')
+    ->where('citySlug', '[A-Za-z0-9-]+')
+    ->name('courses.categoryCity');
 
 Route::get('/{slug}', [PublicPageController::class, 'show'])
     ->where('slug', '^(?!admin$|dashboard$|settings$|login$|register$|logout$).+')

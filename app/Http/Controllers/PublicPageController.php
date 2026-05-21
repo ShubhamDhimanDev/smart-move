@@ -3,18 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\City;
-use App\Models\Course;
 use App\Models\CourseCategory;
+use App\Models\CourseType;
 use App\Models\Event;
 use App\Models\Page;
 use Illuminate\Http\Response;
 use Inertia\Inertia;
-use Laravel\Fortify\Features;
 use Inertia\Response as InertiaResponse;
+use Laravel\Fortify\Features;
 
 class PublicPageController extends Controller
 {
-    public function homePage(){
+    public function homePage()
+    {
         $upcomingEvents = Event::query()
             ->where('status', 'published')
             ->where('starts_at', '>=', now())
@@ -51,30 +52,28 @@ class PublicPageController extends Controller
             ->get(['id', 'name', 'slug'])
             ->values();
 
-        $featuredCourses = Course::query()
-            ->where('status', 'published')
-            ->featured()
-            ->with([
-                'category:id,name,slug',
-                'pageContent:id,contentable_type,contentable_id,featured_image',
-            ])
+        $featuredCourses = CourseType::query()
+            ->active()
+            ->where('is_featured', true)
+            ->with(['courseCategories:id,name,slug'])
             ->ordered()
             ->get()
-            ->map(fn (Course $course): array => [
-                'id' => $course->id,
-                'title' => $course->title,
-                'slug' => $course->slug,
-                'excerpt' => $course->excerpt,
-                'duration' => $course->duration,
-                'duration_unit' => $course->duration_unit,
-                'category' => $course->category
+            ->map(fn (CourseType $courseType): array => [
+                'id' => $courseType->id,
+                'title' => $courseType->name,
+                'slug' => $courseType->slug,
+                'excerpt' => $courseType->short_description,
+                'duration' => null,
+                'duration_unit' => null,
+                'duration_text' => $courseType->duration,
+                'category' => $courseType->courseCategories->first()
                     ? [
-                        'id' => $course->category->id,
-                        'name' => $course->category->name,
-                        'slug' => $course->category->slug,
+                        'id' => $courseType->courseCategories->first()->id,
+                        'name' => $courseType->courseCategories->first()->name,
+                        'slug' => $courseType->courseCategories->first()->slug,
                     ]
                     : null,
-                'featured_image' => $course->pageContent?->featured_image,
+                'featured_image' => $courseType->image,
             ])
             ->values();
 
@@ -101,6 +100,7 @@ class PublicPageController extends Controller
             'featuredCities' => $featuredCities,
         ]);
     }
+
     public function show(string $slug): InertiaResponse
     {
         $page = Page::query()

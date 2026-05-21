@@ -58,7 +58,7 @@ export default function SiteHeader({ activePage = 'home' }: { activePage?: strin
                                                     <li key={item.id}>
                                                         <a
                                                             className={`text-white/55 hover:text-white hover:pl-2 transition-all block py-2 flex items-center gap-2 ${i < featuredCategories.length - 1 ? 'border-b border-white/[0.05]' : ''}`}
-                                                            href={`/courses?category=${item.slug}`}
+                                                            href={`/programmes/${item.slug}`}
                                                         >
                                                             {item.name}
                                                         </a>
@@ -73,7 +73,7 @@ export default function SiteHeader({ activePage = 'home' }: { activePage?: strin
                                                     <li key={item.id}>
                                                         <a
                                                             className={`text-white/55 hover:text-white hover:pl-2 transition-all block py-2 flex items-center gap-2 ${i < featuredCities.length - 1 ? 'border-b border-white/[0.05]' : ''}`}
-                                                            href={`/study/${item.slug}`}
+                                                            href={`/programmes-in-${item.slug}`}
                                                         >
                                                             {item.name}
                                                         </a>
@@ -177,10 +177,10 @@ export default function SiteHeader({ activePage = 'home' }: { activePage?: strin
                         <a className="block text-white/60 font-semibold" href="/about">
                             About Us
                         </a>
-                        <a className="block text-white/60 font-semibold" href="#">
+                        <a className="block text-white/60 font-semibold" href="/courses">
                             Courses
                         </a>
-                        <a className="block text-white/60 font-semibold" href="#">
+                        <a className="block text-white/60 font-semibold" href="/courses">
                             Destinations
                         </a>
                         <a className="block text-white/60 font-semibold" href="/services">

@@ -19,6 +19,7 @@ class CityController extends Controller
             'id' => $city->id,
             'name' => $city->name,
             'slug' => $city->slug,
+            'short_description' => $city->short_description,
             'image' => $city->image,
             'is_featured_home' => $city->is_featured_home,
             'is_featured_nav' => $city->is_featured_nav,

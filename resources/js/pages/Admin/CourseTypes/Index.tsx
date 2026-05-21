@@ -13,67 +13,76 @@ import {
     verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { useState } from 'react';
+import { type FormEvent, useState } from 'react';
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import { GripVertical, Pencil, Trash2 } from 'lucide-react';
+import MediaUrlField from '@/components/cms/media-url-field';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import MultiSelect from '@/components/ui/multi-select';
 import { withAdminLayout } from '@/pages/Admin/AdminLayout';
-import * as courseCategoryRoutes from '@/routes/admin/course-categories';
+import * as courseTypeRoutes from '@/routes/admin/course-types';
 
 type CourseCategory = {
     id: number;
     name: string;
+};
+
+type CourseType = {
+    id: number;
+    course_category_ids: number[];
+    course_category_names: string[];
+    name: string;
     slug: string;
-    description: string | null;
-    is_featured_home: boolean;
-    is_featured_nav: boolean;
+    image: string | null;
+    short_description: string | null;
+    duration: string | null;
     sort_order: number;
     is_active: boolean;
-    page_content?: {
-        page_title?: string | null;
-        meta_title?: string | null;
-    };
+    is_featured: boolean;
 };
 
 type Props = {
+    courseTypes: CourseType[];
     courseCategories: CourseCategory[];
 };
 
-type CourseCategoryFormData = {
+type CourseTypeFormData = {
+    course_category_ids: number[];
     name: string;
     slug: string;
-    description: string;
-    is_featured_home: boolean;
-    is_featured_nav: boolean;
+    image: string;
+    short_description: string;
+    duration: string;
     sort_order: number;
     is_active: boolean;
+    is_featured: boolean;
 };
 
-const emptyForm: CourseCategoryFormData = {
+const emptyForm: CourseTypeFormData = {
+    course_category_ids: [],
     name: '',
     slug: '',
-    description: '',
-    is_featured_home: false,
-    is_featured_nav: false,
+    image: '',
+    short_description: '',
+    duration: '',
     sort_order: 0,
     is_active: true,
+    is_featured: false,
 };
-
-type Tab = 'all' | 'featured-home' | 'featured-nav';
 
 // ── Sortable row ──────────────────────────────────────────────────────────────
 function SortableRow({
-    courseCategory,
+    courseType,
     onDelete,
 }: {
-    courseCategory: CourseCategory;
-    onDelete: (item: CourseCategory) => void;
+    courseType: CourseType;
+    onDelete: (item: CourseType) => void;
 }) {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
-        id: courseCategory.id,
+        id: courseType.id,
     });
 
     const style = {
@@ -89,32 +98,36 @@ function SortableRow({
                     <GripVertical className="h-4 w-4" />
                 </button>
             </td>
-            <td className="px-4 py-3 font-medium text-neutral-900">{courseCategory.name}</td>
-            <td className="px-4 py-3 text-sm font-mono text-neutral-500">{courseCategory.slug}</td>
+            <td className="px-4 py-3 font-medium text-neutral-900">{courseType.name}</td>
+            <td className="px-4 py-3 text-sm text-neutral-600">
+                {courseType.course_category_names.length > 0
+                    ? courseType.course_category_names.join(', ')
+                    : '—'}
+            </td>
+            <td className="px-4 py-3 font-mono text-sm text-neutral-500">{courseType.slug}</td>
             <td className="px-4 py-3">
-                <div className="flex flex-wrap gap-1">
-                    {courseCategory.is_active && (
+                <div className="flex flex-wrap items-center gap-1.5">
+                    {courseType.is_active ? (
                         <span className="inline-flex items-center rounded-full bg-green-50 px-2 py-0.5 text-xs font-medium text-green-700 ring-1 ring-green-600/20">
                             Active
                         </span>
-                    )}
-                    {courseCategory.is_featured_home && (
-                        <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-blue-600/20">
-                            Home
+                    ) : (
+                        <span className="inline-flex items-center rounded-full bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-500">
+                            Inactive
                         </span>
                     )}
-                    {courseCategory.is_featured_nav && (
-                        <span className="inline-flex items-center rounded-full bg-purple-50 px-2 py-0.5 text-xs font-medium text-purple-700 ring-1 ring-purple-600/20">
-                            Nav
+                    {courseType.is_featured && (
+                        <span className="inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700 ring-1 ring-amber-600/20">
+                            Featured
                         </span>
                     )}
                 </div>
             </td>
-            <td className="px-4 py-3 text-sm text-neutral-500">{courseCategory.sort_order}</td>
+            <td className="px-4 py-3 text-sm text-neutral-500">{courseType.sort_order}</td>
             <td className="px-4 py-3">
                 <div className="flex items-center gap-2">
                     <Link
-                        href={courseCategoryRoutes.edit.url({ course_category: courseCategory.id })}
+                        href={courseTypeRoutes.edit.url({ course_type: courseType.id })}
                         className="inline-flex items-center gap-1 rounded-lg border border-neutral-200 px-2.5 py-1.5 text-xs font-medium hover:bg-neutral-50"
                     >
                         <Pencil className="h-3 w-3" />
@@ -122,7 +135,7 @@ function SortableRow({
                     </Link>
                     <button
                         type="button"
-                        onClick={() => onDelete(courseCategory)}
+                        onClick={() => onDelete(courseType)}
                         className="inline-flex items-center gap-1 rounded-lg border border-red-200 px-2.5 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50"
                     >
                         <Trash2 className="h-3 w-3" />
@@ -135,19 +148,11 @@ function SortableRow({
 }
 
 // ── Main page ─────────────────────────────────────────────────────────────────
-function CourseCategoriesIndex({ courseCategories: initialCategories }: Props) {
-    const createForm = useForm<CourseCategoryFormData>(emptyForm);
-    const [items, setItems] = useState<CourseCategory[]>(initialCategories);
-    const [activeTab, setActiveTab] = useState<Tab>('all');
+function CourseTypesIndex({ courseTypes: initialCourseTypes, courseCategories }: Props) {
+    const createForm = useForm<CourseTypeFormData>(emptyForm);
+    const [items, setItems] = useState<CourseType[]>(initialCourseTypes);
 
     const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
-
-    const filteredItems =
-        activeTab === 'featured-home'
-            ? items.filter((i) => i.is_featured_home)
-            : activeTab === 'featured-nav'
-              ? items.filter((i) => i.is_featured_nav)
-              : items;
 
     const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
@@ -165,7 +170,7 @@ function CourseCategoriesIndex({ courseCategories: initialCategories }: Props) {
         setItems(reordered);
 
         router.post(
-            courseCategoryRoutes.reorder.url(),
+            courseTypeRoutes.reorder.url(),
             { items: reordered.map((i) => ({ id: i.id, sort_order: i.sort_order })) },
             { preserveScroll: true },
         );
@@ -173,41 +178,46 @@ function CourseCategoriesIndex({ courseCategories: initialCategories }: Props) {
 
     const submitCreate = (event: FormEvent) => {
         event.preventDefault();
-        createForm.post(courseCategoryRoutes.store.url(), {
+        createForm.post(courseTypeRoutes.store.url(), {
             preserveScroll: true,
             onSuccess: () => createForm.reset(),
         });
     };
 
-    const deleteItem = (courseCategory: CourseCategory) => {
-        if (!window.confirm(`Delete "${courseCategory.name}"?`)) {
+    const deleteItem = (courseType: CourseType) => {
+        if (!window.confirm(`Delete "${courseType.name}"?`)) {
             return;
         }
 
-        router.delete(courseCategoryRoutes.destroy.url({ course_category: courseCategory.id }), {
+        router.delete(courseTypeRoutes.destroy.url({ course_type: courseType.id }), {
             preserveScroll: true,
-            onSuccess: () => setItems((prev) => prev.filter((i) => i.id !== courseCategory.id)),
+            onSuccess: () => setItems((prev) => prev.filter((i) => i.id !== courseType.id)),
         });
     };
 
-    const tabs: { key: Tab; label: string; count: number }[] = [
-        { key: 'all', label: 'All', count: items.length },
-        { key: 'featured-home', label: 'Featured — Homepage', count: items.filter((i) => i.is_featured_home).length },
-        { key: 'featured-nav', label: 'Featured — Navigation', count: items.filter((i) => i.is_featured_nav).length },
-    ];
-
     return (
         <>
-            <Head title="Programmes" />
+            <Head title="Course Areas" />
 
             <div className="space-y-6">
-                <h1 className="text-2xl font-semibold tracking-tight">Programmes</h1>
+                <h1 className="text-2xl font-semibold tracking-tight">Course Areas</h1>
 
                 {/* Create form */}
                 <form
                     onSubmit={submitCreate}
                     className="grid gap-3 rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm md:grid-cols-4"
                 >
+                    <div className="grid gap-2">
+                        <Label>Programmes</Label>
+                        <MultiSelect
+                            options={courseCategories.map((c) => ({ value: c.id, label: c.name }))}
+                            value={createForm.data.course_category_ids}
+                            onChange={(ids) => createForm.setData('course_category_ids', ids)}
+                            placeholder="Select programmes…"
+                        />
+                        <InputError message={createForm.errors.course_category_ids} />
+                    </div>
+
                     <div className="grid gap-2">
                         <Label>Name</Label>
                         <Input
@@ -222,11 +232,10 @@ function CourseCategoriesIndex({ courseCategories: initialCategories }: Props) {
                         <Input
                             value={createForm.data.slug}
                             onChange={(e) => createForm.setData('slug', e.target.value)}
+                            placeholder="auto-generated"
                         />
                         <InputError message={createForm.errors.slug} />
                     </div>
-
-                    {/* Page Title removed from create form */}
 
                     <div className="grid gap-2">
                         <Label>Sort Order</Label>
@@ -237,8 +246,8 @@ function CourseCategoriesIndex({ courseCategories: initialCategories }: Props) {
                         />
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-4 md:col-span-3">
-                        <label className="flex items-center gap-2 text-sm cursor-pointer">
+                    <div className="flex items-center gap-4 md:col-span-4">
+                        <label className="flex cursor-pointer items-center gap-2 text-sm">
                             <input
                                 type="checkbox"
                                 checked={createForm.data.is_active}
@@ -246,72 +255,72 @@ function CourseCategoriesIndex({ courseCategories: initialCategories }: Props) {
                             />
                             Active
                         </label>
-                        <label className="flex items-center gap-2 text-sm cursor-pointer">
+                        <label className="flex cursor-pointer items-center gap-2 text-sm">
                             <input
                                 type="checkbox"
-                                checked={createForm.data.is_featured_home}
-                                onChange={(e) => createForm.setData('is_featured_home', e.target.checked)}
+                                checked={createForm.data.is_featured}
+                                onChange={(e) => createForm.setData('is_featured', e.target.checked)}
                             />
-                            Featured Home
-                        </label>
-                        <label className="flex items-center gap-2 text-sm cursor-pointer">
-                            <input
-                                type="checkbox"
-                                checked={createForm.data.is_featured_nav}
-                                onChange={(e) => createForm.setData('is_featured_nav', e.target.checked)}
-                            />
-                            Featured Nav
+                            Featured on Homepage
                         </label>
                     </div>
 
-                    <div>
+                    {createForm.data.is_featured && (
+                        <>
+                            <div className="grid gap-2">
+                                <Label>Image *</Label>
+                                <MediaUrlField
+                                    id={createForm.data.slug}
+                                    label="Image"
+                                    value={createForm.data.image}
+                                    onChange={(v) => createForm.setData('image', v)}
+                                />
+                                <InputError message={createForm.errors.image} />
+                            </div>
+
+                            <div className="grid gap-2 md:col-span-2">
+                                <Label>Short Description *</Label>
+                                <textarea
+                                    rows={3}
+                                    value={createForm.data.short_description}
+                                    onChange={(e) => createForm.setData('short_description', e.target.value)}
+                                    className="w-full rounded-md border border-neutral-200 bg-white px-3 py-2 text-sm shadow-xs focus:outline-none focus:ring-2 focus:ring-neutral-900"
+                                />
+                                <InputError message={createForm.errors.short_description} />
+                            </div>
+
+                            <div className="grid gap-2">
+                                <Label>Duration *</Label>
+                                <Input
+                                    value={createForm.data.duration}
+                                    onChange={(e) => createForm.setData('duration', e.target.value)}
+                                    placeholder="e.g. 12 months"
+                                />
+                                <InputError message={createForm.errors.duration} />
+                            </div>
+                        </>
+                    )}
+
+                    <div className="md:col-span-4">
                         <Button type="submit" disabled={createForm.processing}>
-                            Add Programme
+                            Add Course Area
                         </Button>
                     </div>
                 </form>
 
-                {/* Tabs */}
-                <div className="border-b border-neutral-200">
-                    <nav className="-mb-px flex gap-6">
-                        {tabs.map((tab) => (
-                            <button
-                                key={tab.key}
-                                type="button"
-                                onClick={() => setActiveTab(tab.key)}
-                                className={`whitespace-nowrap border-b-2 pb-3 text-sm font-medium transition-colors ${
-                                    activeTab === tab.key
-                                        ? 'border-neutral-900 text-neutral-900'
-                                        : 'border-transparent text-neutral-500 hover:text-neutral-700'
-                                }`}
-                            >
-                                {tab.label}
-                                <span
-                                    className={`ml-2 rounded-full px-2 py-0.5 text-xs ${
-                                        activeTab === tab.key
-                                            ? 'bg-neutral-900 text-white'
-                                            : 'bg-neutral-100 text-neutral-600'
-                                    }`}
-                                >
-                                    {tab.count}
-                                </span>
-                            </button>
-                        ))}
-                    </nav>
-                </div>
-
                 {/* Table */}
                 <div className="overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm">
-                    {filteredItems.length === 0 ? (
-                        <div className="px-6 py-12 text-center text-sm text-neutral-500">No programmes found.</div>
+                    {items.length === 0 ? (
+                        <div className="px-6 py-12 text-center text-sm text-neutral-500">No course areas found.</div>
                     ) : (
                         <table className="w-full divide-y divide-neutral-200 text-sm">
                             <thead className="bg-neutral-50">
                                 <tr className="text-left text-neutral-600">
                                     <th className="w-8 px-3 py-3"></th>
                                     <th className="px-4 py-3 font-medium">Name</th>
+                                    <th className="px-4 py-3 font-medium">Programme</th>
                                     <th className="px-4 py-3 font-medium">Slug</th>
-                                    <th className="px-4 py-3 font-medium">Flags</th>
+                                    <th className="px-4 py-3 font-medium">Status</th>
                                     <th className="px-4 py-3 font-medium">Order</th>
                                     <th className="px-4 py-3 font-medium">Actions</th>
                                 </tr>
@@ -319,17 +328,17 @@ function CourseCategoriesIndex({ courseCategories: initialCategories }: Props) {
                             <DndContext
                                 sensors={sensors}
                                 collisionDetection={closestCenter}
-                                onDragEnd={activeTab === 'all' ? handleDragEnd : undefined}
+                                onDragEnd={handleDragEnd}
                             >
                                 <SortableContext
-                                    items={filteredItems.map((i) => i.id)}
+                                    items={items.map((i) => i.id)}
                                     strategy={verticalListSortingStrategy}
                                 >
                                     <tbody className="divide-y divide-neutral-100">
-                                        {filteredItems.map((courseCategory) => (
+                                        {items.map((courseType) => (
                                             <SortableRow
-                                                key={courseCategory.id}
-                                                courseCategory={courseCategory}
+                                                key={courseType.id}
+                                                courseType={courseType}
                                                 onDelete={deleteItem}
                                             />
                                         ))}
@@ -340,7 +349,7 @@ function CourseCategoriesIndex({ courseCategories: initialCategories }: Props) {
                     )}
                 </div>
 
-                {activeTab === 'all' && items.length > 1 && (
+                {items.length > 1 && (
                     <p className="text-xs text-neutral-400">Drag rows to reorder. Order is saved automatically.</p>
                 )}
             </div>
@@ -348,5 +357,5 @@ function CourseCategoriesIndex({ courseCategories: initialCategories }: Props) {
     );
 }
 
-CourseCategoriesIndex.layout = withAdminLayout;
-export default CourseCategoriesIndex;
+CourseTypesIndex.layout = withAdminLayout;
+export default CourseTypesIndex;

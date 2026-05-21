@@ -230,6 +230,7 @@ type FeaturedCourse = {
     title: string;
     slug: string;
     excerpt: string | null;
+    duration_text: string | null;
     duration: number | null;
     duration_unit: string | null;
     featured_image: string | null;
@@ -311,13 +312,43 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
         }
     }, [featuredCities, activeCitySlug]);
 
-    const filteredCourses = useMemo(() => {
+    const filteredCourseTypes = useMemo(() => {
         if (activeCourseCategory === 'all') {
             return featuredCourses;
         }
 
-        return featuredCourses.filter((course) => course.category?.slug === activeCourseCategory);
+        return featuredCourses.filter((course) => {
+            const cat = course.category;
+            if (!cat) {
+                return false;
+            }
+
+            // Support both single-category object (current API) and
+            // an array of categories (future-proofing).
+            if (Array.isArray(cat)) {
+                return cat.some((c) => c?.slug === activeCourseCategory);
+            }
+
+            return cat.slug === activeCourseCategory;
+        });
     }, [featuredCourses, activeCourseCategory]);
+
+    useEffect(() => {
+        try {
+            if (typeof document === 'undefined') return;
+            const container = document.getElementById('courses');
+            if (!container) return;
+
+            const els = container.querySelectorAll('.reveal');
+            els.forEach((el) => {
+                if (!el.classList.contains('visible')) {
+                    el.classList.add('visible');
+                }
+            });
+        } catch (e) {
+            // ignore
+        }
+    }, [filteredCourseTypes]);
 
     const activeCity = useMemo(
         () => featuredCities.find((city) => city.slug === activeCitySlug) ?? featuredCities[0] ?? null,
@@ -517,7 +548,7 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
                         </div>
                     </div>
                     <div className="space-y-4">
-                        {filteredCourses.map((course, index) => (
+                        {filteredCourseTypes.map((course, index) => (
                             <a
                                 key={course.id}
                                 href="#"
@@ -542,7 +573,7 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
                                             <span className="bg-primary-container/25 text-[#bcc2ff] px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider font-label">
                                                 {course.category?.name ?? 'General'}
                                             </span>
-                                            <span className="text-on-surface-variant text-xs font-label">{formatDuration(course.duration, course.duration_unit)}</span>
+                                                <span className="text-on-surface-variant text-xs font-label">{course.duration_text ?? formatDuration(course.duration, course.duration_unit)}</span>
                                         </div>
                                         <h3 className="text-white font-headline font-bold text-2xl mb-3 group-hover:text-secondary-container transition-colors">{course.title}</h3>
                                         <p className="text-on-surface-variant text-sm leading-relaxed max-w-xl">{course.excerpt || 'Explore this featured course and its latest entry requirements.'}</p>
@@ -554,9 +585,9 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
                                 </div>
                             </a>
                         ))}
-                        {filteredCourses.length === 0 && (
+                        {filteredCourseTypes.length === 0 && (
                             <div className="rounded-lg border border-outline-variant/30 bg-surface-container-high p-8 text-center text-on-surface-variant">
-                                No featured courses found in this category yet.
+                                No featured course types found in this category yet.
                             </div>
                         )}
                     </div>

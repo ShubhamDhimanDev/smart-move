@@ -29,6 +29,7 @@ class AdminPermissionService
             ['name' => 'manage courses', 'label' => 'Courses'],
             ['name' => 'manage course categories', 'label' => 'Course Categories'],
             ['name' => 'manage course cities', 'label' => 'Course Cities'],
+            ['name' => 'manage course types', 'label' => 'Course Types'],
 
             ['name' => 'manage users', 'label' => 'Users'],
             ['name' => 'manage permissions', 'label' => 'Permissions'],
@@ -93,6 +94,7 @@ class AdminPermissionService
                 'manage courses',
                 'manage course categories',
                 'manage course cities',
+                'manage course types',
             ],
 
             /*
@@ -117,6 +119,7 @@ class AdminPermissionService
                 'manage courses',
                 'manage course categories',
                 'manage course cities',
+                'manage course types',
             ],
 
             /*

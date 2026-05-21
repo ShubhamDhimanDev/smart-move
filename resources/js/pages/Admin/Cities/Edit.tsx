@@ -13,6 +13,7 @@ type City = {
     name: string;
     slug: string;
     image: string | null;
+    short_description?: string | null;
     is_featured_home: boolean;
     is_featured_nav: boolean;
     sort_order: number;
@@ -36,6 +37,7 @@ type FormData = {
     name: string;
     slug: string;
     image: string;
+    short_description: string;
     is_featured_home: boolean;
     is_featured_nav: boolean;
     sort_order: number;
@@ -56,6 +58,7 @@ function EditCity({ city }: Props) {
         name: city.name,
         slug: city.slug,
         image: city.image ?? '',
+        short_description: city.short_description ?? '',
         is_featured_home: city.is_featured_home,
         is_featured_nav: city.is_featured_nav,
         sort_order: city.sort_order,
@@ -115,13 +118,17 @@ function EditCity({ city }: Props) {
                             </div>
                         </div>
 
-                        <MediaUrlField
-                            id="image"
-                            label="Image"
-                            value={data.image}
-                            onChange={(value) => setData('image', value)}
-                            error={errors.image}
-                        />
+                        {data.is_featured_home && (
+                            <div className="sm:col-span-2">
+                                <MediaUrlField
+                                    id="image"
+                                    label="Image"
+                                    value={data.image}
+                                    onChange={(value) => setData('image', value)}
+                                    error={errors.image}
+                                />
+                            </div>
+                        )}
 
                         <div className="grid gap-2 sm:w-32">
                             <Label htmlFor="sort-order">Sort Order</Label>
@@ -132,6 +139,20 @@ function EditCity({ city }: Props) {
                                 onChange={(e) => setData('sort_order', Number(e.target.value || 0))}
                             />
                         </div>
+
+                        {data.is_featured_home && (
+                            <div className="grid gap-2">
+                                <Label htmlFor="short-desc">Short Description</Label>
+                                <textarea
+                                    id="short-desc"
+                                    rows={2}
+                                    className="w-full rounded-md border border-neutral-200 px-3 py-2 text-sm"
+                                    value={data.short_description}
+                                    onChange={(e) => setData('short_description', e.target.value)}
+                                />
+                                <InputError message={errors.short_description} />
+                            </div>
+                        )}
                     </div>
 
                     {/* Visibility flags */}
@@ -148,7 +169,7 @@ function EditCity({ city }: Props) {
                                 />
                                 <span className="text-sm font-medium">Active</span>
                             </label>
-
+                        
                             <label className="flex items-center gap-3 cursor-pointer">
                                 <input
                                     type="checkbox"
@@ -177,91 +198,7 @@ function EditCity({ city }: Props) {
                         </div>
                     </div>
 
-                    {/* SEO */}
-                    <div className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm space-y-4">
-                        <h2 className="font-semibold text-neutral-900">SEO</h2>
-
-                        <div className="grid gap-4 sm:grid-cols-2">
-                            <div className="grid gap-2">
-                                <Label htmlFor="page-title">Page Title</Label>
-                                <Input
-                                    id="page-title"
-                                    value={data.page_content.page_title}
-                                    onChange={(e) =>
-                                        setData('page_content', { ...data.page_content, page_title: e.target.value })
-                                    }
-                                />
-                            </div>
-
-                            <div className="grid gap-2">
-                                <Label htmlFor="meta-title">Meta Title</Label>
-                                <Input
-                                    id="meta-title"
-                                    value={data.page_content.meta_title}
-                                    onChange={(e) =>
-                                        setData('page_content', { ...data.page_content, meta_title: e.target.value })
-                                    }
-                                />
-                            </div>
-
-                            <div className="grid gap-2 sm:col-span-2">
-                                <Label htmlFor="meta-desc">Meta Description</Label>
-                                <textarea
-                                    id="meta-desc"
-                                    rows={3}
-                                    className="w-full rounded-md border border-neutral-200 px-3 py-2 text-sm"
-                                    value={data.page_content.meta_description}
-                                    onChange={(e) =>
-                                        setData('page_content', { ...data.page_content, meta_description: e.target.value })
-                                    }
-                                />
-                            </div>
-
-                            <div className="grid gap-2">
-                                <Label htmlFor="og-title">OG Title</Label>
-                                <Input
-                                    id="og-title"
-                                    value={data.page_content.og_title}
-                                    onChange={(e) =>
-                                        setData('page_content', { ...data.page_content, og_title: e.target.value })
-                                    }
-                                />
-                            </div>
-
-                            <div className="grid gap-2">
-                                <Label htmlFor="og-desc">OG Description</Label>
-                                <Input
-                                    id="og-desc"
-                                    value={data.page_content.og_description}
-                                    onChange={(e) =>
-                                        setData('page_content', { ...data.page_content, og_description: e.target.value })
-                                    }
-                                />
-                            </div>
-
-                            <MediaUrlField
-                                id="og-image"
-                                label="OG Image"
-                                value={data.page_content.og_image}
-                                onChange={(value) =>
-                                    setData('page_content', { ...data.page_content, og_image: value })
-                                }
-                                className="sm:col-span-2"
-                                error={(errors as Record<string, string>)['page_content.og_image']}
-                            />
-
-                            <MediaUrlField
-                                id="featured-image"
-                                label="Featured Image"
-                                value={data.page_content.featured_image}
-                                onChange={(value) =>
-                                    setData('page_content', { ...data.page_content, featured_image: value })
-                                }
-                                className="sm:col-span-2"
-                                error={(errors as Record<string, string>)['page_content.featured_image']}
-                            />
-                        </div>
-                    </div>
+                    {/* SEO removed from edit page */}
 
                     <div className="flex gap-3">
                         <Button type="submit" disabled={processing}>

@@ -28,6 +28,7 @@ type City = {
     id: number;
     name: string;
     slug: string;
+    short_description: string | null;
     image: string | null;
     is_featured_home: boolean;
     is_featured_nav: boolean;
@@ -47,6 +48,7 @@ type CityFormData = {
     name: string;
     slug: string;
     image: string;
+    short_description: string;
     is_featured_home: boolean;
     is_featured_nav: boolean;
     sort_order: number;
@@ -61,6 +63,7 @@ const emptyForm: CityFormData = {
     name: '',
     slug: '',
     image: '',
+    short_description: '',
     is_featured_home: false,
     is_featured_nav: false,
     sort_order: 0,
@@ -231,13 +234,17 @@ function CitiesIndex({ cities: initialCities }: Props) {
                         <InputError message={createForm.errors.slug} />
                     </div>
 
-                    <MediaUrlField
-                        id="create-city-image"
-                        label="Image"
-                        value={createForm.data.image}
-                        onChange={(value) => createForm.setData('image', value)}
-                        error={createForm.errors.image}
-                    />
+                    {createForm.data.is_featured_home && (
+                        <div className="sm:col-span-2">
+                            <MediaUrlField
+                                id="create-city-image"
+                                label="Image"
+                                value={createForm.data.image}
+                                onChange={(value) => createForm.setData('image', value)}
+                                error={createForm.errors.image}
+                            />
+                        </div>
+                    )}
 
                     <div className="grid gap-2">
                         <Label>Sort Order</Label>
@@ -247,6 +254,19 @@ function CitiesIndex({ cities: initialCities }: Props) {
                             onChange={(e) => createForm.setData('sort_order', Number(e.target.value || 0))}
                         />
                     </div>
+
+                    {createForm.data.is_featured_home && (
+                        <div className="grid gap-2 md:col-span-3">
+                            <Label>Short Description</Label>
+                            <textarea
+                                rows={2}
+                                className="w-full rounded-md border border-neutral-200 px-3 py-2 text-sm"
+                                value={createForm.data.short_description}
+                                onChange={(e) => createForm.setData('short_description', e.target.value)}
+                            />
+                            <InputError message={createForm.errors.short_description} />
+                        </div>
+                    )}
 
                     <div className="flex flex-wrap items-center gap-4 md:col-span-3">
                         <label className="flex items-center gap-2 text-sm cursor-pointer">

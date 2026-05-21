@@ -32,16 +32,17 @@ const navItems: NavItem[] = [
     // { label: 'Pages', href: admin.pages.index.url(), icon: FileText },
     { label: 'Posts', href: admin.posts.index.url(), icon: Newspaper, permission: 'manage posts' },
     { label: 'Events', href: admin.events.index.url(), icon: Calendar, permission: 'manage events' },
-    { label: 'Applications', href: '/admin/applications', icon: ClipboardList, permission: 'manage applications' },
+    { label: 'Applications', href: admin.applications.index.url(), icon: ClipboardList, permission: 'manage applications' },
     { label: 'Categories', href: admin.categories.index.url(), icon: Tags, permission: 'manage categories' },
-    { label: 'Course Categories', href: '/admin/course-categories', icon: Tags, permission: 'manage course categories' },
-    { label: 'Cities', href: '/admin/cities', icon: MapPin, permission: 'manage course cities' },
-    // { label: 'Universities', href: '/admin/universities', icon: Building2, permission: 'manage courses' },
-    { label: 'Courses', href: '/admin/courses', icon: GraduationCap, permission: 'manage courses' },
+    { label: 'Course Categories', href: admin.courseCategories.index.url(), icon: Tags, permission: 'manage course categories' },
+    { label: 'Course Areas', href: admin.courseTypes.index.url(), icon: Tags, permission: 'manage course types' },
+    { label: 'Cities', href: admin.cities.index.url(), icon: MapPin, permission: 'manage course cities' },
+    // { label: 'Universities', href: admin.universities.index.url(), icon: Building2, permission: 'manage courses' },
+    { label: 'Courses', href: admin.courses.index.url(), icon: GraduationCap, permission: 'manage courses' },
     { label: 'Media', href: admin.media.index.url(), icon: Image, permission: 'manage media' },
     { label: 'Comments', href: admin.comments.index.url(), icon: MessageSquare, permission: 'manage comments' },
     { label: 'Users', href: admin.users.index.url(), icon: Users, permission: 'manage users' },
-    { label: 'Permissions', href: admin.permissions.index.url(), icon: Shield, permission: 'manage permissions' },
+    // { label: 'Permissions', href: admin.permissions.index.url(), icon: Shield, permission: 'manage permissions' },
 ];
 
 export function withAdminLayout({ children }: { children: ReactNode }) {

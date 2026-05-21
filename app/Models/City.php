@@ -23,6 +23,7 @@ class City extends Model
         'name',
         'slug',
         'image',
+        'short_description',
         'is_featured_home',
         'is_featured_nav',
         'sort_order',

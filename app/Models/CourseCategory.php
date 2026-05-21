@@ -6,6 +6,7 @@ use Database\Factories\CourseCategoryFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Str;
@@ -53,6 +54,11 @@ class CourseCategory extends Model
     public function courses(): HasMany
     {
         return $this->hasMany(Course::class);
+    }
+
+    public function courseTypes(): BelongsToMany
+    {
+        return $this->belongsToMany(CourseType::class, 'course_category_course_type');
     }
 
     public function pageContent(): MorphOne

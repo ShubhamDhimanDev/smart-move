@@ -74,29 +74,31 @@ export default function MediaUrlField({ id, label, value, onChange, error, class
         <div className={`grid gap-2 ${className ?? ''}`}>
             <Label htmlFor={id}>{label}</Label>
 
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                 <Input
                     id={id}
                     type="file"
                     accept="image/*"
-                    className="flex-1"
+                    className="w-full sm:flex-1"
                     onChange={(event) => {
                         setUploadFile(event.target.files?.[0] ?? null);
                         setUploadError(null);
                     }}
                 />
-                <Button type="button" variant="outline" onClick={uploadToMedia} disabled={!uploadFile || uploading}>
-                    {uploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <UploadCloud className="mr-2 h-4 w-4" />}
-                    Upload
-                </Button>
-                <Button type="button" variant="outline" onClick={() => setPickerOpen(true)}>
-                    Choose from media
-                </Button>
+                <div className="flex gap-2">
+                    <Button type="button" variant="outline" onClick={uploadToMedia} disabled={!uploadFile || uploading}>
+                        {uploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <UploadCloud className="mr-2 h-4 w-4" />}
+                        Upload
+                    </Button>
+                    <Button type="button" variant="outline" onClick={() => setPickerOpen(true)}>
+                        Choose from media
+                    </Button>
+                </div>
             </div>
 
             {value ? (
-                <div className="relative mt-1 w-44">
-                    <img src={value} alt={`${label} preview`} className="h-28 w-44 rounded-md border border-neutral-200 object-cover" />
+                <div className="relative mt-1 w-full">
+                    <img src={value} alt={`${label} preview`} className="h-28 w-full rounded-md border border-neutral-200 object-cover" />
                     <button
                         type="button"
                         onClick={() => onChange('')}

@@ -1,6 +1,5 @@
 import { Head, Link, useForm } from '@inertiajs/react';
 import { ArrowLeft } from 'lucide-react';
-import MediaUrlField from '@/components/cms/media-url-field';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -40,15 +39,6 @@ type FormData = {
     is_featured_nav: boolean;
     sort_order: number;
     is_active: boolean;
-    page_content: {
-        page_title: string;
-        meta_title: string;
-        meta_description: string;
-        og_title: string;
-        og_description: string;
-        og_image: string;
-        featured_image: string;
-    };
 };
 
 function EditCourseCategory({ courseCategory }: Props) {
@@ -60,15 +50,6 @@ function EditCourseCategory({ courseCategory }: Props) {
         is_featured_nav: courseCategory.is_featured_nav,
         sort_order: courseCategory.sort_order,
         is_active: courseCategory.is_active,
-        page_content: {
-            page_title: courseCategory.page_content.page_title ?? '',
-            meta_title: courseCategory.page_content.meta_title ?? '',
-            meta_description: courseCategory.page_content.meta_description ?? '',
-            og_title: courseCategory.page_content.og_title ?? '',
-            og_description: courseCategory.page_content.og_description ?? '',
-            og_image: courseCategory.page_content.og_image ?? '',
-            featured_image: courseCategory.page_content.featured_image ?? '',
-        },
     });
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -181,91 +162,7 @@ function EditCourseCategory({ courseCategory }: Props) {
                         </div>
                     </div>
 
-                    {/* SEO */}
-                    <div className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm space-y-4">
-                        <h2 className="font-semibold text-neutral-900">SEO</h2>
-
-                        <div className="grid gap-4 sm:grid-cols-2">
-                            <div className="grid gap-2">
-                                <Label htmlFor="page-title">Page Title</Label>
-                                <Input
-                                    id="page-title"
-                                    value={data.page_content.page_title}
-                                    onChange={(e) =>
-                                        setData('page_content', { ...data.page_content, page_title: e.target.value })
-                                    }
-                                />
-                            </div>
-
-                            <div className="grid gap-2">
-                                <Label htmlFor="meta-title">Meta Title</Label>
-                                <Input
-                                    id="meta-title"
-                                    value={data.page_content.meta_title}
-                                    onChange={(e) =>
-                                        setData('page_content', { ...data.page_content, meta_title: e.target.value })
-                                    }
-                                />
-                            </div>
-
-                            <div className="grid gap-2 sm:col-span-2">
-                                <Label htmlFor="meta-desc">Meta Description</Label>
-                                <textarea
-                                    id="meta-desc"
-                                    rows={3}
-                                    className="w-full rounded-md border border-neutral-200 px-3 py-2 text-sm"
-                                    value={data.page_content.meta_description}
-                                    onChange={(e) =>
-                                        setData('page_content', { ...data.page_content, meta_description: e.target.value })
-                                    }
-                                />
-                            </div>
-
-                            <div className="grid gap-2">
-                                <Label htmlFor="og-title">OG Title</Label>
-                                <Input
-                                    id="og-title"
-                                    value={data.page_content.og_title}
-                                    onChange={(e) =>
-                                        setData('page_content', { ...data.page_content, og_title: e.target.value })
-                                    }
-                                />
-                            </div>
-
-                            <div className="grid gap-2">
-                                <Label htmlFor="og-desc">OG Description</Label>
-                                <Input
-                                    id="og-desc"
-                                    value={data.page_content.og_description}
-                                    onChange={(e) =>
-                                        setData('page_content', { ...data.page_content, og_description: e.target.value })
-                                    }
-                                />
-                            </div>
-
-                            <MediaUrlField
-                                id="og-image"
-                                label="OG Image"
-                                value={data.page_content.og_image}
-                                onChange={(value) =>
-                                    setData('page_content', { ...data.page_content, og_image: value })
-                                }
-                                className="sm:col-span-2"
-                                error={(errors as Record<string, string>)['page_content.og_image']}
-                            />
-
-                            <MediaUrlField
-                                id="featured-image"
-                                label="Featured Image"
-                                value={data.page_content.featured_image}
-                                onChange={(value) =>
-                                    setData('page_content', { ...data.page_content, featured_image: value })
-                                }
-                                className="sm:col-span-2"
-                                error={(errors as Record<string, string>)['page_content.featured_image']}
-                            />
-                        </div>
-                    </div>
+                    {/* SEO removed */}
 
                     <div className="flex gap-3">
                         <Button type="submit" disabled={processing}>

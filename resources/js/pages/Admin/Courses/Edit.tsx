@@ -21,6 +21,7 @@ type Course = {
     level: '' | 'beginner' | 'intermediate' | 'advanced';
     delivery_mode: '' | 'online' | 'in-person' | 'hybrid';
     start_date: string | null;
+    course_type_id: number | null;
     sort_order: number;
     city_ids: number[];
     university_ids: number[];
@@ -41,10 +42,11 @@ type Props = {
     course: Course;
     categories: Option[];
     cities: Option[];
+    types: Option[];
     // universities: Option[];
 };
 
-export default function EditCourse({ course, categories, cities }: Props) {
+export default function EditCourse({ course, categories, cities, types }: Props) {
     return (
         <>
             <Head title="Edit Course" />
@@ -55,20 +57,9 @@ export default function EditCourse({ course, categories, cities }: Props) {
                     course={{
                         ...course,
                         excerpt: course.excerpt ?? '',
-                        start_date: course.start_date ?? '',
-                        page_content: {
-                            page_title: course.page_content.page_title ?? '',
-                            description: course.page_content.description ?? '',
-                            body: course.page_content.body ?? '',
-                            featured_image: course.page_content.featured_image ?? '',
-                            meta_title: course.page_content.meta_title ?? '',
-                            meta_description: course.page_content.meta_description ?? '',
-                            og_title: course.page_content.og_title ?? '',
-                            og_description: course.page_content.og_description ?? '',
-                            og_image: course.page_content.og_image ?? '',
-                        },
                     }}
                     categories={categories}
+                    types={types}
                     cities={cities}
                     // universities={universities}
                     submitUrl={courseRoutes.update.url({ course: course.id })}

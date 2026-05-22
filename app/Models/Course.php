@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
+use App\Models\CourseType;
 
 class Course extends Model
 {
@@ -26,6 +27,7 @@ class Course extends Model
         'title',
         'slug',
         'course_category_id',
+        'course_type_id',
         'excerpt',
         'status',
         'is_featured',
@@ -62,6 +64,11 @@ class Course extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(CourseCategory::class, 'course_category_id');
+    }
+
+    public function courseType(): BelongsTo
+    {
+        return $this->belongsTo(CourseType::class, 'course_type_id');
     }
 
     public function cities(): BelongsToMany

@@ -1,6 +1,9 @@
+import { usePage } from '@inertiajs/react';
+
 const logo = '/images/smartmove_logo.png';
 
 export default function SiteFooter() {
+    const { featuredCategories } = usePage().props;
     return (
         <footer className="bg-surface-container-lowest border-t border-white/[0.05]">
             <div className="container mx-auto px-6 lg:px-12 max-w-7xl py-20">
@@ -45,25 +48,46 @@ export default function SiteFooter() {
                     <div>
                         <h4 className="text-white font-bold mb-5 text-xs uppercase tracking-widest font-label">Courses</h4>
                         <ul className="space-y-3 text-sm">
-                            {['Undergraduate', 'Postgraduate', 'Foundation Years', 'Top-up Degrees', 'Scholarships'].map((item) => (
-                                <li key={item}>
-                                    <a className="text-white/40 hover:text-white transition-colors" href="#">
-                                        {item}
-                                    </a>
-                                </li>
-                            ))}
+                            {(featuredCategories && featuredCategories.length ? featuredCategories : [
+                                { name: 'Undergraduate', slug: 'undergraduate' },
+                                { name: 'Postgraduate', slug: 'postgraduate' },
+                                { name: 'Foundation Years', slug: 'foundation-years' },
+                                { name: 'Top-up Degrees', slug: 'top-up-degrees' },
+                                { name: 'Scholarships', slug: 'scholarships' },
+                            ]).map((item: any) => (
+                                    <li key={item.slug ?? item.name}>
+                                        <a className="text-white/40 hover:text-white transition-colors" href={item.slug ? `/programmes/${item.slug}` : '/courses'}>
+                                            {item.name ?? item}
+                                        </a>
+                                    </li>
+                                ))}
                         </ul>
                     </div>
                     <div>
                         <h4 className="text-white font-bold mb-5 text-xs uppercase tracking-widest font-label">Company</h4>
                         <ul className="space-y-3 text-sm">
-                            {['About Us', 'Our Team', 'Become an Agent', 'Blog', 'Contact'].map((item) => (
-                                <li key={item}>
-                                    <a className="text-white/40 hover:text-white transition-colors" href="#">
-                                        {item}
-                                    </a>
-                                </li>
-                            ))}
+                            {['About Us', 'Our Team', 'Our Partners', 'Become an Agent', 'Blog', 'Contact'].map((item) => (
+                                    <li key={item}>
+                                        <a
+                                            className="text-white/40 hover:text-white transition-colors"
+                                            href={
+                                                item === 'About Us'
+                                                    ? '/about'
+                                                    : item === 'Our Team'
+                                                    ? '/about#team'
+                                                    : item === 'Our Partners'
+                                                    ? '/university-partners'
+                                                    : item === 'Become an Agent'
+                                                    ? '/contact'
+                                                    : item === 'Blog'
+                                                    ? '/blog'
+                                                    : '/contact'
+                                            }
+                                        >
+                                            {item}
+                                        </a>
+                                    </li>
+                                ))}
                         </ul>
                     </div>
                     <div>
@@ -104,13 +128,13 @@ export default function SiteFooter() {
                 <div className="container mx-auto px-6 lg:px-12 max-w-7xl py-5 flex flex-col md:flex-row justify-between items-center gap-4 text-white/25 text-xs font-label">
                     <p>© 2026 Smart Move Education Group. Registered in England &amp; Wales. No. 12345678.</p>
                     <div className="flex gap-6">
-                        <a href="#" className="hover:text-white/50 transition-colors">
+                        <a href="/privacy-policy" className="hover:text-white/50 transition-colors">
                             Privacy Policy
                         </a>
-                        <a href="#" className="hover:text-white/50 transition-colors">
+                        <a href="/terms" className="hover:text-white/50 transition-colors">
                             Terms
                         </a>
-                        <a href="#" className="hover:text-white/50 transition-colors">
+                        <a href="/cookies" className="hover:text-white/50 transition-colors">
                             Cookies
                         </a>
                         <div className="flex items-center gap-1.5">

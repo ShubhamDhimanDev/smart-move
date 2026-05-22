@@ -11,10 +11,11 @@ type Option = {
 type Props = {
     categories: Option[];
     cities: Option[];
+    types: Option[];
     // universities: Option[];
 };
 
-export default function CreateCourse({ categories, cities }: Props) {
+export default function CreateCourse({ categories, cities, types }: Props) {
     return (
         <>
             <Head title="Create Course" />
@@ -23,6 +24,7 @@ export default function CreateCourse({ categories, cities }: Props) {
                 <CourseForm
                     mode="create"
                     categories={categories}
+                    types={types}
                     cities={cities}
                     // universities={universities}
                     submitUrl={courseRoutes.store.url()}

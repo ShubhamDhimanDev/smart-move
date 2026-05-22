@@ -11,7 +11,9 @@ type CourseCategory = {
     id: number;
     name: string;
     slug: string;
+    label: string | null;
     description: string | null;
+    is_featured_on_form: boolean;
     is_featured_home: boolean;
     is_featured_nav: boolean;
     sort_order: number;
@@ -34,9 +36,11 @@ type Props = {
 type FormData = {
     name: string;
     slug: string;
+    label: string;
     description: string;
     is_featured_home: boolean;
     is_featured_nav: boolean;
+    is_featured_on_form: boolean;
     sort_order: number;
     is_active: boolean;
 };
@@ -45,7 +49,9 @@ function EditCourseCategory({ courseCategory }: Props) {
     const { data, setData, patch, processing, errors } = useForm<FormData>({
         name: courseCategory.name,
         slug: courseCategory.slug,
+        label: courseCategory.label ?? '',
         description: courseCategory.description ?? '',
+        is_featured_on_form: courseCategory.is_featured_on_form,
         is_featured_home: courseCategory.is_featured_home,
         is_featured_nav: courseCategory.is_featured_nav,
         sort_order: courseCategory.sort_order,
@@ -108,6 +114,16 @@ function EditCourseCategory({ courseCategory }: Props) {
                             />
                         </div>
 
+                        <div className="grid gap-2">
+                            <Label htmlFor="label">Label</Label>
+                            <Input
+                                id="label"
+                                value={data.label}
+                                onChange={(e) => setData('label', e.target.value)}
+                            />
+                            <InputError message={errors.label} />
+                        </div>
+
                         <div className="grid gap-2 sm:w-32">
                             <Label htmlFor="sort-order">Sort Order</Label>
                             <Input
@@ -157,6 +173,19 @@ function EditCourseCategory({ courseCategory }: Props) {
                                 <div>
                                     <span className="text-sm font-medium">Featured in Navigation</span>
                                     <p className="text-xs text-neutral-500">Shows in the Courses dropdown in the site header</p>
+                                </div>
+                            </label>
+
+                            <label className="flex items-center gap-3 cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    className="h-4 w-4 rounded"
+                                    checked={data.is_featured_on_form}
+                                    onChange={(e) => setData('is_featured_on_form', e.target.checked)}
+                                />
+                                <div>
+                                    <span className="text-sm font-medium">Featured on Application Form</span>
+                                    <p className="text-xs text-neutral-500">Shows as an option on the course application form</p>
                                 </div>
                             </label>
                         </div>

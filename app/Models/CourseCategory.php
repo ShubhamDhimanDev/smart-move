@@ -21,10 +21,12 @@ class CourseCategory extends Model
      */
     protected $fillable = [
         'name',
+        'label',
         'slug',
         'description',
         'is_featured_home',
         'is_featured_nav',
+        'is_featured_on_form',
         'sort_order',
         'is_active',
     ];
@@ -37,6 +39,7 @@ class CourseCategory extends Model
         return [
             'is_featured_home' => 'boolean',
             'is_featured_nav' => 'boolean',
+            'is_featured_on_form' => 'boolean',
             'is_active' => 'boolean',
             'sort_order' => 'integer',
         ];

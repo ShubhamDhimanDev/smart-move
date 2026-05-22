@@ -27,7 +27,9 @@ type CourseCategory = {
     id: number;
     name: string;
     slug: string;
+    label?: string | null;
     description: string | null;
+    is_featured_on_form?: boolean;
     is_featured_home: boolean;
     is_featured_nav: boolean;
     sort_order: number;
@@ -45,9 +47,11 @@ type Props = {
 type CourseCategoryFormData = {
     name: string;
     slug: string;
+    label: string;
     description: string;
     is_featured_home: boolean;
     is_featured_nav: boolean;
+    is_featured_on_form: boolean;
     sort_order: number;
     is_active: boolean;
 };
@@ -55,9 +59,11 @@ type CourseCategoryFormData = {
 const emptyForm: CourseCategoryFormData = {
     name: '',
     slug: '',
+    label: '',
     description: '',
     is_featured_home: false,
     is_featured_nav: false,
+    is_featured_on_form: false,
     sort_order: 0,
     is_active: true,
 };
@@ -226,6 +232,15 @@ function CourseCategoriesIndex({ courseCategories: initialCategories }: Props) {
                         <InputError message={createForm.errors.slug} />
                     </div>
 
+                    <div className="grid gap-2">
+                        <Label>Label</Label>
+                        <Input
+                            value={createForm.data.label}
+                            onChange={(e) => createForm.setData('label', e.target.value)}
+                        />
+                        <InputError message={createForm.errors.label} />
+                    </div>
+
                     {/* Page Title removed from create form */}
 
                     <div className="grid gap-2">
@@ -261,6 +276,14 @@ function CourseCategoriesIndex({ courseCategories: initialCategories }: Props) {
                                 onChange={(e) => createForm.setData('is_featured_nav', e.target.checked)}
                             />
                             Featured Nav
+                        </label>
+                        <label className="flex items-center gap-2 text-sm cursor-pointer">
+                            <input
+                                type="checkbox"
+                                checked={createForm.data.is_featured_on_form}
+                                onChange={(e) => createForm.setData('is_featured_on_form', e.target.checked)}
+                            />
+                            Featured On Form
                         </label>
                     </div>
 

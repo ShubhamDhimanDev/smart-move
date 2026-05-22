@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import SiteLayout from '@/layouts/site-layout';
+import UniversityPartnersCarousel from '@/components/UniversityPartnersCarousel';
 import * as publicEventRoutes from '@/routes/events';
 import type { Event } from '@/types/cms';
 
@@ -245,12 +246,20 @@ type FeaturedCity = {
     description: string | null;
 };
 
+type Partner = {
+    id: number;
+    name: string;
+    image: string | null;
+    universities_link: string | null;
+};
+
 type Props = {
     canRegister: boolean;
     upcomingEvents: WelcomeEvent[];
     featuredCourseCategories: FeaturedCourseCategory[];
     featuredCourses: FeaturedCourse[];
     featuredCities: FeaturedCity[];
+    partners?: Partner[];
 };
 
 function formatDuration(duration: number | null, durationUnit: string | null): string {
@@ -302,7 +311,7 @@ function formatEventTimeRange(startsAt: string, endsAt: string | null, timezone?
     return `${startTime}-${endTime} ${timeZone}`;
 }
 
-export default function Welcome({ upcomingEvents, featuredCourseCategories, featuredCourses, featuredCities }: Props) {
+export default function Welcome({ upcomingEvents, featuredCourseCategories, featuredCourses, featuredCities, partners = [] }: Props) {
     const [activeCourseCategory, setActiveCourseCategory] = useState<'all' | string>('all');
     const [activeCitySlug, setActiveCitySlug] = useState<string>(featuredCities[0]?.slug ?? '');
 
@@ -972,6 +981,8 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
                     </div>
                 </div>
             </section>
+
+            <UniversityPartnersCarousel partners={partners} />
 
             {/* Newsletter */}
             <section className="py-24 bg-surface-container-low relative overflow-hidden">

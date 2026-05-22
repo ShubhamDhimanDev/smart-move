@@ -31,6 +31,14 @@ it('stores course application and sends notification email', function () {
 
     AppSetting::setValue('application_notification_email', 'admin@example.com');
 
+    // Create course types and use their IDs in the form submission
+    $business = \App\Models\CourseType::factory()->create(['name' => 'Business', 'slug' => 'certhe_business']);
+    $it = \App\Models\CourseType::factory()->create(['name' => 'IT/Computing', 'slug' => 'certhe_it_computing']);
+
+    // Create featured cities used in the form
+    $london = \App\Models\City::factory()->create(['name' => 'London', 'is_featured_on_form' => true]);
+    $manchester = \App\Models\City::factory()->create(['name' => 'Manchester', 'is_featured_on_form' => true]);
+
     $response = $this->post(route('applications.store'), [
         'first_name' => 'Ava',
         'last_name' => 'Patel',
@@ -40,9 +48,9 @@ it('stores course application and sends notification email', function () {
         'nationality' => 'Indian',
         'immigration_status' => 'Student Visa',
         'preferred_course' => 'MSc Data Science',
-        'selected_courses' => ['certhe_business', 'certhe_it_computing'],
+        'selected_courses' => [$business->id, $it->id],
         'other_course' => null,
-        'selected_locations' => ['London', 'Manchester'],
+        'selected_locations' => [$london->name, $manchester->name],
         'preferred_location' => 'London',
         'has_taken_sfe_before' => false,
         'previous_qualification_work_experience' => [

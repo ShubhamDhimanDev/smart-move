@@ -7,6 +7,7 @@ use App\Models\CourseCategory;
 use App\Models\CourseType;
 use App\Models\Event;
 use App\Models\Page;
+use App\Models\UniversityPartner;
 use Illuminate\Http\Response;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
@@ -92,12 +93,23 @@ class PublicPageController extends Controller
             ])
             ->values();
 
+        $partners = UniversityPartner::query()
+            ->active()
+            ->get(['id', 'name', 'image', 'universities_link'])
+            ->map(fn (UniversityPartner $p): array => [
+                'id' => $p->id,
+                'name' => $p->name,
+                'image' => $p->image,
+                'universities_link' => $p->universities_link,
+            ])
+            ->values();
+
         return inertia('welcome', [
-            'canRegister' => Features::enabled(Features::registration()),
             'upcomingEvents' => $upcomingEvents,
             'featuredCourseCategories' => $featuredCourseCategories,
             'featuredCourses' => $featuredCourses,
             'featuredCities' => $featuredCities,
+            'partners' => $partners,
         ]);
     }
 

@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\UpdateCourseRequest;
 use App\Models\City;
 use App\Models\Course;
 use App\Models\CourseCategory;
+use App\Models\CourseType;
 // use App\Models\University;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -21,6 +22,7 @@ class CourseController extends Controller
             'courses' => Course::query()
                 ->with([
                     'category:id,name,slug',
+                    'courseType:id,name,slug',
                     'cities:id,name,slug',
                     // 'universities:id,name,slug',
                     'pageContent:id,contentable_type,contentable_id,page_title,meta_title',
@@ -35,6 +37,7 @@ class CourseController extends Controller
     {
         return Inertia::render('Admin/Courses/Create', [
             'categories' => CourseCategory::query()->active()->ordered()->get(['id', 'name']),
+            'types' => CourseType::query()->active()->ordered()->get(['id', 'name']),
             'cities' => City::query()->active()->ordered()->get(['id', 'name']),
             // 'universities' => University::query()->where('is_active', true)->select(['id', 'name'])->orderBy('name')->get(),
         ]);
@@ -59,6 +62,7 @@ class CourseController extends Controller
     {
         $course->load([
             'category:id,name',
+            'courseType:id,name',
             'cities:id,name',
             // 'universities:id,name',
             'pageContent:id,contentable_type,contentable_id,page_title,description,body,featured_image,meta_title,meta_description,og_title,og_description,og_image,schema_data,custom_data',
@@ -67,6 +71,7 @@ class CourseController extends Controller
         return Inertia::render('Admin/Courses/Edit', [
             'course' => $this->formatCourse($course),
             'categories' => CourseCategory::query()->active()->ordered()->get(['id', 'name']),
+            'types' => CourseType::query()->active()->ordered()->get(['id', 'name']),
             'cities' => City::query()->active()->ordered()->get(['id', 'name']),
             // 'universities' => University::query()->where('is_active', true)->select(['id', 'name'])->orderBy('name')->get(),
         ]);
@@ -104,7 +109,9 @@ class CourseController extends Controller
             'title' => $course->title,
             'slug' => $course->slug,
             'course_category_id' => $course->course_category_id,
+            'course_type_id' => $course->course_type_id,
             'category_name' => $course->category?->name,
+            'course_type_name' => $course->courseType?->name,
             'excerpt' => $course->excerpt,
             'status' => $course->status,
             'is_featured' => $course->is_featured,

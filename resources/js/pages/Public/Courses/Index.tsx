@@ -302,11 +302,11 @@ export default function PublicCoursesIndex({
                                     </div>
 
                                     <h3 className="text-lg font-semibold text-white">{course.title}</h3>
-                                    <p className="mt-2 line-clamp-3 text-sm text-white/55">
+                                   {/*  <p className="mt-2 line-clamp-3 text-sm text-white/55">
                                         {course.excerpt ?? 'Explore details about this programme and its available study paths.'}
-                                    </p>
+                                    </p> */}
 
-                                    <div className="mt-4 space-y-2 text-xs text-white/45">
+                                 {/*    <div className="mt-4 space-y-2 text-xs text-white/45">
                                         <p>
                                             <span className="font-semibold text-white/70">Duration:</span>{' '}
                                             {course.duration && course.duration_unit
@@ -320,7 +320,7 @@ export default function PublicCoursesIndex({
                                         <p>
                                             <span className="font-semibold text-white/70">Start:</span> {formatStartDate(course.start_date)}
                                         </p>
-                                    </div>
+                                    </div> */}
 
                                     {course.cities.length > 0 ? (
                                         <div className="mt-4 flex flex-wrap gap-1.5">

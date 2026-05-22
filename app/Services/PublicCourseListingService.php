@@ -9,13 +9,14 @@ use Illuminate\Database\Eloquent\Builder;
 class PublicCourseListingService
 {
     /**
-     * @param  array{search?: string|null, level?: string|null, delivery_mode?: string|null, duration_unit?: string|null}  $filters
+     * @param  array{search?: string|null, level?: string|null, delivery_mode?: string|null, duration_unit?: string|null, types?: string[]|null}  $filters
      */
     public function listCourses(array $categorySlugs, array $citySlugs, array $filters, int $perPage = 9): LengthAwarePaginator
     {
         $query = Course::query()
             ->with([
                 'category:id,name,slug',
+                'courseType:id,name,slug',
                 'cities:id,name,slug',
                 'pageContent:id,contentable_type,contentable_id,page_title,description,featured_image,meta_title,meta_description,og_title,og_description,og_image',
             ])
@@ -43,6 +44,11 @@ class PublicCourseListingService
             ->when(filled($filters['level'] ?? null), fn (Builder $builder) => $builder->where('level', $filters['level']))
             ->when(filled($filters['delivery_mode'] ?? null), fn (Builder $builder) => $builder->where('delivery_mode', $filters['delivery_mode']))
             ->when(filled($filters['duration_unit'] ?? null), fn (Builder $builder) => $builder->where('duration_unit', $filters['duration_unit']))
+            ->when(filled($filters['types'] ?? null), function (Builder $builder) use ($filters): void {
+                $builder->whereHas('courseType', function (Builder $typeQuery) use ($filters): void {
+                    $typeQuery->whereIn('slug', (array) $filters['types'])->where('is_active', true);
+                });
+            })
             ->ordered();
 
         return $query
@@ -63,6 +69,13 @@ class PublicCourseListingService
                         'id' => $course->category->id,
                         'name' => $course->category->name,
                         'slug' => $course->category->slug,
+                    ]
+                    : null,
+                'type' => $course->courseType
+                    ? [
+                        'id' => $course->courseType->id,
+                        'name' => $course->courseType->name,
+                        'slug' => $course->courseType->slug,
                     ]
                     : null,
                 'cities' => $course->cities

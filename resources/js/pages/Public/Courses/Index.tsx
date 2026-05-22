@@ -1,4 +1,5 @@
 import { Head, Link, router } from '@inertiajs/react';
+import { useState } from 'react';
 import SiteLayout from '@/layouts/site-layout';
 import type { PaginatedResponse } from '@/types/cms';
 
@@ -31,6 +32,7 @@ interface FilterState {
     search: string | null;
     categories: string[];
     cities: string[];
+    types: string[];
 }
 
 interface TaxonomyLink {
@@ -52,6 +54,7 @@ interface Props {
         applied: FilterState;
         categories: TaxonomyLink[];
         cities: TaxonomyLink[];
+        course_types: TaxonomyLink[];
     };
     breadcrumbs: Array<{ label: string; url: string | null }>;
     seo: {
@@ -95,7 +98,10 @@ export default function PublicCoursesIndex({
         search: filters.applied.search ?? null,
         categories: Array.isArray(filters.applied.categories) ? filters.applied.categories : [],
         cities: Array.isArray(filters.applied.cities) ? filters.applied.cities : [],
+        types: Array.isArray(filters.applied.types) ? filters.applied.types : [],
     };
+
+    const [showFilters, setShowFilters] = useState(false);
 
     /**
      * Navigate to the correct route based on how many categories/cities are selected.
@@ -106,8 +112,8 @@ export default function PublicCoursesIndex({
      * >1 categories OR >1 cities (any combination) → /courses?category=a&category=b&city=x
      */
     function visitWithFilters(next: FilterState): void {
-        const { search, categories, cities } = next;
-        const isMulti = categories.length > 1 || cities.length > 1;
+        const { search, categories, cities, types } = next;
+        const isMulti = categories.length > 1 || cities.length > 1 || types.length > 1;
 
         if (isMulti) {
             const parts: string[] = [];
@@ -115,13 +121,15 @@ export default function PublicCoursesIndex({
             // Use bracket notation so PHP parses repeated keys as an array
             for (const slug of categories) parts.push(`category[]=${encodeURIComponent(slug)}`);
             for (const slug of cities) parts.push(`city[]=${encodeURIComponent(slug)}`);
+            for (const slug of types) parts.push(`course_type[]=${encodeURIComponent(slug)}`);
             const qs = parts.length > 0 ? `?${parts.join('&')}` : '';
             router.get(`/courses${qs}`, {}, { preserveScroll: true, replace: true });
             return;
         }
 
-        const params: Record<string, string> = {};
+        const params: Record<string, string | string[]> = {};
         if (search) params.search = search;
+        if (types.length > 0) params.course_type = types;
 
         let path = '/courses';
         if (categories.length === 1 && cities.length === 1) {
@@ -140,6 +148,7 @@ export default function PublicCoursesIndex({
             search: typeof next.search === 'string' ? next.search : applied.search,
             categories: Array.isArray(next.categories) ? next.categories : applied.categories,
             cities: Array.isArray(next.cities) ? next.cities : applied.cities,
+            types: Array.isArray(next.types) ? next.types : applied.types,
         });
     }
 
@@ -150,7 +159,7 @@ export default function PublicCoursesIndex({
     }
 
     function clearFilters(): void {
-        visitWithFilters({ search: null, categories: [], cities: [] });
+        visitWithFilters({ search: null, categories: [], cities: [], types: [] });
     }
 
     function onCategoryToggle(categorySlug: string): void {
@@ -165,6 +174,13 @@ export default function PublicCoursesIndex({
             ? applied.cities.filter((slug) => slug !== citySlug)
             : [...applied.cities, citySlug];
         applyFilters({ cities: nextCities });
+    }
+
+    function onTypeToggle(typeSlug: string): void {
+        const nextTypes = applied.types.includes(typeSlug)
+            ? applied.types.filter((slug) => slug !== typeSlug)
+            : [...applied.types, typeSlug];
+        applyFilters({ types: nextTypes });
     }
 
     return (
@@ -199,7 +215,7 @@ export default function PublicCoursesIndex({
                 </header>
 
                 <section className="mb-8 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                    <div className="mb-4 grid gap-3 sm:grid-cols-[1fr_auto]">
+                    <div className="mb-4 grid gap-3 sm:grid-cols-[1fr_auto_auto]">
                         <input
                             type="search"
                             value={applied.search ?? ''}
@@ -214,9 +230,18 @@ export default function PublicCoursesIndex({
                         >
                             Reset filters
                         </button>
+                        <button
+                            type="button"
+                            onClick={() => setShowFilters((v) => !v)}
+                            aria-expanded={showFilters}
+                            className="rounded-xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm font-semibold text-white/75 transition-colors hover:border-white/30 hover:text-white"
+                        >
+                            {showFilters ? 'Hide filters' : 'More filters'}
+                        </button>
                     </div>
 
-                    <div className="grid gap-6 lg:grid-cols-2">
+                    {showFilters && (
+                        <div className="grid gap-6 lg:grid-cols-3">
                         <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
                             <h2 className="mb-3 text-xs font-bold uppercase tracking-[0.16em] text-[#88e5ff]">Programmes</h2>
                             <div className="flex flex-wrap gap-2">
@@ -268,7 +293,34 @@ export default function PublicCoursesIndex({
                                 })}
                             </div>
                         </div>
-                    </div>
+
+                        <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
+                            <h2 className="mb-3 text-xs font-bold uppercase tracking-[0.16em] text-[#ffd88b]">Course Areas</h2>
+                            <div className="flex flex-wrap gap-2">
+                                {filters.course_types.map((item) => {
+                                    const isSelected = applied.types.includes(item.slug);
+                                    return (
+                                        <button
+                                            key={item.id}
+                                            type="button"
+                                            onClick={() => onTypeToggle(item.slug)}
+                                            className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs transition-colors ${
+                                                isSelected
+                                                    ? 'border-[#ffd88b]/50 bg-[#ffd88b]/10 text-[#ffd9b3]'
+                                                    : 'border-white/10 bg-white/5 text-white/60 hover:text-white'
+                                            }`}
+                                        >
+                                            {item.name}
+                                            {isSelected && (
+                                                <span aria-hidden="true" className="text-[10px] leading-none opacity-60">&times;</span>
+                                            )}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                        </div>
+                    )}
                 </section>
 
                 {courses.data.length === 0 ? (

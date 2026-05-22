@@ -6,6 +6,7 @@ const whatsapp = '/images/whatsapp.svg';
 
 export default function SiteHeader({ activePage = 'home' }: { activePage?: string }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [mobileCoursesOpen, setMobileCoursesOpen] = useState(false);
     const { featuredCategories, featuredCities } = usePage().props;
 
     return (
@@ -65,6 +66,9 @@ export default function SiteHeader({ activePage = 'home' }: { activePage?: strin
                                                     </li>
                                                 ))}
                                             </ul>
+                                            <a href="/courses" className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-secondary-container hover:underline">
+                                                View all courses
+                                            </a>
                                         </div>
                                         <div>
                                             <p className="font-label text-[10px] text-secondary-container mb-5 uppercase tracking-[.18em]">Study Destinations</p>
@@ -177,12 +181,49 @@ export default function SiteHeader({ activePage = 'home' }: { activePage?: strin
                         <a className="block text-white/60 font-semibold" href="/about">
                             About Us
                         </a>
-                        <a className="block text-white/60 font-semibold" href="/courses">
-                            Courses
-                        </a>
-                        <a className="block text-white/60 font-semibold" href="/courses">
-                            Destinations
-                        </a>
+
+                        <div>
+                            <button
+                                type="button"
+                                className="w-full text-left flex items-center justify-between text-white/60 font-semibold"
+                                onClick={() => setMobileCoursesOpen((v) => !v)}
+                            >
+                                <span>Courses</span>
+                                <span className="material-symbols-outlined text-[18px]">{mobileCoursesOpen ? 'expand_less' : 'expand_more'}</span>
+                            </button>
+
+                            {mobileCoursesOpen && (
+                                <div className="mt-3 pl-3 space-y-2 text-sm">
+                                    <ul className="space-y-1">
+                                        {featuredCategories.map((item) => (
+                                            <li key={item.id}>
+                                                <a href={`/programmes/${item.slug}`} className="block text-white/60 hover:text-white py-2">
+                                                    {item.name}
+                                                </a>
+                                            </li>
+                                        ))}
+                                    </ul>
+
+                                    <div className="pt-2">
+                                        <p className="text-xs text-white/40 mb-2">Study Destinations</p>
+                                        <ul className="space-y-1">
+                                            {featuredCities.map((item) => (
+                                                <li key={item.id}>
+                                                    <a href={`/programmes-in-${item.slug}`} className="block text-white/60 hover:text-white py-2">
+                                                        {item.name}
+                                                    </a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+
+                                    <a href="/courses" className="inline-flex items-center gap-2 text-sm font-semibold mt-3 text-secondary-container hover:underline">
+                                        View all courses
+                                    </a>
+                                </div>
+                            )}
+                        </div>
+
                         <a className="block text-white/60 font-semibold" href="/services">
                             Services
                         </a>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\City;
 use App\Models\CourseCategory;
+use App\Models\CourseType;
 use App\Services\PublicCourseListingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
@@ -75,6 +76,7 @@ class PublicCourseController extends Controller
             'search' => $this->normalizeValue($request->string('search')->toString()),
             'categories' => array_filter((array) $request->input('category', $category?->slug ? [$category->slug] : [])),
             'cities' => array_filter((array) $request->input('city', $city?->slug ? [$city->slug] : [])),
+            'types' => array_filter((array) $request->input('course_type', [])),
             'level' => $this->normalizeValue($request->string('level')->toString()),
             'delivery_mode' => $this->normalizeValue($request->string('delivery_mode')->toString()),
             'duration_unit' => $this->normalizeValue($request->string('duration_unit')->toString()),
@@ -108,6 +110,18 @@ class PublicCourseController extends Controller
                     'name' => $courseCity->name,
                     'slug' => $courseCity->slug,
                     'url' => route('courses.city', ['city' => $courseCity->slug]),
+                ])
+                ->values()
+                ->all(),
+            'course_types' => CourseType::query()
+                ->active()
+                ->ordered()
+                ->get(['id', 'name', 'slug'])
+                ->map(fn (CourseType $courseType): array => [
+                    'id' => $courseType->id,
+                    'name' => $courseType->name,
+                    'slug' => $courseType->slug,
+                    'url' => route('courses.index', ['course_type' => $courseType->slug]),
                 ])
                 ->values()
                 ->all(),

@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\MediaUploadController;
 // use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\PostCommentController;
 use App\Http\Controllers\Admin\PostController;
+use App\Http\Controllers\Admin\UniversityPartnerController;
 // use App\Http\Controllers\Admin\UniversityController;
 use App\Http\Controllers\CourseApplicationController;
 use App\Http\Controllers\PublicCourseController;
@@ -24,6 +25,7 @@ use App\Http\Controllers\PublicEventRegistrationController;
 use App\Http\Controllers\PublicPageController;
 use App\Http\Controllers\PublicPostCommentController;
 use App\Http\Controllers\PublicPostController;
+use App\Http\Controllers\PublicUniversityPartnerController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PublicPageController::class, 'homePage'])->name('home');
@@ -111,6 +113,12 @@ Route::middleware(['auth', 'admin.access'])->prefix('admin')->name('admin.')->gr
         Route::delete('users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
     });
 
+    Route::middleware(['admin.access:manage universities'])->group(function () {
+        Route::resource('university-partners', UniversityPartnerController::class)->except(['show']);
+    });
+
+
+
     // Route::middleware(['admin.access:manage permissions'])->group(function () {
     //     Route::get('permissions', [AdminPermissionController::class, 'index'])->name('permissions.index');
     //     Route::post('permissions', [AdminPermissionController::class, 'store'])->name('permissions.store');
@@ -135,6 +143,8 @@ Route::get('/{categorySlug}-in-{citySlug}', [PublicCourseController::class, 'byC
     ->where('categorySlug', '[A-Za-z0-9-]+')
     ->where('citySlug', '[A-Za-z0-9-]+')
     ->name('courses.categoryCity');
+
+Route::get('/university-partners', [PublicUniversityPartnerController::class, 'index'])->name('university-partners.index');
 
 Route::get('/{slug}', [PublicPageController::class, 'show'])
     ->where('slug', '^(?!admin$|dashboard$|settings$|login$|register$|logout$).+')

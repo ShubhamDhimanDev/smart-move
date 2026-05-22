@@ -22,6 +22,7 @@ class UpdateCourseRequest extends FormRequest
         return [
             'title' => ['required', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'max:255', Rule::unique('courses', 'slug')->ignore($courseId)],
+            'course_type_id' => ['nullable', 'integer', 'exists:course_types,id'],
             'course_category_id' => ['nullable', 'integer', 'exists:course_categories,id'],
             'excerpt' => ['nullable', 'string'],
             'status' => ['required', Rule::in(['draft', 'published'])],

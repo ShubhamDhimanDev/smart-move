@@ -79,18 +79,18 @@ export default function MediaUrlField({ id, label, value, onChange, error, class
                     id={id}
                     type="file"
                     accept="image/*"
-                    className="w-full sm:flex-1"
+                    className="w-[60px] sm:flex-1"
                     onChange={(event) => {
                         setUploadFile(event.target.files?.[0] ?? null);
                         setUploadError(null);
                     }}
                 />
                 <div className="flex gap-2">
-                    <Button type="button" variant="outline" onClick={uploadToMedia} disabled={!uploadFile || uploading}>
+                    <Button className='text-white hover:text-slate-700' type="button" variant="outline" onClick={uploadToMedia} disabled={!uploadFile || uploading}>
                         {uploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <UploadCloud className="mr-2 h-4 w-4" />}
                         Upload
                     </Button>
-                    <Button type="button" variant="outline" onClick={() => setPickerOpen(true)}>
+                    <Button className='text-white hover:text-slate-300' type="button" variant="outline" onClick={() => setPickerOpen(true)}>
                         Choose from media
                     </Button>
                 </div>

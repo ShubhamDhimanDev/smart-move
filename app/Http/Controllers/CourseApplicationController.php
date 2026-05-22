@@ -7,6 +7,9 @@ use App\Mail\CourseApplicationSubmitted;
 use App\Models\AppSetting;
 use App\Models\Country;
 use App\Models\CourseApplication;
+use App\Models\CourseCategory;
+use App\Models\City;
+use App\Models\CourseType;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
@@ -20,30 +23,47 @@ class CourseApplicationController extends Controller
             ->where('is_active', true)
             ->orderBy('nationality', 'ASC')
             ->get(['id', 'name', 'nationality']);
-        return Inertia::render('Public/ApplyNow', compact('countries'));
+        $featuredCourseCategories = CourseCategory::query()
+            ->where('is_featured_on_form', true)
+            ->ordered()
+            ->with(['courseTypes' => function ($q) {
+                $q->active()->ordered();
+            }])
+            ->get()
+            ->map(function (CourseCategory $c) {
+                return [
+                    'id' => $c->id,
+                    'name' => $c->name,
+                    'label' => $c->label,
+                    'course_types' => $c->courseTypes->map(fn (CourseType $t) => [
+                        'id' => $t->id,
+                        'name' => $t->name,
+                        'slug' => $t->slug,
+                    ])->values()->all(),
+                ];
+            })->values()->all();
+
+        $featuredCities = City::query()
+            ->where('is_featured_on_form', true)
+            ->active()
+            ->ordered()
+            ->get(['id', 'name', 'slug'])
+            ->map(fn (City $c) => [
+                'id' => $c->id,
+                'name' => $c->name,
+                'slug' => $c->slug,
+            ])->values()->all();
+
+        return Inertia::render('Public/ApplyNow', compact('countries', 'featuredCourseCategories', 'featuredCities'));
     }
 
     public function store(StoreCourseApplicationRequest $request): RedirectResponse
     {
         $validated = $request->validated();
-        $courseLabelMap = [
-            'certhe_business' => 'Business',
-            'certhe_health_social_care' => 'Health & Social Care',
-            'certhe_it_computing' => 'IT/Computing',
-            'foundation_business' => 'Business',
-            'foundation_health' => 'Health',
-            'foundation_law' => 'Law',
-            'foundation_it' => 'IT',
-            'foundation_others' => 'Others',
-        ];
-        $preferredCourses = collect($validated['selected_courses'])
-            ->map(function (string $course) use ($validated, $courseLabelMap): string {
-                if ($course === 'foundation_others' && filled($validated['other_course'] ?? null)) {
-                    return sprintf('Others: %s', trim((string) $validated['other_course']));
-                }
-
-                return $courseLabelMap[$course] ?? $course;
-            })
+        $selectedTypeIds = array_map('intval', $validated['selected_courses']);
+        $preferredCourses = CourseType::query()
+            ->findMany($selectedTypeIds)
+            ->pluck('name')
             ->implode(', ');
         $preferredLocations = collect($validated['selected_locations'])->implode(', ');
 

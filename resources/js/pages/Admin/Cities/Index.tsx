@@ -31,6 +31,7 @@ type City = {
     short_description: string | null;
     image: string | null;
     is_featured_home: boolean;
+    is_featured_on_form: boolean;
     is_featured_nav: boolean;
     sort_order: number;
     is_active: boolean;
@@ -50,6 +51,7 @@ type CityFormData = {
     image: string;
     short_description: string;
     is_featured_home: boolean;
+    is_featured_on_form: boolean;
     is_featured_nav: boolean;
     sort_order: number;
     is_active: boolean;
@@ -65,6 +67,7 @@ const emptyForm: CityFormData = {
     image: '',
     short_description: '',
     is_featured_home: false,
+    is_featured_on_form: false,
     is_featured_nav: false,
     sort_order: 0,
     is_active: true,
@@ -114,6 +117,11 @@ function SortableRow({ city, onDelete }: { city: City; onDelete: (item: City) =>
                     {city.is_featured_nav && (
                         <span className="inline-flex items-center rounded-full bg-purple-50 px-2 py-0.5 text-xs font-medium text-purple-700 ring-1 ring-purple-600/20">
                             Nav
+                        </span>
+                    )}
+                    {city.is_featured_on_form && (
+                        <span className="inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700 ring-1 ring-amber-600/20">
+                            Form
                         </span>
                     )}
                 </div>
@@ -292,6 +300,14 @@ function CitiesIndex({ cities: initialCities }: Props) {
                                 onChange={(e) => createForm.setData('is_featured_nav', e.target.checked)}
                             />
                             Featured Nav
+                        </label>
+                        <label className="flex items-center gap-2 text-sm cursor-pointer">
+                            <input
+                                type="checkbox"
+                                checked={createForm.data.is_featured_on_form}
+                                onChange={(e) => createForm.setData('is_featured_on_form', e.target.checked)}
+                            />
+                            Featured on Form
                         </label>
                     </div>
 

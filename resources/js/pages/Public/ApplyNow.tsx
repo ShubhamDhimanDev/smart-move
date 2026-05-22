@@ -10,8 +10,9 @@ type ApplyNowForm = {
     email: string;
     nationality: string;
     immigration_status: string;
+    immigration_status_other: string;
     preferred_course: string;
-    selected_courses: string[];
+    selected_courses: number[];
     other_course: string;
     preferred_location: string;
     selected_locations: string[];
@@ -31,42 +32,18 @@ type PageProps = {
         success?: string;
     };
     countries: Country[];
+    featuredCourseCategories: {
+        id: number;
+        name: string;
+        label?: string | null;
+        course_types: { id: number; name: string; slug?: string | null }[];
+    }[];
+    featuredCities: { id: number; name: string; slug?: string | null }[];
 };
 
 export default function ApplyNow() {
-    const courseGroups = [
-        {
-            title: 'CertHE Program',
-            options: [
-                { label: 'Business', value: 'certhe_business' },
-                { label: 'Health & Social Care', value: 'certhe_health_social_care' },
-                { label: 'IT/Computing', value: 'certhe_it_computing' },
-            ],
-        },
-        {
-            title: '4 years with Foundation',
-            options: [
-                { label: 'Business', value: 'foundation_business' },
-                { label: 'Health', value: 'foundation_health' },
-                { label: 'Law', value: 'foundation_law' },
-                { label: 'IT', value: 'foundation_it' },
-                { label: 'Others', value: 'foundation_others' },
-            ],
-        },
-    ] as const;
-    const courseValueToLabel: Record<string, string> = {
-        certhe_business: 'Business',
-        certhe_health_social_care: 'Health & Social Care',
-        certhe_it_computing: 'IT/Computing',
-        foundation_business: 'Business',
-        foundation_health: 'Health',
-        foundation_law: 'Law',
-        foundation_it: 'IT',
-        foundation_others: 'Others',
-    };
-    const operatingLocations = ['London', 'Manchester', 'Birmingham', 'Cardiff', 'Swansea', 'Leeds', 'Nottingham', 'Newcastle', 'Leicester'] as const;
-
-    const { flash, countries } = usePage<PageProps>().props;
+    // Course groups and featured cities are provided by the server
+    const { flash, countries, featuredCourseCategories, featuredCities } = usePage<PageProps>().props;
     const form = useForm<ApplyNowForm>({
         first_name: '',
         last_name: '',
@@ -75,6 +52,7 @@ export default function ApplyNow() {
         email: '',
         nationality: '',
         immigration_status: '',
+        immigration_status_other: '',
         preferred_course: '',
         selected_courses: [],
         other_course: '',
@@ -90,24 +68,20 @@ export default function ApplyNow() {
     const onSubmit = (event: React.FormEvent) => {
         event.preventDefault();
 
+        // build a map of course type id -> name from server props
+        const courseTypeMap = featuredCourseCategories.reduce<Record<number, string>>((acc, cat) => {
+            cat.course_types.forEach((t) => { acc[t.id] = t.name; });
+            return acc;
+        }, {});
+
         form.transform((data) => ({
-            ...(() => {
-                const selectedCourses = data.selected_courses.map((courseValue) => {
-                    const courseLabel = courseValueToLabel[courseValue] ?? courseValue;
-
-                    if (courseValue === 'foundation_others' && data.other_course.trim().length > 0) {
-                        return `Others: ${data.other_course.trim()}`;
-                    }
-
-                    return courseLabel;
-                });
-
-                return {
-                    preferred_course: selectedCourses.join(', '),
-                    preferred_location: data.selected_locations.join(', '),
-                };
-            })(),
             ...data,
+            // if user provided a custom immigration status, prefer that value
+            immigration_status: data.immigration_status === 'Others' && data.immigration_status_other.trim().length > 0
+                ? data.immigration_status_other.trim()
+                : data.immigration_status,
+            preferred_course: data.selected_courses.map((id) => courseTypeMap[id] ?? String(id)).join(', '),
+            preferred_location: data.selected_locations.join(', '),
             has_taken_sfe_before: data.has_taken_sfe_before === 'yes',
             previous_qualification_work_experience: {
                 qualification: data.qualifications_summary,
@@ -123,11 +97,11 @@ export default function ApplyNow() {
         });
     };
 
-    const toggleCourseSelection = (courseValue: string) => {
+    const toggleCourseSelection = (courseId: number) => {
         form.setData('selected_courses',
-            form.data.selected_courses.includes(courseValue)
-                ? form.data.selected_courses.filter((selectedCourse) => selectedCourse !== courseValue)
-                : [...form.data.selected_courses, courseValue],
+            form.data.selected_courses.includes(courseId)
+                ? form.data.selected_courses.filter((selectedCourse) => selectedCourse !== courseId)
+                : [...form.data.selected_courses, courseId],
         );
     };
 
@@ -263,6 +237,18 @@ export default function ApplyNow() {
                                             <option value="Others" className="bg-slate-900">Others</option>
                                         </select>
                                         {form.errors.immigration_status && <p className="mt-1 text-xs text-red-300">{form.errors.immigration_status}</p>}
+                                        {form.data.immigration_status === 'Others' && (
+                                            <div className="mt-3">
+                                                <label className="mb-1.5 block text-sm font-medium text-white/70">Please specify immigration status *</label>
+                                                <input
+                                                    type="text"
+                                                    value={form.data.immigration_status_other}
+                                                    onChange={(e) => form.setData('immigration_status_other', e.target.value)}
+                                                    className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-white/35 focus:border-secondary-container focus:outline-none"
+                                                />
+                                                {form.errors.immigration_status_other && <p className="mt-1 text-xs text-red-300">{form.errors.immigration_status_other}</p>}
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -272,42 +258,46 @@ export default function ApplyNow() {
                                     <div className="rounded-lg border border-white/10 bg-white/5 p-4 md:col-span-2">
                                         <label className="mb-2 block text-sm font-medium text-white/70">Preferred Course(s) * (You can select multiple)</label>
                                         <div className="space-y-3">
-                                            {courseGroups.map((group) => (
-                                                <div key={group.title}>
-                                                    <p className="mb-1 text-xs font-semibold tracking-wide text-white/60 uppercase">{group.title}</p>
+                                            {featuredCourseCategories.map((category) => (
+                                                <div key={category.id}>
+                                                    <p className="mb-1 text-xs font-semibold tracking-wide text-white/60 uppercase">{category.name}</p>
                                                     <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                                                        {group.options.map((course) => {
-                                                            const optionKey = `${group.title}:${course.value}`;
-
-                                                            return (
-                                                                <label key={optionKey} className="inline-flex items-start gap-2 text-sm text-white/85">
-                                                                    <input
-                                                                        type="checkbox"
-                                                                        checked={form.data.selected_courses.includes(course.value)}
-                                                                        onChange={() => toggleCourseSelection(course.value)}
-                                                                        className="mt-0.5"
-                                                                    />
-                                                                    <span>{course.label}</span>
-                                                                </label>
-                                                            );
-                                                        })}
+                                                        {category.course_types.map((type) => (
+                                                            <label key={type.id} className="inline-flex items-start gap-2 text-sm text-white/85">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    checked={form.data.selected_courses.includes(type.id)}
+                                                                    onChange={() => toggleCourseSelection(type.id)}
+                                                                    className="mt-0.5"
+                                                                />
+                                                                <span>{type.name}</span>
+                                                            </label>
+                                                        ))}
                                                     </div>
                                                 </div>
                                             ))}
                                         </div>
 
-                                        {form.data.selected_courses.includes('foundation_others') && (
-                                            <div className="mt-3">
-                                                <label className="mb-1.5 block text-xs font-medium text-white/60">Other course (please specify)</label>
-                                                <input
-                                                    type="text"
-                                                    value={form.data.other_course}
-                                                    onChange={(event) => form.setData('other_course', event.target.value)}
-                                                    className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-white/35 focus:border-secondary-container focus:outline-none"
-                                                />
-                                                {form.errors.other_course && <p className="mt-1 text-xs text-red-300">{form.errors.other_course}</p>}
-                                            </div>
-                                        )}
+                                        {(() => {
+                                            const isOtherTypeSelected = form.data.selected_courses.some((id) =>
+                                                featuredCourseCategories.some((cat) =>
+                                                    cat.course_types.some((t) => t.id === id && String((t.slug ?? t.name)).toLowerCase().includes('other')),
+                                                ),
+                                            );
+
+                                            return isOtherTypeSelected ? (
+                                                <div className="mt-3">
+                                                    <label className="mb-1.5 block text-xs font-medium text-white/60">Other course (please specify)</label>
+                                                    <input
+                                                        type="text"
+                                                        value={form.data.other_course}
+                                                        onChange={(event) => form.setData('other_course', event.target.value)}
+                                                        className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-white/35 focus:border-secondary-container focus:outline-none"
+                                                    />
+                                                    {form.errors.other_course && <p className="mt-1 text-xs text-red-300">{form.errors.other_course}</p>}
+                                                </div>
+                                            ) : null;
+                                        })()}
 
                                         {form.errors.selected_courses && <p className="mt-1 text-xs text-red-300">{form.errors.selected_courses}</p>}
                                         {form.errors.preferred_course && <p className="mt-1 text-xs text-red-300">{form.errors.preferred_course}</p>}
@@ -316,15 +306,15 @@ export default function ApplyNow() {
                                     <div className="rounded-lg border border-white/10 bg-white/5 p-4 md:col-span-2">
                                         <label className="mb-2 block text-sm font-medium text-white/70">Preferred Location(s) * (You can select multiple)</label>
                                         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                                            {operatingLocations.map((location) => (
-                                                <label key={location} className="inline-flex items-start gap-2 text-sm text-white/85">
+                                            {featuredCities.map((city) => (
+                                                <label key={city.id} className="inline-flex items-start gap-2 text-sm text-white/85">
                                                     <input
                                                         type="checkbox"
-                                                        checked={form.data.selected_locations.includes(location)}
-                                                        onChange={() => toggleLocationSelection(location)}
+                                                        checked={form.data.selected_locations.includes(city.name)}
+                                                        onChange={() => toggleLocationSelection(city.name)}
                                                         className="mt-0.5"
                                                     />
-                                                    <span>{location}</span>
+                                                    <span>{city.name}</span>
                                                 </label>
                                             ))}
                                         </div>

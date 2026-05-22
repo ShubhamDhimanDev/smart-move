@@ -16,6 +16,7 @@ type City = {
     short_description?: string | null;
     is_featured_home: boolean;
     is_featured_nav: boolean;
+    is_featured_on_form: boolean;
     sort_order: number;
     is_active: boolean;
     page_content: {
@@ -40,6 +41,7 @@ type FormData = {
     short_description: string;
     is_featured_home: boolean;
     is_featured_nav: boolean;
+    is_featured_on_form: boolean;
     sort_order: number;
     is_active: boolean;
     page_content: {
@@ -60,6 +62,7 @@ function EditCity({ city }: Props) {
         image: city.image ?? '',
         short_description: city.short_description ?? '',
         is_featured_home: city.is_featured_home,
+        is_featured_on_form: city.is_featured_on_form,
         is_featured_nav: city.is_featured_nav,
         sort_order: city.sort_order,
         is_active: city.is_active,
@@ -169,7 +172,7 @@ function EditCity({ city }: Props) {
                                 />
                                 <span className="text-sm font-medium">Active</span>
                             </label>
-                        
+
                             <label className="flex items-center gap-3 cursor-pointer">
                                 <input
                                     type="checkbox"
@@ -193,6 +196,19 @@ function EditCity({ city }: Props) {
                                 <div>
                                     <span className="text-sm font-medium">Featured in Navigation</span>
                                     <p className="text-xs text-neutral-500">Shows in the Courses dropdown in the site header</p>
+                                </div>
+                            </label>
+
+                            <label className="flex items-center gap-3 cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    className="h-4 w-4 rounded"
+                                    checked={data.is_featured_on_form}
+                                    onChange={(e) => setData('is_featured_on_form', e.target.checked)}
+                                />
+                                <div>
+                                    <span className="text-sm font-medium">Featured on Apply Form</span>
+                                    <p className="text-xs text-neutral-500">Include this city in the Apply Now form location list</p>
                                 </div>
                             </label>
                         </div>

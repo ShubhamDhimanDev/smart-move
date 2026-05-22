@@ -18,8 +18,10 @@ class CourseCategoryController extends Controller
         return [
             'id' => $courseCategory->id,
             'name' => $courseCategory->name,
+            'label' => $courseCategory->label,
             'slug' => $courseCategory->slug,
             'description' => $courseCategory->description,
+            'is_featured_on_form' => $courseCategory->is_featured_on_form,
             'is_featured_home' => $courseCategory->is_featured_home,
             'is_featured_nav' => $courseCategory->is_featured_nav,
             'sort_order' => $courseCategory->sort_order,

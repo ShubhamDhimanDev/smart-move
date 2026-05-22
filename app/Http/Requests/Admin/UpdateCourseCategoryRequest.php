@@ -21,10 +21,12 @@ class UpdateCourseCategoryRequest extends FormRequest
 
         return [
             'name' => ['required', 'string', 'max:255'],
+            'label' => ['nullable', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'max:255', Rule::unique('course_categories', 'slug')->ignore($courseCategoryId)],
             'description' => ['nullable', 'string'],
             'is_featured_home' => ['nullable', 'boolean'],
             'is_featured_nav' => ['nullable', 'boolean'],
+            'is_featured_on_form' => ['nullable', 'boolean'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
             'is_active' => ['nullable', 'boolean'],
             'page_content.page_title' => ['nullable', 'string', 'max:255'],

@@ -26,6 +26,7 @@ class UpdateCityRequest extends FormRequest
             'image' => [$isFeatured ? 'required' : 'nullable', 'string', 'max:500'],
             'short_description' => [$isFeatured ? 'required' : 'nullable', 'string'],
             'is_featured_home' => ['nullable', 'boolean'],
+            'is_featured_on_form' => ['nullable', 'boolean'],
             'is_featured_nav' => ['nullable', 'boolean'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
             'is_active' => ['nullable', 'boolean'],

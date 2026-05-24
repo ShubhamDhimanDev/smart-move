@@ -17,7 +17,7 @@ use App\Http\Controllers\Admin\MediaUploadController;
 use App\Http\Controllers\Admin\PostCommentController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\UniversityPartnerController;
-// use App\Http\Controllers\Admin\UniversityController;
+use App\Http\Controllers\Admin\UniversityController;
 use App\Http\Controllers\CourseApplicationController;
 use App\Http\Controllers\PublicCourseController;
 use App\Http\Controllers\PublicEventController;
@@ -76,7 +76,7 @@ Route::middleware(['auth', 'admin.access'])->prefix('admin')->name('admin.')->gr
     });
 
     Route::middleware('admin.access:manage courses')->group(function () {
-        // Route::resource('universities', UniversityController::class)->except(['create', 'edit', 'show']);
+        Route::resource('universities', UniversityController::class)->except(['create', 'edit', 'show']);
         Route::resource('courses', CourseController::class)->except(['show']);
     });
 
@@ -119,11 +119,11 @@ Route::middleware(['auth', 'admin.access'])->prefix('admin')->name('admin.')->gr
 
 
 
-    // Route::middleware(['admin.access:manage permissions'])->group(function () {
-    //     Route::get('permissions', [AdminPermissionController::class, 'index'])->name('permissions.index');
-    //     Route::post('permissions', [AdminPermissionController::class, 'store'])->name('permissions.store');
-    //     Route::delete('permissions/{permission}', [AdminPermissionController::class, 'destroy'])->name('permissions.destroy');
-    // });
+    Route::middleware(['admin.access:manage permissions'])->group(function () {
+        Route::get('permissions', [AdminPermissionController::class, 'index'])->name('permissions.index');
+        Route::post('permissions', [AdminPermissionController::class, 'store'])->name('permissions.store');
+        Route::delete('permissions/{permission}', [AdminPermissionController::class, 'destroy'])->name('permissions.destroy');
+    });
 });
 
 require __DIR__.'/settings.php';

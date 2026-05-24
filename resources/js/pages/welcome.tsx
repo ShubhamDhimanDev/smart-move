@@ -253,6 +253,16 @@ type Partner = {
     universities_link: string | null;
 };
 
+type FeaturedPost = {
+    id: number;
+    title: string;
+    slug: string;
+    excerpt: string | null;
+    published_at: string | null;
+    featured_image_url: string | null;
+    categories: { id: number; name: string; slug: string }[];
+};
+
 type Props = {
     canRegister: boolean;
     upcomingEvents: WelcomeEvent[];
@@ -260,6 +270,7 @@ type Props = {
     featuredCourses: FeaturedCourse[];
     featuredCities: FeaturedCity[];
     partners?: Partner[];
+    recentPosts?: FeaturedPost[];
 };
 
 function formatDuration(duration: number | null, durationUnit: string | null): string {
@@ -311,7 +322,19 @@ function formatEventTimeRange(startsAt: string, endsAt: string | null, timezone?
     return `${startTime}-${endTime} ${timeZone}`;
 }
 
-export default function Welcome({ upcomingEvents, featuredCourseCategories, featuredCourses, featuredCities, partners = [] }: Props) {
+function formatPostDate(value: string | null): string {
+    if (!value) {
+        return 'Unscheduled';
+    }
+
+    return new Date(value).toLocaleDateString(undefined, {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    });
+}
+
+export default function Welcome({ upcomingEvents, featuredCourseCategories, featuredCourses, featuredCities, partners = [], recentPosts = [] }: Props) {
     const [activeCourseCategory, setActiveCourseCategory] = useState<'all' | string>('all');
     const [activeCitySlug, setActiveCitySlug] = useState<string>(featuredCities[0]?.slug ?? '');
 
@@ -364,6 +387,17 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
         [featuredCities, activeCitySlug],
     );
 
+    const cityDescription = useMemo(() => {
+        if (!activeCity) {
+            return 'Discover study opportunities and university pathways across the UK.';
+        }
+
+        return (
+            activeCity.description ?? (cityData as Record<string, any>)[activeCity.slug as City]?.description ??
+            `Discover study opportunities and university pathways in ${activeCity.name}.`
+        );
+    }, [activeCity]);
+
     return (
         <SiteLayout title="Smart Move Education Group | Your Journey to UK Degree" activePage="home">
             {/* Hero */}
@@ -384,10 +418,13 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
                 <div className="relative z-10 container mx-auto px-6 lg:px-10 max-w-7xl w-full pt-20 pb-44">
                     <div className="max-w-[52rem]">
                         <div className="flex items-center gap-3 mb-8 animate-fadeUp">
-                            <div className="flex items-center gap-2 text-secondary-container bg-secondary-container/10 border border-secondary-container/20 px-4 py-1.5 rounded-full">
+                            <Link
+                                href="/apply-now"
+                                className="inline-flex items-center gap-2 text-secondary-container bg-secondary-container/10 border border-secondary-container/20 px-4 py-1.5 rounded-full"
+                            >
                                 <span className="w-1.5 h-1.5 rounded-full bg-secondary-container animate-pulseGlow inline-block"></span>
                                 <span className="text-[11px] font-label font-bold uppercase tracking-widest">June 2026 Intake Open</span>
-                            </div>
+                            </Link>
                         </div>
                         <h1 className="font-headline font-black leading-[1.14] tracking-[-0.03em] overflow-visible pb-2">
                             <span className="text-white text-[clamp(3rem,8vw,6.5rem)] block animate-fadeUp">Your Journey to</span>
@@ -405,12 +442,12 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
                                 Start Your Application{' '}
                                 <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
                             </a>
-                            <a
+                            <Link
+                                href="/courses"
                                 className="border border-white/20 text-white px-8 py-4 rounded-full font-headline font-bold text-base hover:bg-white/10 transition-colors backdrop-blur-sm"
-                                href="#"
                             >
                                 Explore Courses
-                            </a>
+                            </Link>
                         </div>
                         <div className="flex flex-wrap gap-8 mt-16 animate-fadeUp-d3">
                             <div>
@@ -509,10 +546,13 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
                                     <div className="text-on-surface-variant text-sm">British Council certified since 2018</div>
                                 </div>
                             </div>
-                            <a className="inline-flex items-center gap-2 text-secondary-container font-bold hover:gap-4 transition-all font-headline group" href="#">
+                            <Link
+                                className="inline-flex items-center gap-2 text-secondary-container font-bold hover:gap-4 transition-all font-headline group"
+                                href="/about"
+                            >
                                 Learn more about us{' '}
                                 <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
-                            </a>
+                            </Link>
                         </div>
                     </div>
                 </div>
@@ -558,9 +598,8 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
                     </div>
                     <div className="space-y-4">
                         {filteredCourseTypes.map((course, index) => (
-                            <a
+                            <div
                                 key={course.id}
-                                href="#"
                                 className={`group relative bg-surface-container-high rounded-lg overflow-hidden flex flex-col md:flex-row hover:shadow-[0_4px_40px_rgba(239,165,0,.1)] transition-all duration-300 course-card-line block reveal ${index > 0 ? 'reveal-d1' : ''}`}
                             >
                                 <div className="md:w-64 h-52 md:h-auto overflow-hidden flex-shrink-0">
@@ -587,12 +626,15 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
                                         <h3 className="text-white font-headline font-bold text-2xl mb-3 group-hover:text-secondary-container transition-colors">{course.title}</h3>
                                         <p className="text-on-surface-variant text-sm leading-relaxed max-w-xl">{course.excerpt || 'Explore this featured course and its latest entry requirements.'}</p>
                                     </div>
-                                    <div className="flex items-center gap-2 mt-6 text-secondary-container font-bold text-sm font-headline">
-                                        View course{' '}
+                                    <Link
+                                        href={course.category?.slug ? `/courses?category=${encodeURIComponent(course.category.slug)}` : '/courses'}
+                                        className="inline-flex items-center gap-2 mt-6 text-secondary-container font-bold text-sm font-headline"
+                                    >
+                                        View courses{' '}
                                         <span className="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
-                                    </div>
+                                    </Link>
                                 </div>
-                            </a>
+                            </div>
                         ))}
                         {filteredCourseTypes.length === 0 && (
                             <div className="rounded-lg border border-outline-variant/30 bg-surface-container-high p-8 text-center text-on-surface-variant">
@@ -601,13 +643,13 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
                         )}
                     </div>
                     <div className="mt-10 flex justify-center reveal">
-                        <a
+                        <Link
+                            href="/courses"
                             className="inline-flex items-center gap-2 border border-outline-variant/30 text-white/70 hover:text-white hover:border-outline-variant/60 px-8 py-3 rounded-full font-headline font-semibold text-sm transition-all"
-                            href="#"
                         >
-                            Browse All Course Areas{' '}
+                            Browse All Courses{' '}
                             <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </section>
@@ -651,17 +693,14 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
                                     <h3 className="text-3xl font-headline font-bold text-white mb-5">
                                         Study in <span className="text-gradient-gold">{activeCity?.name ?? 'UK'}</span>
                                     </h3>
-                                    <p className="text-on-surface-variant leading-relaxed mb-8 text-sm">
-                                        {activeCity?.description ||
-                                            `Discover study opportunities and university pathways in ${activeCity?.name ?? 'this city'}.`}
-                                    </p>
-                                    <a
+                                    <p className="text-on-surface-variant leading-relaxed mb-8 text-sm">{cityDescription}</p>
+                                    <Link
                                         className="inline-flex items-center gap-2 text-secondary-container font-bold hover:gap-4 transition-all font-headline text-sm group"
-                                        href="#"
+                                        href={activeCity ? `/courses?city=${encodeURIComponent(activeCity.slug)}` : '/courses'}
                                     >
                                         Explore {activeCity?.name ?? 'city'} courses{' '}
                                         <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
-                                    </a>
+                                    </Link>
                                 </div>
                                 <div className="md:w-1/2 h-72 md:h-auto">
                                     {activeCity?.image ? (
@@ -927,57 +966,48 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
                         </a>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        {[
-                            {
-                                img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBKeKDbjQ6X5q9gPZ7NPz-Nnzi8NatXwuLWEWusQYbLw1riIaFIYs4VdJNlGuUzCd_gGBi7dFxpf8YRMCBWyhX6wPenYKSywRCD5RZH2Od84_fQtxgLUfL4Vq3WO7bwO9H0uElj8bIQhj49LnMRE-jST-pJeLBGuH1zUqsHiu2Dw2VC2s2l2kpA0goBR6jAcFO0AXflbffdm_GUsWkvIfe2aUKygk9Orf9WiPQWZT0A_tPq0_vvpsIhGSxggKB2p6iJ8pwlWJLsB6Lc',
-                                imgAlt: 'Students celebrating graduation at a UK university lawn',
-                                badge: 'Visa Guide',
-                                date: 'March 20, 2026',
-                                title: 'Everything You Need to Know About the Graduate Visa Route',
-                                desc: 'Stay ahead with the latest immigration updates for international students wishing to stay and work in the UK after graduation.',
-                                delay: '',
-                            },
-                            {
-                                img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDWymeQnXQLF2mBnB3u9sFSlAx26NV-SAupNiggwx_YOldxKP2QbhopkkwYdRlfNK6-5fUeBxxM-Zz4HT1WoQRRW3nqvF9pBGJfw9Io17LpomCxWxRv-vTSUVNHIhWxl7tm8Q9cuRI35Uabm1TZlXjtf1L5Of6RLfcmWoaJhEXJLJKyPK3GFjL86UWsOYO64xJGg0sZY3vwGWrMD0fwjxwm_YMukiWWha5XnLh0jUhyFqIcKCEQZiwcG_2kSwipYD9rgiOQXvFTWZUl',
-                                imgAlt: 'Modern university library interior',
-                                badge: 'Scholarships',
-                                date: 'March 14, 2026',
-                                title: 'Top 5 UK Scholarships for International Students in 2026',
-                                desc: 'Discover the most prestigious scholarship opportunities available to international students applying to UK universities this year.',
-                                delay: 'reveal-d1',
-                            },
-                            {
-                                img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCSqo2W_O8lTfiP64hOYVR_ZgiD--tggce3xPQEsbU0OTYO26Z4ujyaF1xbOCFZVm67bSl7YYjKUkHkrYctsY8Uxqg9TiJYhnqnASc5y469EkOognZ-VZm9hmascRhoY0HfbSgXOWPXBtTBcSIoanpp_TycouoXFAn2TSvwnNmx9KbNcxAB8gMj1BSL4xvb0PUlJs_f3SYjB3DZI_kut630O8AHZiH19R6wGq52ayKD_SRYrL-gzOe_uN855B3MePFjfggOgGSXyy1A',
-                                imgAlt: 'Diverse students laughing in a city street',
-                                badge: 'Student Life',
-                                date: 'March 8, 2026',
-                                title: 'How to Manage Your Budget While Studying in the UK',
-                                desc: 'Practical tips on food, transport and leisure to help international students thrive financially in major UK cities.',
-                                delay: 'reveal-d2',
-                            },
-                        ].map((post) => (
-                            <article key={post.title} className={`group reveal ${post.delay}`}>
-                                <div className="h-52 rounded-lg overflow-hidden mb-5 relative">
-                                    <img
-                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                        alt={post.imgAlt}
-                                        src={post.img}
-                                    />
-                                    <span className="absolute top-3 left-3 bg-black/50 backdrop-blur-sm text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest font-label">
-                                        {post.badge}
-                                    </span>
-                                </div>
-                                <p className="text-on-surface-variant text-xs font-label mb-2">{post.date}</p>
-                                <h3 className="text-white font-headline font-bold text-xl mb-3 leading-snug group-hover:text-secondary-container transition-colors">
-                                    {post.title}
-                                </h3>
-                                <p className="text-on-surface-variant text-sm leading-relaxed mb-4">{post.desc}</p>
-                                <a className="inline-flex items-center gap-1.5 text-secondary-container font-bold text-sm font-headline group/link" href="#">
-                                    Read Article{' '}
-                                    <span className="material-symbols-outlined text-[16px] group-hover/link:translate-x-1 transition-transform">arrow_forward</span>
-                                </a>
-                            </article>
-                        ))}
+                        {recentPosts.length === 0 ? (
+                            <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] px-6 py-16 text-center text-white/40">
+                                No published posts yet.
+                            </div>
+                        ) : (
+                            recentPosts.map((post, index) => {
+                                const delay = index === 0 ? '' : index === 1 ? 'reveal-d1' : 'reveal-d2';
+
+                                return (
+                                    <article key={post.id} className={`group reveal ${delay}`}>
+                                        <div className="h-52 rounded-lg overflow-hidden mb-5 relative">
+                                            {post.featured_image_url ? (
+                                                <img
+                                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                                    alt={post.title}
+                                                    src={post.featured_image_url}
+                                                />
+                                            ) : (
+                                                <div className="w-full h-full bg-white/5 flex items-center justify-center text-white/50">
+                                                    {post.title}
+                                                </div>
+                                            )}
+
+                                            <span className="absolute top-3 left-3 bg-black/50 backdrop-blur-sm text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest font-label">
+                                                {post.categories && post.categories.length > 0 ? post.categories[0].name : 'Blog'}
+                                            </span>
+                                        </div>
+
+                                        <p className="text-on-surface-variant text-xs font-label mb-2">{formatPostDate(post.published_at)}</p>
+                                        <h3 className="text-white font-headline font-bold text-xl mb-3 leading-snug group-hover:text-secondary-container transition-colors">
+                                            {post.title}
+                                        </h3>
+                                        <p className="text-on-surface-variant text-sm leading-relaxed mb-4">{post.excerpt ?? 'Read the full post for details.'}</p>
+
+                                        <Link href={`/blog/${post.slug}`} className="inline-flex items-center gap-1.5 text-secondary-container font-bold text-sm font-headline group/link">
+                                            Read Article{' '}
+                                            <span className="material-symbols-outlined text-[16px] group-hover/link:translate-x-1 transition-transform">arrow_forward</span>
+                                        </Link>
+                                    </article>
+                                );
+                            })
+                        )}
                     </div>
                 </div>
             </section>

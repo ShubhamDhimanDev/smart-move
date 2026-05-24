@@ -7,6 +7,8 @@ use App\Models\CourseCategory;
 use App\Models\CourseType;
 use App\Models\Event;
 use App\Models\Page;
+use App\Models\Post;
+use App\Models\Category;
 use App\Models\UniversityPartner;
 use Illuminate\Http\Response;
 use Inertia\Inertia;
@@ -104,12 +106,43 @@ class PublicPageController extends Controller
             ])
             ->values();
 
+        $recentPosts = Post::query()
+            ->with(['user:id,name', 'categories:id,name,slug'])
+            ->where('status', 'published')
+            ->where(function ($query): void {
+                $query->whereNull('published_at')
+                    ->orWhere('published_at', '<=', now());
+            })
+            ->orderByDesc('published_at')
+            ->latest('id')
+            ->limit(3)
+            ->get()
+            ->map(fn (Post $post): array => [
+                'id' => $post->id,
+                'title' => $post->title,
+                'slug' => $post->slug,
+                'excerpt' => $post->excerpt,
+                'published_at' => $post->published_at?->toIso8601String(),
+                'featured_image_url' => $post->getFirstMediaUrl('featured_image') ?: null,
+                'categories' => $post->categories->map(fn (Category $category): array => [
+                    'id' => $category->id,
+                    'name' => $category->name,
+                    'slug' => $category->slug,
+                ])->values()->all(),
+                'author' => [
+                    'id' => $post->user?->id,
+                    'name' => $post->user?->name,
+                ],
+            ])
+            ->values();
+
         return inertia('welcome', [
             'upcomingEvents' => $upcomingEvents,
             'featuredCourseCategories' => $featuredCourseCategories,
             'featuredCourses' => $featuredCourses,
             'featuredCities' => $featuredCities,
             'partners' => $partners,
+            'recentPosts' => $recentPosts,
         ]);
     }
 

@@ -376,7 +376,7 @@ export default function PublicCoursesIndex({
 
                                     {course.cities.length > 0 ? (
                                         <div className="mt-4 flex flex-wrap gap-1.5">
-                                            {course.cities.slice(0, 3).map((city) => (
+                                            {course.cities.map((city) => (
                                                 <span
                                                     key={city.id}
                                                     className="rounded-full border border-white/15 bg-white/[0.03] px-2.5 py-0.5 text-[11px] text-white/55"

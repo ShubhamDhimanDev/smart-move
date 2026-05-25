@@ -30,7 +30,7 @@ export default function MediaPickerModal({ open, onClose, onSelect }: Props) {
     const [items, setItems] = useState<MediaItem[]>([]);
     const [loading, setLoading] = useState(false);
     const [selected, setSelected] = useState<string | null>(null);
-    const [uploadFile, setUploadFile] = useState<File | null>(null);
+    const [uploadFiles, setUploadFiles] = useState<File[]>([]);
     const [uploading, setUploading] = useState(false);
     const [uploadError, setUploadError] = useState<string | null>(null);
 
@@ -66,14 +66,14 @@ export default function MediaPickerModal({ open, onClose, onSelect }: Props) {
     }
 
     const uploadToMedia = async () => {
-        if (!uploadFile || uploading) return;
+        if (uploading || uploadFiles.length === 0) return;
 
         setUploading(true);
         setUploadError(null);
 
         try {
             const body = new FormData();
-            body.append('file', uploadFile);
+            uploadFiles.forEach((f) => body.append('files[]', f));
 
             const response = await fetch('/admin/media/upload', {
                 method: 'POST',
@@ -91,17 +91,21 @@ export default function MediaPickerModal({ open, onClose, onSelect }: Props) {
                     | { message?: string; errors?: Record<string, string[]> }
                     | null;
 
-                const message = payload?.errors?.file?.[0] ?? payload?.message ?? 'Failed to upload image.';
+                const message = payload?.errors?.files?.[0] ?? payload?.message ?? 'Failed to upload image.';
                 setUploadError(message);
                 return;
             }
 
-            const payload = (await response.json()) as { id: number; file_name: string; url: string };
+            const payload = (await response.json()) as
+                | { id: number; file_name: string; url: string }
+                | Array<{ id: number; file_name: string; url: string }>;
 
-            // Refresh library and select uploaded file
+            const uploaded = Array.isArray(payload) ? payload : payload ? [payload] : [];
+
+            // Refresh library and select first uploaded file
             await load();
-            setSelected(payload.url);
-            setUploadFile(null);
+            if (uploaded.length) setSelected(uploaded[0].url);
+            setUploadFiles([]);
         } catch (e) {
             setUploadError('Failed to upload image. Please try again.');
         } finally {
@@ -132,14 +136,20 @@ export default function MediaPickerModal({ open, onClose, onSelect }: Props) {
                             <input
                                 type="file"
                                 accept="image/*"
+                                multiple
                                 className="text-sm"
                                 onChange={(e) => {
-                                    setUploadFile(e.target.files?.[0] ?? null);
+                                    setUploadFiles(Array.from(e.target.files ?? []));
                                     setUploadError(null);
                                 }}
                             />
+                            {uploadFiles.length > 0 ? (
+                                <p className="text-sm text-neutral-500 mt-2">
+                                    {uploadFiles.map((f) => f.name).join(', ')}
+                                </p>
+                            ) : null}
                             <div className="flex items-center gap-2 ml-auto">
-                                <Button type="button" variant="outline" onClick={uploadToMedia} disabled={!uploadFile || uploading}>
+                                <Button type="button" variant="outline" onClick={uploadToMedia} disabled={!uploadFiles.length || uploading}>
                                     {uploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                                     Upload
                                 </Button>

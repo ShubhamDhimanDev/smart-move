@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Concerns\ImageUrlHelpers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreCourseTypeRequest;
 use App\Http\Requests\Admin\UpdateCourseTypeRequest;
@@ -14,6 +15,7 @@ use Inertia\Response;
 
 class CourseTypeController extends Controller
 {
+    use ImageUrlHelpers;
     private function mapCourseType(CourseType $courseType): array
     {
         return [
@@ -80,6 +82,8 @@ class CourseTypeController extends Controller
     public function store(StoreCourseTypeRequest $request): RedirectResponse
     {
         $validated = $request->validated();
+        $validated = $this->sanitizeImageFieldsInArray($validated, ['image']);
+
         $courseType = CourseType::create($validated);
         $courseType->courseCategories()->sync($validated['course_category_ids'] ?? []);
 
@@ -89,6 +93,8 @@ class CourseTypeController extends Controller
     public function update(UpdateCourseTypeRequest $request, CourseType $courseType): RedirectResponse
     {
         $validated = $request->validated();
+        $validated = $this->sanitizeImageFieldsInArray($validated, ['image']);
+
         $courseType->update($validated);
         $courseType->courseCategories()->sync($validated['course_category_ids'] ?? []);
 

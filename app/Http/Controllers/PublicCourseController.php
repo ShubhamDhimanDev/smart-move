@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Concerns\ImageUrlHelpers;
 use App\Models\City;
 use App\Models\CourseCategory;
 use App\Models\CourseType;
@@ -13,6 +14,8 @@ use Inertia\Response;
 
 class PublicCourseController extends Controller
 {
+    use ImageUrlHelpers;
+
     public function __construct(private PublicCourseListingService $listingService) {}
 
     public function index(Request $request): Response
@@ -175,7 +178,7 @@ class PublicCourseController extends Controller
                 ]),
                 'og_title' => $category?->pageContent?->og_title ?? $city?->pageContent?->og_title,
                 'og_description' => $category?->pageContent?->og_description ?? $city?->pageContent?->og_description,
-                'og_image' => $category?->pageContent?->og_image ?? $city?->pageContent?->og_image,
+                'og_image' => $this->ensureFullUrl($category?->pageContent?->og_image ?? $city?->pageContent?->og_image),
             ],
         ]);
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Concerns\ImageUrlHelpers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreCityRequest;
 use App\Http\Requests\Admin\UpdateCityRequest;
@@ -13,6 +14,7 @@ use Inertia\Response;
 
 class CityController extends Controller
 {
+    use ImageUrlHelpers;
     private function mapCity(City $city): array
     {
         return [
@@ -77,10 +79,14 @@ class CityController extends Controller
 
     public function store(StoreCityRequest $request): RedirectResponse
     {
-        $city = City::create($request->safe()->except('page_content'));
+        $payload = $request->safe()->except('page_content');
+        $payload = $this->sanitizeImageFieldsInArray($payload, ['image']);
+
+        $city = City::create($payload);
 
         $pageContent = $request->input('page_content');
         if (is_array($pageContent) && $pageContent !== []) {
+            $pageContent = $this->sanitizeImageFieldsInArray($pageContent, ['featured_image', 'og_image']);
             $city->pageContent()->create($pageContent);
         }
 
@@ -89,10 +95,14 @@ class CityController extends Controller
 
     public function update(UpdateCityRequest $request, City $city): RedirectResponse
     {
-        $city->update($request->safe()->except('page_content'));
+        $payload = $request->safe()->except('page_content');
+        $payload = $this->sanitizeImageFieldsInArray($payload, ['image']);
+
+        $city->update($payload);
 
         $pageContent = $request->input('page_content');
         if (is_array($pageContent) && $pageContent !== []) {
+            $pageContent = $this->sanitizeImageFieldsInArray($pageContent, ['featured_image', 'og_image']);
             $city->pageContent()->updateOrCreate([], $pageContent);
         }
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Concerns\ImageUrlHelpers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreCourseCategoryRequest;
 use App\Http\Requests\Admin\UpdateCourseCategoryRequest;
@@ -13,6 +14,7 @@ use Inertia\Response;
 
 class CourseCategoryController extends Controller
 {
+    use ImageUrlHelpers;
     private function mapCategory(CourseCategory $courseCategory): array
     {
         return [
@@ -77,10 +79,12 @@ class CourseCategoryController extends Controller
 
     public function store(StoreCourseCategoryRequest $request): RedirectResponse
     {
-        $courseCategory = CourseCategory::create($request->safe()->except('page_content'));
+        $payload = $request->safe()->except('page_content');
+        $courseCategory = CourseCategory::create($payload);
 
         $pageContent = $request->input('page_content');
         if (is_array($pageContent) && $pageContent !== []) {
+            $pageContent = $this->sanitizeImageFieldsInArray($pageContent, ['featured_image', 'og_image']);
             $courseCategory->pageContent()->create($pageContent);
         }
 
@@ -89,10 +93,12 @@ class CourseCategoryController extends Controller
 
     public function update(UpdateCourseCategoryRequest $request, CourseCategory $courseCategory): RedirectResponse
     {
-        $courseCategory->update($request->safe()->except('page_content'));
+        $payload = $request->safe()->except('page_content');
+        $courseCategory->update($payload);
 
         $pageContent = $request->input('page_content');
         if (is_array($pageContent) && $pageContent !== []) {
+            $pageContent = $this->sanitizeImageFieldsInArray($pageContent, ['featured_image', 'og_image']);
             $courseCategory->pageContent()->updateOrCreate([], $pageContent);
         }
 

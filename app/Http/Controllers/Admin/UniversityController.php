@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Concerns\ImageUrlHelpers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreUniversityRequest;
 use App\Http\Requests\Admin\UpdateUniversityRequest;
@@ -14,6 +15,7 @@ use Inertia\Response;
 
 class UniversityController extends Controller
 {
+    use ImageUrlHelpers;
     public function index(): Response
     {
         return Inertia::render('Admin/Universities/Index', [
@@ -43,17 +45,19 @@ class UniversityController extends Controller
                 ])
                 ->values()
                 ->all(),
-            'cities' => City::query()->select(['id', 'name'])->orderBy('name')->get(),
-            'countries' => Country::query()->select(['id', 'name'])->orderBy('name')->get(),
+            'cities' => City::query()->select(['id', 'name'])->get(),
+            'countries' => Country::query()->select(['id', 'name'])->get(),
         ]);
     }
 
     public function store(StoreUniversityRequest $request): RedirectResponse
     {
-        $university = University::create($request->safe()->except('page_content'));
+        $payload = $request->safe()->except('page_content');
+        $university = University::create($payload);
 
         $pageContent = $request->input('page_content');
         if (is_array($pageContent) && $pageContent !== []) {
+            $pageContent = $this->sanitizeImageFieldsInArray($pageContent, ['featured_image', 'og_image']);
             $university->pageContent()->create($pageContent);
         }
 
@@ -62,10 +66,12 @@ class UniversityController extends Controller
 
     public function update(UpdateUniversityRequest $request, University $university): RedirectResponse
     {
-        $university->update($request->safe()->except('page_content'));
+        $payload = $request->safe()->except('page_content');
+        $university->update($payload);
 
         $pageContent = $request->input('page_content');
         if (is_array($pageContent) && $pageContent !== []) {
+            $pageContent = $this->sanitizeImageFieldsInArray($pageContent, ['featured_image', 'og_image']);
             $university->pageContent()->updateOrCreate([], $pageContent);
         }
 

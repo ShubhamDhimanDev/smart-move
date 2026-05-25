@@ -13,9 +13,11 @@ use App\Models\CourseType;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Concerns\ImageUrlHelpers;
 
 class CourseController extends Controller
 {
+    use ImageUrlHelpers;
     public function index(): Response
     {
         return Inertia::render('Admin/Courses/Index', [
@@ -66,6 +68,7 @@ class CourseController extends Controller
 
         $pageContent = $request->input('page_content');
         if (is_array($pageContent) && $pageContent !== []) {
+            $pageContent = $this->sanitizeImageFieldsInArray($pageContent, ['featured_image', 'og_image']);
             $course->pageContent()->create($pageContent);
         }
 
@@ -114,6 +117,7 @@ class CourseController extends Controller
 
         $pageContent = $request->input('page_content');
         if (is_array($pageContent) && $pageContent !== []) {
+            $pageContent = $this->sanitizeImageFieldsInArray($pageContent, ['featured_image', 'og_image']);
             $course->pageContent()->updateOrCreate([], $pageContent);
         }
 

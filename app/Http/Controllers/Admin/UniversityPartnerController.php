@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Concerns\ImageUrlHelpers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreUniversityPartnerRequest;
 use App\Http\Requests\Admin\UpdateUniversityPartnerRequest;
@@ -12,6 +13,7 @@ use Inertia\Response;
 
 class UniversityPartnerController extends Controller
 {
+    use ImageUrlHelpers;
     private function mapPartner(UniversityPartner $partner): array
     {
         return [
@@ -36,14 +38,20 @@ class UniversityPartnerController extends Controller
 
     public function store(StoreUniversityPartnerRequest $request): RedirectResponse
     {
-        UniversityPartner::create($request->safe()->all());
+        $data = $request->safe()->all();
+        $data = $this->sanitizeImageFieldsInArray($data, ['image']);
+
+        UniversityPartner::create($data);
 
         return to_route('admin.university-partners.index')->with('success', 'Partner created successfully.');
     }
 
     public function update(UpdateUniversityPartnerRequest $request, UniversityPartner $university_partner): RedirectResponse
     {
-        $university_partner->update($request->safe()->all());
+        $data = $request->safe()->all();
+        $data = $this->sanitizeImageFieldsInArray($data, ['image']);
+
+        $university_partner->update($data);
 
         return to_route('admin.university-partners.index')->with('success', 'Partner updated successfully.');
     }

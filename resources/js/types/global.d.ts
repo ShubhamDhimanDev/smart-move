@@ -9,6 +9,7 @@ declare module '@inertiajs/core' {
             sidebarOpen: boolean;
             featuredCategories: Pick<CourseCategoryTaxonomy, 'id' | 'name' | 'slug'>[];
             featuredCities: Pick<CityTaxonomy, 'id' | 'name' | 'slug'>[];
+            navFeaturedCities: Pick<CityTaxonomy, 'id' | 'name' | 'slug'>[];
             [key: string]: unknown;
         };
     }

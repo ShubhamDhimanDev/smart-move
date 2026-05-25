@@ -62,7 +62,7 @@ class HandleInertiaRequests extends Middleware
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'featuredCategories' => fn () => CourseCategory::active()->featuredNav()->ordered()->get(['id', 'name', 'slug'])->toArray(),
-            'featuredCities' => fn () => City::active()->featuredNav()->ordered()->get(['id', 'name', 'slug'])->toArray(),
+            'navFeaturedCities' => fn () => City::active()->featuredNav()->ordered()->get(['id', 'name', 'slug'])->toArray(),
         ];
     }
 }

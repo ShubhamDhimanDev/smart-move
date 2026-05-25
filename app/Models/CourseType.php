@@ -26,6 +26,7 @@ class CourseType extends Model
         'sort_order',
         'is_active',
         'is_featured',
+        'show_in_filters',
     ];
 
     /**
@@ -36,6 +37,7 @@ class CourseType extends Model
         return [
             'is_active' => 'boolean',
             'is_featured' => 'boolean',
+            'show_in_filters' => 'boolean',
             'sort_order' => 'integer',
         ];
     }

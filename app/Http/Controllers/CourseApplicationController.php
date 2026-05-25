@@ -36,10 +36,11 @@ class CourseApplicationController extends Controller
                     'name' => $c->name,
                     'label' => $c->label,
                     'course_types' => $c->courseTypes->map(fn (CourseType $t) => [
-                        'id' => $t->id,
-                        'name' => $t->name,
-                        'slug' => $t->slug,
-                    ])->values()->all(),
+                            'id' => $t->id,
+                            'name' => $t->name,
+                            'slug' => $t->slug,
+                            'sort_order' => $t->sort_order,
+                        ])->values()->all(),
                 ];
             })->values()->all();
 

@@ -10,8 +10,8 @@ type Option = {
 type CoursePayload = {
     title: string;
     slug: string;
-    course_category_id: number | null;
-    course_type_id: number | null;
+    course_category_ids: number[];
+    course_type_ids: number[];
     excerpt: string;
     status: 'draft' | 'published';
     duration: number | null;
@@ -35,8 +35,8 @@ export default function CourseForm({ mode, course, categories, types, cities, su
     const form = useForm<CoursePayload>({
         title: course?.title ?? '',
         slug: course?.slug ?? '',
-        course_category_id: course?.course_category_id ?? null,
-        course_type_id: course?.course_type_id ?? null,
+        course_category_ids: (course as any)?.course_category_ids ?? [],
+        course_type_ids: (course as any)?.course_type_ids ?? [],
         excerpt: course?.excerpt ?? '',
         status: course?.status ?? 'draft',
         duration: course?.duration ?? null,
@@ -75,35 +75,26 @@ export default function CourseForm({ mode, course, categories, types, cities, su
 
                 <div>
                     <label className="mb-2 block text-sm font-medium text-neutral-700">Category</label>
-                    <select
-                        className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm"
-                        value={form.data.course_category_id ?? ''}
-                        onChange={(e) => form.setData('course_category_id', e.target.value ? Number(e.target.value) : null)}
-                    >
-                        <option value="">No category</option>
-                        {categories.map((category) => (
-                            <option key={category.id} value={category.id}>
-                                {category.name}
-                            </option>
-                        ))}
-                    </select>
+                    <MultiSelect
+                        id="course_category_ids"
+                        options={categories.map((c) => ({ value: c.id, label: c.name }))}
+                        value={form.data.course_category_ids}
+                        onChange={(ids) => form.setData('course_category_ids', ids)}
+                        placeholder="Select categories…"
+                    />
+                    {form.errors.course_category_ids ? <p className="mt-1 text-xs text-red-600">{form.errors.course_category_ids}</p> : null}
                 </div>
 
                 <div>
                     <label className="mb-2 block text-sm font-medium text-neutral-700">Type</label>
-                    <select
-                        className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm"
-                        value={form.data.course_type_id ?? ''}
-                        onChange={(e) => form.setData('course_type_id', e.target.value ? Number(e.target.value) : null)}
-                    >
-                        <option value="">No type</option>
-                        {types.map((t) => (
-                            <option key={t.id} value={t.id}>
-                                {t.name}
-                            </option>
-                        ))}
-                    </select>
-                    {form.errors.course_type_id ? <p className="mt-1 text-xs text-red-600">{form.errors.course_type_id}</p> : null}
+                    <MultiSelect
+                        id="course_type_ids"
+                        options={types.map((t) => ({ value: t.id, label: t.name }))}
+                        value={form.data.course_type_ids}
+                        onChange={(ids) => form.setData('course_type_ids', ids)}
+                        placeholder="Select types…"
+                    />
+                    {form.errors.course_type_ids ? <p className="mt-1 text-xs text-red-600">{form.errors.course_type_ids}</p> : null}
                 </div>
 
                 <div>

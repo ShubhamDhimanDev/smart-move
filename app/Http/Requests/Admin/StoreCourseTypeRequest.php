@@ -30,6 +30,7 @@ class StoreCourseTypeRequest extends FormRequest
             'sort_order' => ['nullable', 'integer', 'min:0'],
             'is_active' => ['nullable', 'boolean'],
             'is_featured' => ['nullable', 'boolean'],
+            'show_in_filters' => ['nullable', 'boolean'],
         ];
     }
 }

@@ -71,6 +71,16 @@ class Course extends Model
         return $this->belongsTo(CourseType::class, 'course_type_id');
     }
 
+    public function categories(): BelongsToMany
+    {
+        return $this->belongsToMany(CourseCategory::class, 'course_course_category');
+    }
+
+    public function courseTypes(): BelongsToMany
+    {
+        return $this->belongsToMany(CourseType::class, 'course_course_type');
+    }
+
     public function cities(): BelongsToMany
     {
         return $this->belongsToMany(City::class, 'course_city');

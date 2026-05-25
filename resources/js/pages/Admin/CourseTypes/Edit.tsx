@@ -25,6 +25,7 @@ type CourseType = {
     sort_order: number;
     is_active: boolean;
     is_featured: boolean;
+    show_in_filters: boolean;
 };
 
 type Props = {
@@ -42,6 +43,7 @@ type FormData = {
     sort_order: number;
     is_active: boolean;
     is_featured: boolean;
+    show_in_filters: boolean;
 };
 
 function EditCourseType({ courseType, courseCategories }: Props) {
@@ -55,6 +57,7 @@ function EditCourseType({ courseType, courseCategories }: Props) {
         sort_order: courseType.sort_order,
         is_active: courseType.is_active,
         is_featured: courseType.is_featured,
+        show_in_filters: courseType.show_in_filters ?? false,
     });
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -203,6 +206,16 @@ function EditCourseType({ courseType, courseCategories }: Props) {
                                     <span className="text-sm font-medium">Featured on Homepage</span>
                                     <p className="text-xs text-neutral-500">Shows this area in the homepage featured section.</p>
                                 </div>
+                            </label>
+
+                            <label className="flex cursor-pointer items-center gap-3">
+                                <input
+                                    type="checkbox"
+                                    className="h-4 w-4 rounded"
+                                    checked={data.show_in_filters}
+                                    onChange={(e) => setData('show_in_filters', e.target.checked)}
+                                />
+                                <span className="text-sm font-medium">Show in Filters</span>
                             </label>
                         </div>
 

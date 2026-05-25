@@ -119,7 +119,6 @@ Route::middleware(['auth', 'admin.access'])->prefix('admin')->name('admin.')->gr
     });
 
 
-
     Route::middleware(['admin.access:manage permissions'])->group(function () {
         Route::get('permissions', [AdminPermissionController::class, 'index'])->name('permissions.index');
         Route::post('permissions', [AdminPermissionController::class, 'store'])->name('permissions.store');

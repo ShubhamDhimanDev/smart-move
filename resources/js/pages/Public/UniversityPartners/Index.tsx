@@ -32,7 +32,7 @@ export default function UniversityPartners({ partners, title = 'University Partn
                         <div key={p.id} className="flex items-center justify-center">
                             {p.universities_link ? (
                                 <a href={p.universities_link} target="_blank" rel="noopener noreferrer" className="block w-full">
-                                    <div className="mx-auto flex h-36 w-full max-w-[220px] items-center justify-center overflow-hidden rounded-lg ">
+                                    <div className="mx-auto flex h-36 w-full max-w-[220px] items-center justify-center overflow-hidden rounded-lg bg-white">
                                         {p.image ? (
                                             <img src={p.image} alt={p.name} className="max-h-24 max-w-full object-contain" />
                                         ) : (
@@ -41,7 +41,7 @@ export default function UniversityPartners({ partners, title = 'University Partn
                                     </div>
                                 </a>
                             ) : (
-                                <div className="mx-auto flex h-36 w-full max-w-[220px] items-center justify-center overflow-hidden rounded-lg">
+                                <div className="mx-auto flex h-36 w-full max-w-[220px] items-center justify-center overflow-hidden rounded-lg bg-white">
                                     {p.image ? (
                                         <img src={p.image} alt={p.name} className="max-h-24 max-w-full object-contain" />
                                     ) : (

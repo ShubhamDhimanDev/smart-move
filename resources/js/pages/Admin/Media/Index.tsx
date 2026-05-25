@@ -15,7 +15,7 @@ type Props = {
 };
 
 type UploadFormData = {
-    file: File | null;
+    files: File[];
 };
 
 function humanSize(bytes: number): string {
@@ -36,32 +36,32 @@ function isImage(mimeType: string): boolean {
 
 export default function MediaIndex({ media }: Props) {
     const uploadForm = useForm<UploadFormData>({
-        file: null,
+        files: [],
     });
     const [, copyToClipboard] = useClipboard();
     const [copiedMessage, setCopiedMessage] = useState<string | null>(null);
 
     const submitUpload = () => {
-        if (!uploadForm.data.file) {
+        if (!uploadForm.data.files || uploadForm.data.files.length === 0) {
             return;
         }
 
         uploadForm.post(mediaRoutes.upload.url(), {
             forceFormData: true,
             preserveScroll: true,
-            onSuccess: () => uploadForm.reset('file'),
+            onSuccess: () => uploadForm.reset('files'),
         });
     };
 
     const onDrop = (event: DragEvent<HTMLLabelElement>) => {
         event.preventDefault();
-        const file = event.dataTransfer.files?.[0];
+        const files = Array.from(event.dataTransfer.files ?? []);
 
-        if (!file) {
+        if (!files.length) {
             return;
         }
 
-        uploadForm.setData('file', file);
+        uploadForm.setData('files', files);
     };
 
     const deleteMedia = (item: MediaItem) => {
@@ -112,16 +112,17 @@ export default function MediaIndex({ media }: Props) {
                     <Input
                         id="media-upload"
                         type="file"
+                        multiple
                         className="hidden"
-                        onChange={(event) => uploadForm.setData('file', event.target.files?.[0] ?? null)}
+                        onChange={(event) => uploadForm.setData('files', Array.from(event.target.files ?? []))}
                     />
 
                     <div className="mt-3 flex items-center gap-3">
-                        <Button type="button" disabled={!uploadForm.data.file || uploadForm.processing} onClick={submitUpload}>
-                            Upload File
+                        <Button type="button" disabled={!uploadForm.data.files.length || uploadForm.processing} onClick={submitUpload}>
+                            Upload File(s)
                         </Button>
-                        {uploadForm.data.file ? (
-                            <span className="text-sm text-neutral-600">{uploadForm.data.file.name}</span>
+                        {uploadForm.data.files && uploadForm.data.files.length ? (
+                            <span className="text-sm text-neutral-600">{uploadForm.data.files.map((f) => f.name).join(', ')}</span>
                         ) : null}
                     </div>
                 </section>

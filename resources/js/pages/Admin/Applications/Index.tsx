@@ -1,10 +1,19 @@
+import React from 'react';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { withAdminLayout } from '@/pages/Admin/AdminLayout';
 import type { CourseApplication, PaginatedResponse } from '@/types/cms';
 
+type Filters = {
+    search: string;
+    date_from: string;
+    date_to: string;
+    has_taken_sfe: string;
+};
+
 type Props = {
     applications: PaginatedResponse<CourseApplication>;
     notificationEmail: string | null;
+    filters?: Filters;
 };
 
 type SettingsForm = {
@@ -21,9 +30,16 @@ function formatDate(dateString: string): string {
     });
 }
 
-export default function ApplicationsIndex({ applications, notificationEmail }: Props) {
+export default function ApplicationsIndex({ applications, notificationEmail, filters = { search: '', date_from: '', date_to: '', has_taken_sfe: '' } }: Props) {
     const settingsForm = useForm<SettingsForm>({
         application_notification_email: notificationEmail ?? '',
+    });
+
+    const filtersForm = useForm<Filters>({
+        search: filters.search ?? '',
+        date_from: filters.date_from ?? '',
+        date_to: filters.date_to ?? '',
+        has_taken_sfe: filters.has_taken_sfe ?? '',
     });
 
     const submitSettings = (event: React.FormEvent) => {
@@ -32,6 +48,62 @@ export default function ApplicationsIndex({ applications, notificationEmail }: P
         settingsForm.patch('/admin/applications/settings', {
             preserveScroll: true,
         });
+    };
+
+    const applyFilters = (event?: React.FormEvent) => {
+        event?.preventDefault();
+
+        filtersForm.get('/admin/applications', {
+            preserveState: true,
+        });
+    };
+
+    const clearFilters = () => {
+        filtersForm.reset();
+        filtersForm.setData('search', '');
+        filtersForm.setData('date_from', '');
+        filtersForm.setData('date_to', '');
+        filtersForm.setData('has_taken_sfe', '');
+        filtersForm.get('/admin/applications', { preserveState: true });
+    };
+
+    const [exporting, setExporting] = React.useState(false);
+
+    const handleExport = async () => {
+        setExporting(true);
+        const params = new URLSearchParams();
+        if (filtersForm.data.search) params.append('search', filtersForm.data.search);
+        if (filtersForm.data.date_from) params.append('date_from', filtersForm.data.date_from);
+        if (filtersForm.data.date_to) params.append('date_to', filtersForm.data.date_to);
+        if (filtersForm.data.has_taken_sfe) params.append('has_taken_sfe', filtersForm.data.has_taken_sfe);
+
+        try {
+            const res = await fetch(`/admin/applications/export?${params.toString()}`, {
+                credentials: 'same-origin',
+            });
+
+            if (!res.ok) {
+                setExporting(false);
+                return;
+            }
+
+            const blob = await res.blob();
+            const url = window.URL.createObjectURL(blob);
+            const disposition = res.headers.get('content-disposition') || '';
+            let filename = 'applications.csv';
+            const match = /filename\s*=\s*"?([^";]+)"?/i.exec(disposition);
+            if (match && match[1]) filename = match[1];
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+        } finally {
+            setExporting(false);
+        }
     };
 
     return (
@@ -68,6 +140,65 @@ export default function ApplicationsIndex({ applications, notificationEmail }: P
                         >
                             {settingsForm.processing ? 'Saving...' : 'Save'}
                         </button>
+                    </form>
+                </div>
+
+                <div className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm">
+                    <form onSubmit={applyFilters} className="flex flex-col gap-3 sm:flex-row sm:items-end">
+                        <div className="flex flex-1 flex-col gap-2 sm:flex-row">
+                            <input
+                                type="text"
+                                placeholder="Search name, email or phone"
+                                value={filtersForm.data.search}
+                                onChange={(e) => filtersForm.setData('search', e.target.value)}
+                                className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm text-neutral-900 focus:border-neutral-900 focus:outline-none"
+                            />
+                            <input
+                                type="date"
+                                value={filtersForm.data.date_from}
+                                onChange={(e) => filtersForm.setData('date_from', e.target.value)}
+                                className="rounded-lg border border-neutral-300 px-3 py-2 text-sm text-neutral-900 focus:border-neutral-900 focus:outline-none"
+                            />
+                            <input
+                                type="date"
+                                value={filtersForm.data.date_to}
+                                onChange={(e) => filtersForm.setData('date_to', e.target.value)}
+                                className="rounded-lg border border-neutral-300 px-3 py-2 text-sm text-neutral-900 focus:border-neutral-900 focus:outline-none"
+                            />
+                            <select
+                                value={filtersForm.data.has_taken_sfe}
+                                onChange={(e) => filtersForm.setData('has_taken_sfe', e.target.value)}
+                                className="rounded-lg border border-neutral-300 px-3 py-2 text-sm text-neutral-900 focus:border-neutral-900 focus:outline-none"
+                            >
+                                <option value="">Any SFE</option>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+
+                        <div className="flex gap-2">
+                            <button
+                                type="submit"
+                                className="inline-flex items-center justify-center rounded-lg bg-neutral-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-neutral-800"
+                            >
+                                Filter
+                            </button>
+                            <button
+                                type="button"
+                                onClick={clearFilters}
+                                className="inline-flex items-center justify-center rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-50"
+                            >
+                                Clear
+                            </button>
+                            <button
+                                type="button"
+                                onClick={handleExport}
+                                disabled={exporting}
+                                className="inline-flex items-center justify-center rounded-lg bg-neutral-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-60"
+                            >
+                                {exporting ? 'Exporting...' : 'Export CSV'}
+                            </button>
+                        </div>
                     </form>
                 </div>
 

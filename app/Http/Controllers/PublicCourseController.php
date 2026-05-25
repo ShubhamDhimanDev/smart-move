@@ -86,6 +86,7 @@ class PublicCourseController extends Controller
             categorySlugs: $appliedFilters['categories'],
             citySlugs: $appliedFilters['cities'],
             filters: $appliedFilters,
+            perPage: 30
         );
 
         $taxonomyOptions = [

@@ -1,5 +1,10 @@
-import { usePage } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
+import * as publicCourseRoutes from '@/routes/courses';
+import * as publicApplicationRoutes from '@/routes/applications';
+import * as publicRoutes from '@/routes';
+import * as publicBlogRoutes from '@/routes/blog';
+import * as publicEventRoutes from '@/routes/events';
 
 const logo = '/images/smartmove_logo.png';
 const whatsapp = '/images/whatsapp.svg';
@@ -26,16 +31,16 @@ export default function SiteHeader({ activePage = 'home' }: { activePage?: strin
             {/* Navigation */}
             <nav className="sticky top-0 z-50 glass border-b border-white/[0.06] w-full">
                 <div className="container mx-auto px-6 lg:px-10 max-w-7xl flex items-center justify-between h-16">
-                    <a href="/" className="flex items-center">
+                    <Link href={publicRoutes.home.url()} className="flex items-center">
                         <img src={logo} alt="Smart Move Education Group" className="h-[38px] w-auto brightness-0 invert" />
-                    </a>
+                    </Link>
                     <div className="hidden lg:flex items-center gap-8 text-sm font-headline font-semibold">
-                        <a className={`nav-link ${activePage === 'home' ? 'active text-white' : 'text-white/60 hover:text-white transition-colors'}`} href="/">
+                        <Link className={`nav-link ${activePage === 'home' ? 'active text-white' : 'text-white/60 hover:text-white transition-colors'}`} href="/">
                             Home
-                        </a>
-                        <a className={`nav-link ${activePage === 'about' ? 'active text-white' : 'text-white/60 hover:text-white transition-colors'}`} href="/about">
+                        </Link>
+                        <Link className={`nav-link ${activePage === 'about' ? 'active text-white' : 'text-white/60 hover:text-white transition-colors'}`} href={publicRoutes.about.url()}>
                             About Us
-                        </a>
+                        </Link>
                         <div className="relative group/courses">
                             <button
                                 type="button"
@@ -57,30 +62,30 @@ export default function SiteHeader({ activePage = 'home' }: { activePage?: strin
                                             <ul className="space-y-0 text-sm">
                                                 {featuredCategories.map((item, i) => (
                                                     <li key={item.id}>
-                                                        <a
-                                                            className={`text-white/55 hover:text-white hover:pl-2 transition-all block py-2 flex items-center gap-2 ${i < featuredCategories.length - 1 ? 'border-b border-white/[0.05]' : ''}`}
-                                                            href={`/programmes/${item.slug}`}
-                                                        >
-                                                            {item.name}
-                                                        </a>
+                                                                        <Link
+                                                                            className={`text-white/55 hover:text-white hover:pl-2 transition-all block py-2 flex items-center gap-2 ${i < featuredCategories.length - 1 ? 'border-b border-white/[0.05]' : ''}`}
+                                                                            href={publicCourseRoutes.category.url(item.slug)}
+                                                                        >
+                                                                            {item.name}
+                                                                        </Link>
                                                     </li>
                                                 ))}
                                             </ul>
-                                            <a href="/courses" className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-secondary-container hover:underline">
+                                            <Link href={publicCourseRoutes.index.url()} className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-secondary-container hover:underline">
                                                 View all courses
-                                            </a>
+                                            </Link>
                                         </div>
                                         <div>
                                             <p className="font-label text-[10px] text-secondary-container mb-5 uppercase tracking-[.18em]">Study Destinations</p>
                                             <ul className="space-y-0 text-sm">
                                                 {featuredCities.map((item, i) => (
                                                     <li key={item.id}>
-                                                        <a
+                                                        <Link
                                                             className={`text-white/55 hover:text-white hover:pl-2 transition-all block py-2 flex items-center gap-2 ${i < featuredCities.length - 1 ? 'border-b border-white/[0.05]' : ''}`}
-                                                            href={`/programmes-in-${item.slug}`}
+                                                            href={publicCourseRoutes.city.url(item.slug)}
                                                         >
                                                             {item.name}
-                                                        </a>
+                                                        </Link>
                                                     </li>
                                                 ))}
                                             </ul>
@@ -110,12 +115,12 @@ export default function SiteHeader({ activePage = 'home' }: { activePage?: strin
                                                     </div>
                                                 </div>
                                             </div>
-                                            <a
-                                                href="/apply-now"
+                                            <Link
+                                                href={publicApplicationRoutes.create.url()}
                                                 className="mt-5 bg-secondary-container text-on-secondary py-2.5 px-4 rounded-full text-xs font-bold w-fit hover:scale-105 transition-transform inline-block"
                                             >
                                                 Apply Now &rarr;
-                                            </a>
+                                            </Link>
                                         </div>
                                     </div>
                                 </div>
@@ -124,18 +129,18 @@ export default function SiteHeader({ activePage = 'home' }: { activePage?: strin
                         {/* <a className={`nav-link ${activePage === 'destinations' ? 'active text-white' : 'text-white/60 hover:text-white transition-colors'}`} href="#">
                             Destinations
                         </a> */}
-                        <a className={`nav-link ${activePage === 'services' ? 'active text-white' : 'text-white/60 hover:text-white transition-colors'}`} href="/services">
+                        <Link className={`nav-link ${activePage === 'services' ? 'active text-white' : 'text-white/60 hover:text-white transition-colors'}`} href={publicRoutes.services.url()}>
                             Services
-                        </a>
-                        <a className={`nav-link ${activePage === 'blog' ? 'active text-white' : 'text-white/60 hover:text-white transition-colors'}`} href="/blog">
+                        </Link>
+                        <Link className={`nav-link ${activePage === 'blog' ? 'active text-white' : 'text-white/60 hover:text-white transition-colors'}`} href={publicBlogRoutes.index.url()}>
                             Blog
-                        </a>
-                        <a className={`nav-link ${activePage === 'events' ? 'active text-white' : 'text-white/60 hover:text-white transition-colors'}`} href="/events">
+                        </Link>
+                        <Link className={`nav-link ${activePage === 'events' ? 'active text-white' : 'text-white/60 hover:text-white transition-colors'}`} href={publicEventRoutes.index.url()}>
                             Events
-                        </a>
-                        <a className={`nav-link ${activePage === 'contact' ? 'active text-white' : 'text-white/60 hover:text-white transition-colors'}`} href="/contact">
+                        </Link>
+                        <Link className={`nav-link ${activePage === 'contact' ? 'active text-white' : 'text-white/60 hover:text-white transition-colors'}`} href={publicRoutes.contact.url()}>
                             Contact
-                        </a>
+                        </Link>
                     </div>
                     <div className="flex items-center gap-3">
                         <a
@@ -158,12 +163,12 @@ export default function SiteHeader({ activePage = 'home' }: { activePage?: strin
                             />
                             <span>+44 7894 867772</span>
                         </a>
-                        <a
+                        <Link
                             className="bg-secondary-container text-on-secondary px-5 py-2 rounded-full font-headline font-bold text-sm hover:scale-105 transition-transform duration-200 shadow-lg shadow-secondary-container/20"
-                            href="/apply-now"
+                            href={publicApplicationRoutes.create.url()}
                         >
                             Apply Now
-                        </a>
+                        </Link>
                         <button
                             type="button"
                             className="lg:hidden w-9 h-9 flex items-center justify-center rounded-full bg-surface-container-high text-white"
@@ -175,12 +180,12 @@ export default function SiteHeader({ activePage = 'home' }: { activePage?: strin
                 </div>
                 {mobileMenuOpen && (
                     <div className="lg:hidden glass border-t border-white/[0.06] px-6 py-6 space-y-4">
-                        <a className="block text-white font-semibold" href="/">
+                        <Link className="block text-white font-semibold" href={publicRoutes.home.url()}>
                             Home
-                        </a>
-                        <a className="block text-white/60 font-semibold" href="/about">
+                        </Link>
+                        <Link className="block text-white/60 font-semibold" href={publicRoutes.about.url()}>
                             About Us
-                        </a>
+                        </Link>
 
                         <div>
                             <button
@@ -197,9 +202,9 @@ export default function SiteHeader({ activePage = 'home' }: { activePage?: strin
                                     <ul className="space-y-1">
                                         {featuredCategories.map((item) => (
                                             <li key={item.id}>
-                                                <a href={`/programmes/${item.slug}`} className="block text-white/60 hover:text-white py-2">
+                                                <Link href={publicCourseRoutes.category.url(item.slug)} className="block text-white/60 hover:text-white py-2">
                                                     {item.name}
-                                                </a>
+                                                </Link>
                                             </li>
                                         ))}
                                     </ul>
@@ -209,39 +214,39 @@ export default function SiteHeader({ activePage = 'home' }: { activePage?: strin
                                         <ul className="space-y-1">
                                             {featuredCities.map((item) => (
                                                 <li key={item.id}>
-                                                    <a href={`/programmes-in-${item.slug}`} className="block text-white/60 hover:text-white py-2">
-                                                        {item.name}
-                                                    </a>
+                                                    <Link href={publicCourseRoutes.city.url(item.slug)} className="block text-white/60 hover:text-white py-2">
+                                                            {item.name}
+                                                        </Link>
                                                 </li>
                                             ))}
                                         </ul>
                                     </div>
 
-                                    <a href="/courses" className="inline-flex items-center gap-2 text-sm font-semibold mt-3 text-secondary-container hover:underline">
+                                    <Link href={publicCourseRoutes.index.url()} className="inline-flex items-center gap-2 text-sm font-semibold mt-3 text-secondary-container hover:underline">
                                         View all courses
-                                    </a>
+                                    </Link>
                                 </div>
                             )}
                         </div>
 
-                        <a className="block text-white/60 font-semibold" href="/services">
+                        <Link className="block text-white/60 font-semibold" href={publicRoutes.services.url()}>
                             Services
-                        </a>
-                        <a className="block text-white/60 font-semibold" href="/blog">
+                        </Link>
+                        <Link className="block text-white/60 font-semibold" href={publicBlogRoutes.index.url()}>
                             Blog
-                        </a>
-                        <a className="block text-white/60 font-semibold" href="/events">
+                        </Link>
+                        <Link className="block text-white/60 font-semibold" href={publicEventRoutes.index.url()}>
                             Events
-                        </a>
-                        <a className="block text-white/60 font-semibold" href="/contact">
+                        </Link>
+                        <Link className="block text-white/60 font-semibold" href={publicRoutes.contact.url()}>
                             Contact
-                        </a>
-                        <a
+                        </Link>
+                        <Link
                             className="inline-flex w-full items-center justify-center rounded-full bg-secondary-container px-5 py-2 text-sm font-headline font-bold text-on-secondary"
-                            href="/apply-now"
+                            href={publicApplicationRoutes.create.url()}
                         >
                             Apply Now
-                        </a>
+                        </Link>
                         <div className="pt-3 border-t border-white/10 text-sm text-on-surface-variant flex flex-col gap-3">
 
                             <a

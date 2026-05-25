@@ -1,6 +1,8 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import SiteLayout from '@/layouts/site-layout';
+import * as publicCourseRoutes from '@/routes/courses';
+import * as publicApplicationRoutes from '@/routes/applications';
 import type { PaginatedResponse } from '@/types/cms';
 
 interface CourseListItem {
@@ -85,6 +87,19 @@ function cleanLabel(value: string): string {
         .replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
+function serializeParams(params: Record<string, string | string[]>): string {
+    const sp = new URLSearchParams();
+    Object.entries(params).forEach(([k, v]) => {
+        if (Array.isArray(v)) {
+            v.forEach((item) => sp.append(k, String(item)));
+        } else {
+            sp.append(k, String(v));
+        }
+    });
+    const s = sp.toString();
+    return s ? `?${s}` : '';
+}
+
 export default function PublicCoursesIndex({
     title,
     description,
@@ -102,6 +117,14 @@ export default function PublicCoursesIndex({
     };
 
     const [showFilters, setShowFilters] = useState(false);
+    const [searchInput, setSearchInput] = useState<string>(applied.search ?? '');
+    const inputRef = useRef<HTMLInputElement | null>(null);
+
+    useEffect(() => {
+        setSearchInput(filters.applied.search ?? '');
+    }, [filters.applied.search]);
+
+    // Search is now applied only when the user presses Enter or clicks an explicit control.
 
     /**
      * Navigate to the correct route based on how many categories/cities are selected.
@@ -116,14 +139,20 @@ export default function PublicCoursesIndex({
         const isMulti = categories.length > 1 || cities.length > 1 || types.length > 1;
 
         if (isMulti) {
-            const parts: string[] = [];
-            if (search) parts.push(`search=${encodeURIComponent(search)}`);
-            // Use bracket notation so PHP parses repeated keys as an array
-            for (const slug of categories) parts.push(`category[]=${encodeURIComponent(slug)}`);
-            for (const slug of cities) parts.push(`city[]=${encodeURIComponent(slug)}`);
-            for (const slug of types) parts.push(`course_type[]=${encodeURIComponent(slug)}`);
-            const qs = parts.length > 0 ? `?${parts.join('&')}` : '';
-            router.get(`/courses${qs}`, {}, { preserveScroll: true, replace: true });
+            const query: Record<string, any> = {};
+            if (search) query.search = search;
+            if (categories.length > 0) query.category = categories;
+            if (cities.length > 0) query.city = cities;
+            if (types.length > 0) query.course_type = types;
+            const url = publicCourseRoutes.index.url({ query });
+            const wasFocused = inputRef.current === document.activeElement;
+            router.get(url, {}, {
+                preserveScroll: true,
+                replace: true,
+                onFinish: () => {
+                    if (wasFocused) inputRef.current?.focus();
+                },
+            });
             return;
         }
 
@@ -131,32 +160,41 @@ export default function PublicCoursesIndex({
         if (search) params.search = search;
         if (types.length > 0) params.course_type = types;
 
-        let path = '/courses';
+        let path = publicCourseRoutes.index.url();
         if (categories.length === 1 && cities.length === 1) {
-            path = `/${categories[0]}-in-${cities[0]}`;
+            path = publicCourseRoutes.categoryCity.url([categories[0], cities[0]]);
         } else if (categories.length === 1) {
-            path = `/programmes/${categories[0]}`;
+            path = publicCourseRoutes.category.url(categories[0]);
         } else if (cities.length === 1) {
-            path = `/programmes-in-${cities[0]}`;
+            path = publicCourseRoutes.city.url(cities[0]);
         }
 
-        router.get(path, params, { preserveScroll: true, replace: true });
+        const queryString = serializeParams(params);
+        const url = path + queryString;
+        const wasFocused = inputRef.current === document.activeElement;
+        router.get(url, {}, {
+            preserveScroll: true,
+            replace: true,
+            onFinish: () => {
+                if (wasFocused) inputRef.current?.focus();
+            },
+        });
     }
 
     function applyFilters(next: Partial<FilterState>): void {
+        const searchValue = Object.prototype.hasOwnProperty.call(next, 'search')
+            ? next.search
+            : applied.search;
+
         visitWithFilters({
-            search: typeof next.search === 'string' ? next.search : applied.search,
+            search: (searchValue as string | null) ?? null,
             categories: Array.isArray(next.categories) ? next.categories : applied.categories,
             cities: Array.isArray(next.cities) ? next.cities : applied.cities,
             types: Array.isArray(next.types) ? next.types : applied.types,
         });
     }
 
-    function onFilterChange(key: keyof FilterState, value: string): void {
-        if (key === 'search') {
-            applyFilters({ search: value.trim() === '' ? null : value });
-        }
-    }
+    // search is handled via local state `searchInput` with a debounce; applyFilters is invoked in effect or on Enter
 
     function clearFilters(): void {
         visitWithFilters({ search: null, categories: [], cities: [], types: [] });
@@ -215,14 +253,28 @@ export default function PublicCoursesIndex({
                 </header>
 
                 <section className="mb-8 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                    <div className="mb-4 grid gap-3 sm:grid-cols-[1fr_auto_auto]">
+                    <div className="mb-4 grid gap-3 sm:grid-cols-[1fr_auto_auto_auto]">
                         <input
+                            ref={inputRef}
                             type="search"
-                            value={applied.search ?? ''}
-                            onChange={(event) => onFilterChange('search', event.target.value)}
+                            value={searchInput}
+                            onChange={(event) => setSearchInput(event.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    applyFilters({ search: searchInput.trim() === '' ? null : searchInput });
+                                }
+                            }}
                             placeholder="Search programmes"
                             className="rounded-xl border border-white/10 bg-black/20 px-3 py-2.5 text-sm text-white outline-none transition-colors placeholder:text-white/35 focus:border-[#00b4e0]/70"
                         />
+                        <button
+                            type="button"
+                            onClick={() => applyFilters({ search: searchInput.trim() === '' ? null : searchInput })}
+                            className="rounded-xl bg-[#00b4e0] px-4 py-2.5 text-sm font-semibold text-black transition-colors hover:opacity-90"
+                        >
+                            Filter
+                        </button>
                         <button
                             type="button"
                             onClick={clearFilters}
@@ -407,6 +459,15 @@ export default function PublicCoursesIndex({
                             {link.label.replace('&laquo; Previous', 'Previous').replace('Next &raquo;', 'Next')}
                         </Link>
                     ))}
+                </div>
+
+                <div className="mt-6 text-center">
+                    <Link
+                        href={publicApplicationRoutes.create.url()}
+                        className="inline-flex items-center justify-center rounded-full bg-secondary-container px-6 py-3 text-sm font-semibold text-black hover:opacity-90"
+                    >
+                        Apply now
+                    </Link>
                 </div>
             </main>
         </SiteLayout>

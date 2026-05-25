@@ -260,7 +260,7 @@ export default function ApplyNow() {
                                         <div className="space-y-3">
                                             {featuredCourseCategories.map((category) => (
                                                 <div key={category.id}>
-                                                    <p className="mb-1 text-xs font-semibold tracking-wide text-white/60 uppercase">{category.name}</p>
+                                                    <p className="mb-1 text-xs font-semibold tracking-wide text-white/60 uppercase">{category.label?.trim() ? category.label : category.name}</p>
                                                     <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                                                         {category.course_types.map((type) => (
                                                             <label key={type.id} className="inline-flex items-start gap-2 text-sm text-white/85">

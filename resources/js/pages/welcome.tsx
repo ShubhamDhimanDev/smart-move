@@ -4,6 +4,9 @@ import { useEffect, useMemo, useState } from 'react';
 import SiteLayout from '@/layouts/site-layout';
 import UniversityPartnersCarousel from '@/components/UniversityPartnersCarousel';
 import * as publicEventRoutes from '@/routes/events';
+import * as publicCourseRoutes from '@/routes/courses';
+import * as publicBlogRoutes from '@/routes/blog';
+import * as publicApplicationRoutes from '@/routes/applications';
 import type { Event } from '@/types/cms';
 
 const cities = ['london', 'manchester', 'birmingham', 'cardiff', 'swansea', 'leeds', 'nottingham', 'newcastle'] as const;
@@ -419,7 +422,7 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
                     <div className="max-w-[52rem]">
                         <div className="flex items-center gap-3 mb-8 animate-fadeUp">
                             <Link
-                                href="/apply-now"
+                                href={publicApplicationRoutes.create.url()}
                                 className="inline-flex items-center gap-2 text-secondary-container bg-secondary-container/10 border border-secondary-container/20 px-4 py-1.5 rounded-full"
                             >
                                 <span className="w-1.5 h-1.5 rounded-full bg-secondary-container animate-pulseGlow inline-block"></span>
@@ -437,13 +440,13 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
                         <div className="flex flex-wrap gap-4 animate-fadeUp-d2">
                             <a
                                 className="bg-secondary-container text-on-secondary px-8 py-4 rounded-full font-headline font-bold text-base hover:scale-105 transition-transform shadow-2xl shadow-secondary-container/20 flex items-center gap-2"
-                                href="/apply-now"
+                                href={publicApplicationRoutes.create.url()}
                             >
                                 Start Your Application{' '}
                                 <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
                             </a>
                             <Link
-                                href="/courses"
+                                href={publicCourseRoutes.index.url()}
                                 className="border border-white/20 text-white px-8 py-4 rounded-full font-headline font-bold text-base hover:bg-white/10 transition-colors backdrop-blur-sm"
                             >
                                 Explore Courses
@@ -627,7 +630,7 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
                                         <p className="text-on-surface-variant text-sm leading-relaxed max-w-xl">{course.excerpt || 'Explore this featured course and its latest entry requirements.'}</p>
                                     </div>
                                     <Link
-                                        href={course.category?.slug ? `/courses?category=${encodeURIComponent(course.category.slug)}` : '/courses'}
+                                        href={publicCourseRoutes.index.url({ query: { course_type: course.slug } })}
                                         className="inline-flex items-center gap-2 mt-6 text-secondary-container font-bold text-sm font-headline"
                                     >
                                         View courses{' '}
@@ -644,7 +647,7 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
                     </div>
                     <div className="mt-10 flex justify-center reveal">
                         <Link
-                            href="/courses"
+                            href={publicCourseRoutes.index.url()}
                             className="inline-flex items-center gap-2 border border-outline-variant/30 text-white/70 hover:text-white hover:border-outline-variant/60 px-8 py-3 rounded-full font-headline font-semibold text-sm transition-all"
                         >
                             Browse All Courses{' '}
@@ -696,7 +699,11 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
                                     <p className="text-on-surface-variant leading-relaxed mb-8 text-sm">{cityDescription}</p>
                                     <Link
                                         className="inline-flex items-center gap-2 text-secondary-container font-bold hover:gap-4 transition-all font-headline text-sm group"
-                                        href={activeCity ? `/courses?city=${encodeURIComponent(activeCity.slug)}` : '/courses'}
+                                        href={
+                                            activeCity
+                                                ? publicCourseRoutes.city.url(activeCity.slug)
+                                                : publicCourseRoutes.index.url()
+                                        }
                                     >
                                         Explore {activeCity?.name ?? 'city'} courses{' '}
                                         <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
@@ -961,9 +968,9 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
                             <p className="font-label text-secondary-container font-bold tracking-[0.2em] mb-4 text-xs uppercase">LATEST UPDATES</p>
                             <h2 className="text-white font-headline font-bold text-[clamp(2rem,4vw,3.5rem)] tracking-tight">From Our Blog.</h2>
                         </div>
-                        <a className="text-[#bcc2ff] font-bold text-sm hover:underline mt-4 reveal reveal-d1" href="#">
+                        <Link className="text-[#bcc2ff] font-bold text-sm hover:underline mt-4 reveal reveal-d1" href={publicBlogRoutes.index.url()}>
                             View all posts
-                        </a>
+                        </Link>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         {recentPosts.length === 0 ? (
@@ -1000,7 +1007,7 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
                                         </h3>
                                         <p className="text-on-surface-variant text-sm leading-relaxed mb-4">{post.excerpt ?? 'Read the full post for details.'}</p>
 
-                                        <Link href={`/blog/${post.slug}`} className="inline-flex items-center gap-1.5 text-secondary-container font-bold text-sm font-headline group/link">
+                                        <Link href={publicBlogRoutes.show.url({ post: post.slug })} className="inline-flex items-center gap-1.5 text-secondary-container font-bold text-sm font-headline group/link">
                                             Read Article{' '}
                                             <span className="material-symbols-outlined text-[16px] group-hover/link:translate-x-1 transition-transform">arrow_forward</span>
                                         </Link>
@@ -1059,13 +1066,13 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
                     <div className="flex flex-wrap justify-center gap-5 mb-20">
                         <a
                             className="bg-secondary-container text-on-secondary px-10 py-4 rounded-full font-headline font-bold text-lg hover:scale-105 transition-transform shadow-2xl shadow-secondary-container/20 flex items-center gap-2"
-                            href="/apply-now"
+                            href={publicApplicationRoutes.create.url()}
                         >
                             Start Application <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
                         </a>
                         <a
                             className="border border-outline-variant/30 text-white px-10 py-4 rounded-full font-headline font-bold text-lg hover:bg-white/5 hover:border-outline-variant/60 transition-all flex items-center gap-2"
-                            href="#"
+                            href="tel:+442077909233"
                         >
                             <span className="material-symbols-outlined text-[20px]">call</span>Speak to a Consultant
                         </a>

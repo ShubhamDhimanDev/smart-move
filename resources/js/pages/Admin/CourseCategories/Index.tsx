@@ -109,6 +109,11 @@ function SortableRow({
                             Home
                         </span>
                     )}
+                    {courseCategory.is_featured_on_form && (
+                        <span className="inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700 ring-1 ring-amber-600/20">
+                            Form
+                        </span>
+                    )}
                     {courseCategory.is_featured_nav && (
                         <span className="inline-flex items-center rounded-full bg-purple-50 px-2 py-0.5 text-xs font-medium text-purple-700 ring-1 ring-purple-600/20">
                             Nav

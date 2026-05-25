@@ -76,6 +76,8 @@ const emptyForm: CourseTypeFormData = {
     show_in_filters: false,
 };
 
+type Tab = 'all' | 'featured' | 'show-in-filters';
+
 // ── Sortable row ──────────────────────────────────────────────────────────────
 function SortableRow({
     courseType,
@@ -121,7 +123,12 @@ function SortableRow({
                     )}
                     {courseType.is_featured && (
                         <span className="inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700 ring-1 ring-amber-600/20">
-                            Featured
+                            Homepage
+                        </span>
+                    )}
+                    {courseType.show_in_filters && (
+                        <span className="inline-flex items-center rounded-full bg-sky-50 px-2 py-0.5 text-xs font-medium text-sky-700 ring-1 ring-sky-600/20">
+                            Filters
                         </span>
                     )}
                 </div>
@@ -158,6 +165,27 @@ function CourseTypesIndex({ courseTypes: initialCourseTypes, courseCategories }:
     useEffect(() => {
         setItems(initialCourseTypes);
     }, [initialCourseTypes]);
+
+    const [activeTab, setActiveTab] = useState<Tab>('all');
+
+    const filteredItems =
+        activeTab === 'featured'
+            ? items.filter((i) => i.is_featured)
+            : activeTab === 'show-in-filters'
+            ? items.filter((i) => i.show_in_filters)
+            : items;
+
+    const tabs: { key: Tab; label: string; count: number }[] = [
+        { key: 'all', label: 'All', count: items.length },
+    ];
+
+    if (items.some((i) => i.is_featured)) {
+        tabs.push({ key: 'featured', label: 'Featured — Homepage', count: items.filter((i) => i.is_featured).length });
+    }
+
+    if (items.some((i) => i.show_in_filters)) {
+        tabs.push({ key: 'show-in-filters', label: 'Show in Filters', count: items.filter((i) => i.show_in_filters).length });
+    }
 
     const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
@@ -323,9 +351,38 @@ function CourseTypesIndex({ courseTypes: initialCourseTypes, courseCategories }:
                     </div>
                 </form>
 
+                {/* Tabs */}
+                {tabs.length > 1 && (
+                    <div className="border-b border-neutral-200">
+                        <nav className="-mb-px flex gap-6 px-6">
+                            {tabs.map((tab) => (
+                                <button
+                                    key={tab.key}
+                                    type="button"
+                                    onClick={() => setActiveTab(tab.key)}
+                                    className={`whitespace-nowrap border-b-2 pb-3 text-sm font-medium transition-colors ${
+                                        activeTab === tab.key
+                                            ? 'border-neutral-900 text-neutral-900'
+                                            : 'border-transparent text-neutral-500 hover:text-neutral-700'
+                                    }`}
+                                >
+                                    {tab.label}
+                                    <span
+                                        className={`ml-2 rounded-full px-2 py-0.5 text-xs ${
+                                            activeTab === tab.key ? 'bg-neutral-900 text-white' : 'bg-neutral-100 text-neutral-600'
+                                        }`}
+                                    >
+                                        {tab.count}
+                                    </span>
+                                </button>
+                            ))}
+                        </nav>
+                    </div>
+                )}
+
                 {/* Table */}
                 <div className="overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm">
-                    {items.length === 0 ? (
+                    {filteredItems.length === 0 ? (
                         <div className="px-6 py-12 text-center text-sm text-neutral-500">No course areas found.</div>
                     ) : (
                         <table className="w-full divide-y divide-neutral-200 text-sm">
@@ -343,14 +400,14 @@ function CourseTypesIndex({ courseTypes: initialCourseTypes, courseCategories }:
                             <DndContext
                                 sensors={sensors}
                                 collisionDetection={closestCenter}
-                                onDragEnd={handleDragEnd}
+                                onDragEnd={activeTab === 'all' ? handleDragEnd : undefined}
                             >
                                 <SortableContext
-                                    items={items.map((i) => i.id)}
+                                    items={filteredItems.map((i) => i.id)}
                                     strategy={verticalListSortingStrategy}
                                 >
                                     <tbody className="divide-y divide-neutral-100">
-                                        {items.map((courseType) => (
+                                        {filteredItems.map((courseType) => (
                                             <SortableRow
                                                 key={courseType.id}
                                                 courseType={courseType}
@@ -364,7 +421,7 @@ function CourseTypesIndex({ courseTypes: initialCourseTypes, courseCategories }:
                     )}
                 </div>
 
-                {items.length > 1 && (
+                {activeTab === 'all' && items.length > 1 && (
                     <p className="text-xs text-neutral-400">Drag rows to reorder. Order is saved automatically.</p>
                 )}
             </div>

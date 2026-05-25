@@ -13,7 +13,7 @@ import {
     verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { useState } from 'react';
+import { useState, useEffect, type FormEvent } from 'react';
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import { GripVertical, Pencil, Trash2 } from 'lucide-react';
 import InputError from '@/components/input-error';
@@ -149,6 +149,10 @@ function SortableRow({
 function CourseCategoriesIndex({ courseCategories: initialCategories }: Props) {
     const createForm = useForm<CourseCategoryFormData>(emptyForm);
     const [items, setItems] = useState<CourseCategory[]>(initialCategories);
+
+    useEffect(() => {
+        setItems(initialCategories);
+    }, [initialCategories]);
     const [activeTab, setActiveTab] = useState<Tab>('all');
 
     const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));

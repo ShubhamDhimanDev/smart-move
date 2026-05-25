@@ -1,6 +1,6 @@
 import { Head, router, useForm } from '@inertiajs/react';
 import type { FormEvent } from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import MediaUrlField from '@/components/cms/media-url-field';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
@@ -38,6 +38,10 @@ const emptyForm: PartnerForm = {
 export default function UniversityPartnersIndex({ partners: initialPartners }: Props) {
     const createForm = useForm<PartnerForm>(emptyForm);
     const [items, setItems] = useState<Partner[]>(initialPartners);
+
+    useEffect(() => {
+        setItems(initialPartners);
+    }, [initialPartners]);
     const [editingId, setEditingId] = useState<number | null>(null);
     const [editingData, setEditingData] = useState<PartnerForm>(emptyForm);
 

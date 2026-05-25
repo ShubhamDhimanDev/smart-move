@@ -12,7 +12,7 @@ type Course = {
     id: number;
     title: string;
     slug: string;
-    course_category_id: number | null;
+    course_category_ids: number[];
     excerpt: string | null;
     status: 'draft' | 'published';
     is_featured: boolean;
@@ -21,7 +21,7 @@ type Course = {
     level: '' | 'beginner' | 'intermediate' | 'advanced';
     delivery_mode: '' | 'online' | 'in-person' | 'hybrid';
     start_date: string | null;
-    course_type_id: number | null;
+    course_type_ids: number[];
     sort_order: number;
     city_ids: number[];
     university_ids: number[];

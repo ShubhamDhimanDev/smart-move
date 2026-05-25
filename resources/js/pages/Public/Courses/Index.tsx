@@ -20,6 +20,11 @@ interface CourseListItem {
         name: string;
         slug: string;
     } | null;
+    categories: Array<{
+        id: number;
+        name: string;
+        slug: string;
+    }>;
     cities: Array<{
         id: number;
         name: string;
@@ -393,7 +398,13 @@ export default function PublicCoursesIndex({
 
                                 <div className="flex h-full flex-col p-5">
                                     <div className="mb-3 flex flex-wrap gap-2 text-[11px]">
-                                        {course.category ? (
+                                        {course.categories && course.categories.length > 0 ? (
+                                            course.categories.map((c) => (
+                                                <span key={c.id} className="rounded-full border border-[#00b4e0]/40 bg-[#00b4e0]/10 px-2.5 py-1 text-[#88e5ff]">
+                                                    {c.name}
+                                                </span>
+                                            ))
+                                        ) : course.category ? (
                                             <span className="rounded-full border border-[#00b4e0]/40 bg-[#00b4e0]/10 px-2.5 py-1 text-[#88e5ff]">
                                                 {course.category.name}
                                             </span>

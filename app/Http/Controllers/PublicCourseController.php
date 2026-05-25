@@ -116,6 +116,7 @@ class PublicCourseController extends Controller
                 ->all(),
             'course_types' => CourseType::query()
                 ->active()
+                ->where('show_in_filters', true)
                 ->ordered()
                 ->get(['id', 'name', 'slug'])
                 ->map(fn (CourseType $courseType): array => [

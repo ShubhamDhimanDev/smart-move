@@ -28,6 +28,7 @@ class CourseTypeController extends Controller
             'sort_order' => $courseType->sort_order,
             'is_active' => $courseType->is_active,
             'is_featured' => $courseType->is_featured,
+            'show_in_filters' => $courseType->show_in_filters,
         ];
     }
 

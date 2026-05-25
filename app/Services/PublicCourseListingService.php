@@ -15,14 +15,18 @@ class PublicCourseListingService
     {
         $query = Course::query()
             ->with([
+                // legacy single relations kept for compatibility
                 'category:id,name,slug',
                 'courseType:id,name,slug',
+                // new many-to-many relations
+                'categories:id,name,slug',
+                'courseTypes:id,name,slug',
                 'cities:id,name,slug',
                 'pageContent:id,contentable_type,contentable_id,page_title,description,featured_image,meta_title,meta_description,og_title,og_description,og_image',
             ])
             ->where('status', 'published')
             ->when(! empty($categorySlugs), function (Builder $builder) use ($categorySlugs): void {
-                $builder->whereHas('category', function (Builder $categoryQuery) use ($categorySlugs): void {
+                $builder->whereHas('categories', function (Builder $categoryQuery) use ($categorySlugs): void {
                     $categoryQuery->whereIn('slug', $categorySlugs)
                         ->where('is_active', true);
                 });
@@ -45,7 +49,7 @@ class PublicCourseListingService
             ->when(filled($filters['delivery_mode'] ?? null), fn (Builder $builder) => $builder->where('delivery_mode', $filters['delivery_mode']))
             ->when(filled($filters['duration_unit'] ?? null), fn (Builder $builder) => $builder->where('duration_unit', $filters['duration_unit']))
             ->when(filled($filters['types'] ?? null), function (Builder $builder) use ($filters): void {
-                $builder->whereHas('courseType', function (Builder $typeQuery) use ($filters): void {
+                $builder->whereHas('courseTypes', function (Builder $typeQuery) use ($filters): void {
                     $typeQuery->whereIn('slug', (array) $filters['types'])->where('is_active', true);
                 });
             })
@@ -64,6 +68,7 @@ class PublicCourseListingService
                 'level' => $course->level,
                 'delivery_mode' => $course->delivery_mode,
                 'start_date' => $course->start_date?->toDateString(),
+                // keep legacy single relations for compatibility
                 'category' => $course->category
                     ? [
                         'id' => $course->category->id,
@@ -78,6 +83,23 @@ class PublicCourseListingService
                         'slug' => $course->courseType->slug,
                     ]
                     : null,
+                // return all categories/types the course belongs to
+                'categories' => $course->categories
+                    ->map(fn ($cat): array => [
+                        'id' => $cat->id,
+                        'name' => $cat->name,
+                        'slug' => $cat->slug,
+                    ])
+                    ->values()
+                    ->all(),
+                'types' => $course->courseTypes
+                    ->map(fn ($t): array => [
+                        'id' => $t->id,
+                        'name' => $t->name,
+                        'slug' => $t->slug,
+                    ])
+                    ->values()
+                    ->all(),
                 'cities' => $course->cities
                     ->map(fn ($city): array => [
                         'id' => $city->id,

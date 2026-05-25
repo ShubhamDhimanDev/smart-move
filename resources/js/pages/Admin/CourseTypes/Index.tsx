@@ -42,6 +42,7 @@ type CourseType = {
     sort_order: number;
     is_active: boolean;
     is_featured: boolean;
+    show_in_filters: boolean;
 };
 
 type Props = {
@@ -59,6 +60,7 @@ type CourseTypeFormData = {
     sort_order: number;
     is_active: boolean;
     is_featured: boolean;
+    show_in_filters: boolean;
 };
 
 const emptyForm: CourseTypeFormData = {
@@ -71,6 +73,7 @@ const emptyForm: CourseTypeFormData = {
     sort_order: 0,
     is_active: true,
     is_featured: false,
+    show_in_filters: false,
 };
 
 // ── Sortable row ──────────────────────────────────────────────────────────────
@@ -266,6 +269,14 @@ function CourseTypesIndex({ courseTypes: initialCourseTypes, courseCategories }:
                                 onChange={(e) => createForm.setData('is_featured', e.target.checked)}
                             />
                             Featured on Homepage
+                        </label>
+                        <label className="flex cursor-pointer items-center gap-2 text-sm">
+                            <input
+                                type="checkbox"
+                                checked={createForm.data.show_in_filters}
+                                onChange={(e) => createForm.setData('show_in_filters', e.target.checked)}
+                            />
+                            Show in Filters
                         </label>
                     </div>
 

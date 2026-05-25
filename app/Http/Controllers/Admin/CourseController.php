@@ -23,6 +23,8 @@ class CourseController extends Controller
                 ->with([
                     'category:id,name,slug',
                     'courseType:id,name,slug',
+                    'categories:id,name',
+                    'courseTypes:id,name',
                     'cities:id,name,slug',
                     // 'universities:id,name,slug',
                     'pageContent:id,contentable_type,contentable_id,page_title,meta_title',
@@ -50,6 +52,18 @@ class CourseController extends Controller
         $course->cities()->sync($request->input('city_ids', []));
         // $course->universities()->sync($request->input('university_ids', []));
 
+        // Sync multiple categories and types
+        $course->categories()->sync($request->input('course_category_ids', []));
+        $course->courseTypes()->sync($request->input('course_type_ids', []));
+
+        // Keep legacy FK columns in sync with the first selected value for compatibility
+        $firstCategory = $request->input('course_category_ids', []) ? $request->input('course_category_ids')[0] : $request->input('course_category_id');
+        $firstType = $request->input('course_type_ids', []) ? $request->input('course_type_ids')[0] : $request->input('course_type_id');
+        $course->update([
+            'course_category_id' => $firstCategory ?? null,
+            'course_type_id' => $firstType ?? null,
+        ]);
+
         $pageContent = $request->input('page_content');
         if (is_array($pageContent) && $pageContent !== []) {
             $course->pageContent()->create($pageContent);
@@ -63,6 +77,8 @@ class CourseController extends Controller
         $course->load([
             'category:id,name',
             'courseType:id,name',
+            'categories:id,name',
+            'courseTypes:id,name',
             'cities:id,name',
             // 'universities:id,name',
             'pageContent:id,contentable_type,contentable_id,page_title,description,body,featured_image,meta_title,meta_description,og_title,og_description,og_image,schema_data,custom_data',
@@ -83,6 +99,18 @@ class CourseController extends Controller
 
         $course->cities()->sync($request->input('city_ids', []));
         // $course->universities()->sync($request->input('university_ids', []));
+
+        // Sync multiple categories and types
+        $course->categories()->sync($request->input('course_category_ids', []));
+        $course->courseTypes()->sync($request->input('course_type_ids', []));
+
+        // Keep legacy FK columns in sync with the first selected value for compatibility
+        $firstCategory = $request->input('course_category_ids', []) ? $request->input('course_category_ids')[0] : $request->input('course_category_id');
+        $firstType = $request->input('course_type_ids', []) ? $request->input('course_type_ids')[0] : $request->input('course_type_id');
+        $course->update([
+            'course_category_id' => $firstCategory ?? null,
+            'course_type_id' => $firstType ?? null,
+        ]);
 
         $pageContent = $request->input('page_content');
         if (is_array($pageContent) && $pageContent !== []) {
@@ -110,6 +138,10 @@ class CourseController extends Controller
             'slug' => $course->slug,
             'course_category_id' => $course->course_category_id,
             'course_type_id' => $course->course_type_id,
+            'course_category_ids' => $course->categories->pluck('id')->values()->all(),
+            'course_category_names' => $course->categories->pluck('name')->values()->all(),
+            'course_type_ids' => $course->courseTypes->pluck('id')->values()->all(),
+            'course_type_names' => $course->courseTypes->pluck('name')->values()->all(),
             'category_name' => $course->category?->name,
             'course_type_name' => $course->courseType?->name,
             'excerpt' => $course->excerpt,

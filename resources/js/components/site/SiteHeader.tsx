@@ -12,7 +12,7 @@ const whatsapp = '/images/whatsapp.svg';
 export default function SiteHeader({ activePage = 'home' }: { activePage?: string }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [mobileCoursesOpen, setMobileCoursesOpen] = useState(false);
-    const { featuredCategories, featuredCities } = usePage().props;
+    const { featuredCategories, navFeaturedCities } = usePage().props;
 
     return (
         <>
@@ -78,10 +78,10 @@ export default function SiteHeader({ activePage = 'home' }: { activePage?: strin
                                         <div>
                                             <p className="font-label text-[10px] text-secondary-container mb-5 uppercase tracking-[.18em]">Study Destinations</p>
                                             <ul className="space-y-0 text-sm">
-                                                {featuredCities.map((item, i) => (
+                                                {navFeaturedCities.map((item, i) => (
                                                     <li key={item.id}>
                                                         <Link
-                                                            className={`text-white/55 hover:text-white hover:pl-2 transition-all block py-2 flex items-center gap-2 ${i < featuredCities.length - 1 ? 'border-b border-white/[0.05]' : ''}`}
+                                                            className={`text-white/55 hover:text-white hover:pl-2 transition-all block py-2 flex items-center gap-2 ${i < navFeaturedCities.length - 1 ? 'border-b border-white/[0.05]' : ''}`}
                                                             href={publicCourseRoutes.city.url(item.slug)}
                                                         >
                                                             {item.name}
@@ -212,14 +212,14 @@ export default function SiteHeader({ activePage = 'home' }: { activePage?: strin
                                     <div className="pt-2">
                                         <p className="text-xs text-white/40 mb-2">Study Destinations</p>
                                         <ul className="space-y-1">
-                                            {featuredCities.map((item) => (
-                                                <li key={item.id}>
-                                                    <Link href={publicCourseRoutes.city.url(item.slug)} className="block text-white/60 hover:text-white py-2">
-                                                            {item.name}
-                                                        </Link>
-                                                </li>
-                                            ))}
-                                        </ul>
+                                        {navFeaturedCities.map((item) => (
+                                            <li key={item.id}>
+                                                <Link href={publicCourseRoutes.city.url(item.slug)} className="block text-white/60 hover:text-white py-2">
+                                                        {item.name}
+                                                    </Link>
+                                            </li>
+                                        ))}
+                                    </ul>
                                     </div>
 
                                     <Link href={publicCourseRoutes.index.url()} className="inline-flex items-center gap-2 text-sm font-semibold mt-3 text-secondary-container hover:underline">

@@ -102,6 +102,7 @@ Route::middleware(['auth', 'admin.access'])->prefix('admin')->name('admin.')->gr
 
     Route::middleware('admin.access:manage applications')->group(function () {
         Route::get('applications', [AdminCourseApplicationController::class, 'index'])->name('applications.index');
+        Route::get('applications/export', [AdminCourseApplicationController::class, 'export'])->name('applications.export');
         Route::get('applications/{application}', [AdminCourseApplicationController::class, 'show'])->name('applications.show');
         Route::patch('applications/settings', [AdminCourseApplicationController::class, 'updateSettings'])->name('applications.settings.update');
     });

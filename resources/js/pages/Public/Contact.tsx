@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import SiteLayout from '@/layouts/site-layout';
+import { Link } from '@inertiajs/react';
+import * as publicApplicationRoutes from '@/routes/applications';
 
 const socialLinks = [
     { label: 'Facebook', icon: 'M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z', href: 'https://www.facebook.com/SmartMoveEducationGroup' },
@@ -319,12 +321,12 @@ export default function Contact() {
                     <p className="text-[#a09a97] font-body text-base mb-8 max-w-xl mx-auto">
                         Skip the queue — apply directly through our online portal and one of our counsellors will guide you every step of the way.
                     </p>
-                    <a
-                        href="/apply-now"
+                    <Link
+                        href={publicApplicationRoutes.create.url()}
                         className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-secondary-container text-on-secondary font-headline font-bold text-sm hover:opacity-90 transition-opacity shadow-[0_0_32px_rgba(239,165,0,0.3)]"
                     >
                         Apply Now <span className="material-symbols-outlined text-base">arrow_forward</span>
-                    </a>
+                    </Link>
                 </div>
             </section>
         </SiteLayout>

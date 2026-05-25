@@ -13,7 +13,7 @@ import {
     verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { useState } from 'react';
+import { useState, useEffect, type FormEvent } from 'react';
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import { GripVertical, Pencil, Trash2 } from 'lucide-react';
 import MediaUrlField from '@/components/cms/media-url-field';
@@ -154,6 +154,10 @@ function SortableRow({ city, onDelete }: { city: City; onDelete: (item: City) =>
 function CitiesIndex({ cities: initialCities }: Props) {
     const createForm = useForm<CityFormData>(emptyForm);
     const [items, setItems] = useState<City[]>(initialCities);
+
+    useEffect(() => {
+        setItems(initialCities);
+    }, [initialCities]);
     const [activeTab, setActiveTab] = useState<Tab>('all');
 
     const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));

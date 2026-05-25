@@ -25,6 +25,7 @@ export default function CategoriesIndex({ categories }: Props) {
         slug: '',
         description: '',
     });
+    const [slugTouched, setSlugTouched] = useState(false);
     const [editingId, setEditingId] = useState<number | null>(null);
     const [editingData, setEditingData] = useState<CategoryFormData>({
         name: '',
@@ -86,6 +87,19 @@ export default function CategoriesIndex({ categories }: Props) {
                             id="name"
                             value={createForm.data.name}
                             onChange={(event) => createForm.setData('name', event.target.value)}
+                            onBlur={() => {
+                                if (!slugTouched && !createForm.data.slug.trim()) {
+                                    createForm.setData(
+                                        'slug',
+                                        createForm.data.name
+                                            .toLowerCase()
+                                            .trim()
+                                            .replace(/[^a-z0-9\s-]/g, '')
+                                            .replace(/\s+/g, '-')
+                                            .replace(/-+/g, '-'),
+                                    );
+                                }
+                            }}
                         />
                         <InputError message={createForm.errors.name} />
                     </div>
@@ -95,7 +109,10 @@ export default function CategoriesIndex({ categories }: Props) {
                         <Input
                             id="slug"
                             value={createForm.data.slug}
-                            onChange={(event) => createForm.setData('slug', event.target.value)}
+                            onChange={(event) => {
+                                setSlugTouched(true);
+                                createForm.setData('slug', event.target.value);
+                            }}
                         />
                         <InputError message={createForm.errors.slug} />
                     </div>

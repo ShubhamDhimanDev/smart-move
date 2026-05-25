@@ -1,4 +1,7 @@
-import { usePage } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
+import * as publicCourseRoutes from '@/routes/courses';
+import * as publicRoutes from '@/routes';
+import * as publicBlogRoutes from '@/routes/blog';
 
 const logo = '/images/smartmove_logo.png';
 
@@ -48,7 +51,7 @@ export default function SiteFooter() {
                     <div>
                         <h4 className="text-white font-bold mb-5 text-xs uppercase tracking-widest font-label">Courses</h4>
                         <ul className="space-y-3 text-sm">
-                            {(featuredCategories && featuredCategories.length ? featuredCategories : [
+                                    {(featuredCategories && featuredCategories.length ? featuredCategories : [
                                 { name: 'Undergraduate', slug: 'undergraduate' },
                                 { name: 'Postgraduate', slug: 'postgraduate' },
                                 { name: 'Foundation Years', slug: 'foundation-years' },
@@ -56,9 +59,9 @@ export default function SiteFooter() {
                                 { name: 'Scholarships', slug: 'scholarships' },
                             ]).map((item: any) => (
                                     <li key={item.slug ?? item.name}>
-                                        <a className="text-white/40 hover:text-white transition-colors" href={item.slug ? `/programmes/${item.slug}` : '/courses'}>
+                                        <Link className="text-white/40 hover:text-white transition-colors" href={item.slug ? publicCourseRoutes.category.url(item.slug) : publicCourseRoutes.index.url()}>
                                             {item.name ?? item}
-                                        </a>
+                                        </Link>
                                     </li>
                                 ))}
                         </ul>
@@ -68,24 +71,24 @@ export default function SiteFooter() {
                         <ul className="space-y-3 text-sm">
                             {['About Us', 'Our Team', 'Our Partners', 'Become an Agent', 'Blog', 'Contact'].map((item) => (
                                     <li key={item}>
-                                        <a
+                                        <Link
                                             className="text-white/40 hover:text-white transition-colors"
                                             href={
                                                 item === 'About Us'
-                                                    ? '/about'
+                                                    ? publicRoutes.about.url()
                                                     : item === 'Our Team'
-                                                    ? '/about#team'
+                                                    ? `${publicRoutes.about.url()}#team`
                                                     : item === 'Our Partners'
                                                     ? '/university-partners'
                                                     : item === 'Become an Agent'
-                                                    ? '/contact'
+                                                    ? publicRoutes.contact.url()
                                                     : item === 'Blog'
-                                                    ? '/blog'
-                                                    : '/contact'
+                                                    ? publicBlogRoutes.index.url()
+                                                    : publicRoutes.contact.url()
                                             }
                                         >
                                             {item}
-                                        </a>
+                                        </Link>
                                     </li>
                                 ))}
                         </ul>
@@ -128,15 +131,15 @@ export default function SiteFooter() {
                 <div className="container mx-auto px-6 lg:px-12 max-w-7xl py-5 flex flex-col md:flex-row justify-between items-center gap-4 text-white/25 text-xs font-label">
                     <p>© 2026 Smart Move Education Group. Registered in England &amp; Wales. No. 12345678.</p>
                     <div className="flex gap-6">
-                        <a href="/privacy-policy" className="hover:text-white/50 transition-colors">
+                        <Link href="/privacy-policy" className="hover:text-white/50 transition-colors">
                             Privacy Policy
-                        </a>
-                        <a href="/terms" className="hover:text-white/50 transition-colors">
+                        </Link>
+                        <Link href="/terms" className="hover:text-white/50 transition-colors">
                             Terms
-                        </a>
-                        <a href="/cookies" className="hover:text-white/50 transition-colors">
+                        </Link>
+                        <Link href="/cookies" className="hover:text-white/50 transition-colors">
                             Cookies
-                        </a>
+                        </Link>
                         <div className="flex items-center gap-1.5">
                             <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse inline-block"></span>
                             <span>All Systems Operational</span>

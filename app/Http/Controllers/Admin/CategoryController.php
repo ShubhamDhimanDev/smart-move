@@ -19,7 +19,6 @@ class CategoryController extends Controller
     {
         return Inertia::render('Admin/Categories/Index', [
             'categories' => Category::query()
-                ->orderBy('name')
                 ->get(['id', 'name', 'slug', 'description']),
         ]);
     }

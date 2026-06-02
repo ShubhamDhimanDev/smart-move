@@ -218,3 +218,13 @@ export interface CourseEntity {
     university_names?: string[];
     page_content?: PageContent;
 }
+
+export interface AgentEnquiry {
+    id: number;
+    name: string;
+    company_name: string | null;
+    email: string;
+    mobile: string;
+    message: string;
+    created_at: string;
+}

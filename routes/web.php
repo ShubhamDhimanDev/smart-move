@@ -18,6 +18,12 @@ use App\Http\Controllers\Admin\PostCommentController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\UniversityPartnerController;
 use App\Http\Controllers\Admin\UniversityController;
+use App\Http\Controllers\AgentEnquiryController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\NewsletterController;
+use App\Http\Controllers\Admin\NewsletterSubscriberController;
+use App\Http\Controllers\Admin\AgentEnquiryController as AdminAgentEnquiryController;
+use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\CourseApplicationController;
 use App\Http\Controllers\PublicCourseController;
 use App\Http\Controllers\PublicEventController;
@@ -33,8 +39,13 @@ Route::get('/', [PublicPageController::class, 'homePage'])->name('home');
 Route::inertia('/about', 'Public/About')->name('about');
 Route::inertia('/services', 'Public/Services')->name('services');
 Route::inertia('/contact', 'Public/Contact')->name('contact');
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+Route::post('/newsletter/subscribe', [NewsletterController::class, 'store'])->name('newsletter.subscribe');
 Route::get('/apply-now', [CourseApplicationController::class, 'create'])->name('applications.create');
 Route::post('/apply-now', [CourseApplicationController::class, 'store'])->name('applications.store');
+
+Route::get('/become-an-agent', [AgentEnquiryController::class, 'create'])->name('agent-enquiries.create');
+Route::post('/become-an-agent', [AgentEnquiryController::class, 'store'])->name('agent-enquiries.store');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
@@ -116,6 +127,22 @@ Route::middleware(['auth', 'admin.access'])->prefix('admin')->name('admin.')->gr
 
     Route::middleware(['admin.access:manage universities'])->group(function () {
         Route::resource('university-partners', UniversityPartnerController::class)->except(['show']);
+    });
+
+    Route::middleware(['admin.access:manage applications'])->group(function () {
+        Route::get('agent-enquiries', [AdminAgentEnquiryController::class, 'index'])->name('agent-enquiries.index');
+        Route::patch('agent-enquiries/settings', [AdminAgentEnquiryController::class, 'updateSettings'])->name('agent-enquiries.settings.update');
+        Route::get('agent-enquiries/{agentEnquiry}', [AdminAgentEnquiryController::class, 'show'])->name('agent-enquiries.show');
+        Route::delete('agent-enquiries/{agentEnquiry}', [AdminAgentEnquiryController::class, 'destroy'])->name('agent-enquiries.destroy');
+
+        Route::get('contact-messages', [ContactMessageController::class, 'index'])->name('contact-messages.index');
+        Route::patch('contact-messages/settings', [ContactMessageController::class, 'updateSettings'])->name('contact-messages.settings.update');
+        Route::get('contact-messages/{contactMessage}', [ContactMessageController::class, 'show'])->name('contact-messages.show');
+        Route::delete('contact-messages/{contactMessage}', [ContactMessageController::class, 'destroy'])->name('contact-messages.destroy');
+
+        Route::get('newsletter-subscribers', [NewsletterSubscriberController::class, 'index'])->name('newsletter-subscribers.index');
+        Route::get('newsletter-subscribers/export', [NewsletterSubscriberController::class, 'export'])->name('newsletter-subscribers.export');
+        Route::delete('newsletter-subscribers/{newsletterSubscriber}', [NewsletterSubscriberController::class, 'destroy'])->name('newsletter-subscribers.destroy');
     });
 
 

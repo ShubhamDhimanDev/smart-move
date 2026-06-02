@@ -1,13 +1,12 @@
-import { useState } from 'react';
 import SiteLayout from '@/layouts/site-layout';
-import { Link } from '@inertiajs/react';
+import { Link, useForm } from '@inertiajs/react';
 import * as publicApplicationRoutes from '@/routes/applications';
 
 const socialLinks = [
     { label: 'Facebook', icon: 'M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z', href: 'https://www.facebook.com/SmartMoveEducationGroup' },
     {
         label: 'Instagram',
-        icon: 'M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zM17.5 6.5h.01M6.5 6.5A1 1 0 005.5 7.5v9A1 1 0 006.5 17.5h11A1 1 0 0018.5 16.5v-9A1 1 0 0017.5 6.5h-11z',
+        icon: 'M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z',
         href: 'https://www.instagram.com/smartmoveeducationgroup/',
     },
     {
@@ -23,16 +22,21 @@ const socialLinks = [
 ];
 
 export default function Contact() {
-    const [form, setForm] = useState({ name: '', email: '', phone: '', subject: '', message: '' });
-    const [submitted, setSubmitted] = useState(false);
+    const { data, setData, post, processing, errors, wasSuccessful, reset } = useForm({
+        name: '',
+        email: '',
+        phone: '',
+        subject: '',
+        message: '',
+    });
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
-        setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+        setData(e.target.name as keyof typeof data, e.target.value);
     }
 
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
-        setSubmitted(true);
+        post('/contact');
     }
 
     return (
@@ -103,7 +107,7 @@ export default function Contact() {
                             <h2 className="text-2xl lg:text-3xl font-headline font-bold text-white mb-2">Send Us a Message</h2>
                             <p className="text-[#a09a97] text-sm font-body mb-8">We'll get back to you within one business day.</p>
 
-                            {submitted ? (
+                            {wasSuccessful ? (
                                 <div className="glass-card rounded-xl p-10 flex flex-col items-center text-center gap-4">
                                     <span
                                         className="material-symbols-outlined text-secondary-container text-5xl"
@@ -115,10 +119,7 @@ export default function Contact() {
                                     <p className="text-[#a09a97] text-sm">Thank you for reaching out. One of our counsellors will be in touch shortly.</p>
                                     <button
                                         type="button"
-                                        onClick={() => {
-                                            setSubmitted(false);
-                                            setForm({ name: '', email: '', phone: '', subject: '', message: '' });
-                                        }}
+                                        onClick={() => reset()}
                                         className="mt-2 text-secondary-container text-sm font-semibold hover:underline"
                                     >
                                         Send another message
@@ -136,7 +137,7 @@ export default function Contact() {
                                                 name="name"
                                                 type="text"
                                                 required
-                                                value={form.name}
+                                                value={data.name}
                                                 onChange={handleChange}
                                                 placeholder="Jane Smith"
                                                 className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-4 py-3 text-white text-sm placeholder:text-white/25 focus:outline-none focus:border-secondary-container/50 transition-colors"
@@ -151,7 +152,7 @@ export default function Contact() {
                                                 name="email"
                                                 type="email"
                                                 required
-                                                value={form.email}
+                                                value={data.email}
                                                 onChange={handleChange}
                                                 placeholder="jane@example.com"
                                                 className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-4 py-3 text-white text-sm placeholder:text-white/25 focus:outline-none focus:border-secondary-container/50 transition-colors"
@@ -167,7 +168,7 @@ export default function Contact() {
                                                 id="phone"
                                                 name="phone"
                                                 type="tel"
-                                                value={form.phone}
+                                                value={data.phone}
                                                 onChange={handleChange}
                                                 placeholder="+44 ..."
                                                 className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-4 py-3 text-white text-sm placeholder:text-white/25 focus:outline-none focus:border-secondary-container/50 transition-colors"
@@ -181,7 +182,7 @@ export default function Contact() {
                                                 id="subject"
                                                 name="subject"
                                                 required
-                                                value={form.subject}
+                                                value={data.subject}
                                                 onChange={handleChange}
                                                 className="w-full bg-[#1c1c1c] border border-white/[0.08] rounded-lg px-4 py-3 text-sm text-white focus:outline-none focus:border-secondary-container/50 transition-colors"
                                             >
@@ -205,7 +206,7 @@ export default function Contact() {
                                             name="message"
                                             required
                                             rows={5}
-                                            value={form.message}
+                                            value={data.message}
                                             onChange={handleChange}
                                             placeholder="Tell us how we can help..."
                                             className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-4 py-3 text-white text-sm placeholder:text-white/25 focus:outline-none focus:border-secondary-container/50 transition-colors resize-none"
@@ -213,9 +214,10 @@ export default function Contact() {
                                     </div>
                                     <button
                                         type="submit"
-                                        className="w-full py-3.5 rounded-full bg-secondary-container text-on-secondary font-headline font-bold text-sm hover:opacity-90 transition-opacity shadow-[0_0_24px_rgba(239,165,0,0.25)] flex items-center justify-center gap-2"
+                                        disabled={processing}
+                                        className="w-full py-3.5 rounded-full bg-secondary-container text-on-secondary font-headline font-bold text-sm hover:opacity-90 transition-opacity shadow-[0_0_24px_rgba(239,165,0,0.25)] flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
                                     >
-                                        Send Message
+                                        {processing ? 'Sending...' : 'Send Message'}
                                         <span className="material-symbols-outlined text-base">send</span>
                                     </button>
                                 </form>
@@ -273,11 +275,32 @@ export default function Contact() {
                                     <h3 className="text-white font-headline font-bold">Birmingham Office</h3>
                                 </div>
                                 <p className="text-[#a09a97] text-sm leading-relaxed mb-4">
-                                    Nile Business Centre
+                                    Unit 201, Lonsdale House
                                     <br />
-                                    56–60 Nelson Street
+                                    52 Blucher Street
                                     <br />
-                                    Birmingham
+                                    Birmingham, B1 1QU
+                                </p>
+                                <div className="space-y-2 text-sm">
+                                    <a href="mailto:info@smartmove-eg.com" className="flex items-center gap-2 text-[#a09a97] hover:text-white transition-colors">
+                                        <span className="material-symbols-outlined text-base text-secondary-container">mail</span>
+                                        info@smartmove-eg.com
+                                    </a>
+                                </div>
+                            </div>
+
+                            {/* Manchester Office */}
+                            <div className="glass-card rounded-xl p-6 reveal reveal-d2">
+                                <div className="flex items-center gap-2 mb-3">
+                                    <span className="material-symbols-outlined text-secondary-container text-lg">location_city</span>
+                                    <h3 className="text-white font-headline font-bold">Manchester Office</h3>
+                                </div>
+                                <p className="text-[#a09a97] text-sm leading-relaxed mb-4">
+                                    SPACES Peter House, Unit 4.20
+                                    <br />
+                                    Oxford Street
+                                    <br />
+                                    Manchester, M1 5AN
                                 </p>
                                 <div className="space-y-2 text-sm">
                                     <a href="mailto:info@smartmove-eg.com" className="flex items-center gap-2 text-[#a09a97] hover:text-white transition-colors">

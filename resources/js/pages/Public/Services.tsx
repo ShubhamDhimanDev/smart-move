@@ -81,7 +81,7 @@ export default function Services() {
     return (
         <SiteLayout title="Our Services | Smart Move Education Group" activePage="services">
             {/* Hero */}
-            <section className="relative overflow-hidden pt-32 pb-24 bg-[#131313]">
+            <section className="relative overflow-hidden pt-32 pb-24 bg-[#1e1e1e]">
                 <div className="pointer-events-none absolute inset-0 overflow-hidden">
                     <div className="glow-orb blob-a absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full bg-[#1a3172]/15" />
                     <div className="glow-orb blob-b absolute top-20 right-0 w-[400px] h-[400px] rounded-full bg-[#efa500]/8" />
@@ -151,7 +151,7 @@ export default function Services() {
             </section>
 
             {/* Services Grid */}
-            <section className="py-28 bg-[#131313] relative overflow-hidden">
+            <section className="py-28 bg-[#1e1e1e] relative overflow-hidden">
                 <div className="glow-orb blob-c absolute w-[500px] h-[500px] bg-[#00b4e0]/5 -right-20 top-20 rounded-full" />
                 <div className="container mx-auto px-6 lg:px-10 max-w-7xl relative z-10">
                     <div className="text-center mb-16 reveal">
@@ -234,7 +234,7 @@ export default function Services() {
             </section>
 
             {/* CTA */}
-            <section className="py-24 bg-[#131313] relative overflow-hidden">
+            <section className="py-24 bg-[#1e1e1e] relative overflow-hidden">
                 <div className="glow-orb blob-b absolute w-[700px] h-[700px] bg-secondary-container/8 -bottom-60 left-1/2 -translate-x-1/2 rounded-full" />
                 <div className="relative z-10 container mx-auto px-6 lg:px-10 max-w-3xl text-center reveal">
                     <p className="font-label text-secondary-container font-bold tracking-[0.2em] mb-4 text-xs uppercase">Start Today</p>

@@ -143,7 +143,9 @@ export default function UniversityPartnersCarousel({ partners, intervalMs = 3000
                                     {p.universities_link ? (
                                         <a href={p.universities_link} target="_blank" rel="noopener noreferrer" className="block w-full text-center">
                                             {p.image ? (
-                                                <img src={p.image} alt={p.name} className="mx-auto max-h-12 md:max-h-16 lg:max-h-20 object-contain" />
+                                                <div className="mx-auto bg-white rounded-xl px-5 py-3 flex items-center justify-center h-20">
+                                                    <img src={p.image} alt={p.name} className="max-h-12 md:max-h-14 object-contain" />
+                                                </div>
                                             ) : (
                                                 <span className="text-white/60">{p.name}</span>
                                             )}
@@ -151,7 +153,9 @@ export default function UniversityPartnersCarousel({ partners, intervalMs = 3000
                                     ) : (
                                         <div className="w-full text-center">
                                             {p.image ? (
-                                                <img src={p.image} alt={p.name} className="mx-auto max-h-12 md:max-h-16 lg:max-h-20 object-contain" />
+                                                <div className="mx-auto bg-white rounded-xl px-5 py-3 flex items-center justify-center h-20">
+                                                    <img src={p.image} alt={p.name} className="max-h-12 md:max-h-14 object-contain" />
+                                                </div>
                                             ) : (
                                                 <span className="text-white/60">{p.name}</span>
                                             )}
@@ -186,19 +190,23 @@ export default function UniversityPartnersCarousel({ partners, intervalMs = 3000
                                 style={{ width: `${displaySlides.length * slideWidth}px`, transform: `translateX(-${index * slideWidth}px)` }}
                             >
                                 {displaySlides.map((p, idx) => (
-                                    <div key={`${p.id}-${idx}`} className="flex-shrink-0 flex items-center justify-center px-4" style={{ width: `${slideWidth}px` }}>
+                                    <div key={`${p.id}-${idx}`} className="flex-shrink-0 flex items-center justify-center px-3" style={{ width: `${slideWidth}px` }}>
                                         {p.universities_link ? (
-                                            <a href={p.universities_link} target="_blank" rel="noopener noreferrer" className="block w-full text-center">
+                                            <a href={p.universities_link} target="_blank" rel="noopener noreferrer" className="block w-full">
                                                 {p.image ? (
-                                                    <img src={p.image} alt={p.name} className="mx-auto max-h-12 md:max-h-16 lg:max-h-20 object-contain" />
+                                                    <div className="bg-white rounded-xl px-5 py-3 flex items-center justify-center h-20">
+                                                        <img src={p.image} alt={p.name} className="max-h-12 md:max-h-14 object-contain" />
+                                                    </div>
                                                 ) : (
                                                     <span className="text-white/60">{p.name}</span>
                                                 )}
                                             </a>
                                         ) : (
-                                            <div className="w-full text-center">
+                                            <div className="w-full">
                                                 {p.image ? (
-                                                    <img src={p.image} alt={p.name} className="mx-auto max-h-12 md:max-h-16 lg:max-h-20 object-contain" />
+                                                    <div className="bg-white rounded-xl px-5 py-3 flex items-center justify-center h-20">
+                                                        <img src={p.image} alt={p.name} className="max-h-12 md:max-h-14 object-contain" />
+                                                    </div>
                                                 ) : (
                                                     <span className="text-white/60">{p.name}</span>
                                                 )}

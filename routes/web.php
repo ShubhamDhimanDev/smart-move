@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\CourseTypeController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\EventRegistrantController;
+use App\Http\Controllers\Admin\HomePageSettingsController;
 use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\MediaUploadController;
 // use App\Http\Controllers\Admin\PageController;
@@ -145,6 +146,9 @@ Route::middleware(['auth', 'admin.access'])->prefix('admin')->name('admin.')->gr
         Route::delete('newsletter-subscribers/{newsletterSubscriber}', [NewsletterSubscriberController::class, 'destroy'])->name('newsletter-subscribers.destroy');
     });
 
+
+    Route::get('home-page-settings', [HomePageSettingsController::class, 'index'])->name('home-page-settings.index');
+    Route::patch('home-page-settings', [HomePageSettingsController::class, 'update'])->name('home-page-settings.update');
 
     Route::middleware(['admin.access:manage permissions'])->group(function () {
         Route::get('permissions', [AdminPermissionController::class, 'index'])->name('permissions.index');

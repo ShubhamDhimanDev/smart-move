@@ -63,12 +63,12 @@
 
     --color-secondary-container: #00b4e0;
     --color-on-secondary: #002a3a;
-    --color-on-surface-variant: #c5c5da;
-    --color-surface-container-lowest: #0e0e0e;
-    --color-surface-container-low: #1c1b1b;
-    --color-surface-container: #201f1f;
-    --color-surface-container-high: #2a2a2a;
-    --color-surface-container-highest: #353534;
+    --color-on-surface-variant: #cccce0;
+    --color-surface-container-lowest: #181818;
+    --color-surface-container-low: #232222;
+    --color-surface-container: #2a2929;
+    --color-surface-container-high: #333232;
+    --color-surface-container-highest: #3d3c3b;
     --color-primary-container: #1a3172;
     --color-tertiary: #50ddb8;
     --color-tertiary-container: #006954;

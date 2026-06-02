@@ -2,7 +2,7 @@ import { Link, router, usePage } from '@inertiajs/react';
 import {
     LayoutDashboard, Newspaper, Tags, Image, MessageSquare, Calendar,
     Users, LogOut, ClipboardList, GraduationCap, MapPin, Building2,
-    Handshake, Mail, ChevronDown, Layers,
+    Handshake, Mail, ChevronDown, Layers, LayoutTemplate,
 } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 import { logout } from '@/routes';
@@ -43,6 +43,7 @@ type NavEntry = NavLeaf | NavGroup;
 
 const navConfig: NavEntry[] = [
     { kind: 'item', label: 'Dashboard', href: admin.dashboard.url(), icon: LayoutDashboard },
+    { kind: 'item', label: 'Home Page Settings', href: admin.homePageSettings.index.url(), icon: LayoutTemplate },
     { kind: 'item', label: 'Events', href: admin.events.index.url(), icon: Calendar, permission: 'manage events' },
     {
         kind: 'group',

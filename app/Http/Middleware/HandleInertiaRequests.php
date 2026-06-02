@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\AppSetting;
 use App\Models\City;
 use App\Models\CourseCategory;
 use Illuminate\Http\Request;
@@ -63,6 +64,12 @@ class HandleInertiaRequests extends Middleware
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'featuredCategories' => fn () => CourseCategory::active()->featuredNav()->ordered()->get(['id', 'name', 'slug'])->toArray(),
             'navFeaturedCities' => fn () => City::active()->featuredNav()->ordered()->get(['id', 'name', 'slug'])->toArray(),
+            'announcementBar' => fn () => [
+                'enabled' => AppSetting::getValue('announcement_bar_enabled', '1') === '1',
+                'text' => AppSetting::getValue('announcement_bar_text', 'June 2026 Intake is Now Open !'),
+                'linkText' => AppSetting::getValue('announcement_bar_link_text', 'Apply by 31st March'),
+                'linkUrl' => AppSetting::getValue('announcement_bar_link_url', '#'),
+            ],
         ];
     }
 }

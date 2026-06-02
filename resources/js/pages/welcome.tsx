@@ -1,4 +1,4 @@
-﻿import { Link } from '@inertiajs/react';
+﻿import { Link, useForm } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 
 import SiteLayout from '@/layouts/site-layout';
@@ -266,6 +266,15 @@ type FeaturedPost = {
     categories: { id: number; name: string; slug: string }[];
 };
 
+type HeroSettings = {
+    badgeText: string;
+    badgeLink: string;
+    headingLine1: string;
+    headingLine2: string;
+    headingLine3: string;
+    subheading: string;
+};
+
 type Props = {
     canRegister: boolean;
     upcomingEvents: WelcomeEvent[];
@@ -274,6 +283,7 @@ type Props = {
     featuredCities: FeaturedCity[];
     partners?: Partner[];
     recentPosts?: FeaturedPost[];
+    heroSettings?: HeroSettings;
 };
 
 function formatDuration(duration: number | null, durationUnit: string | null): string {
@@ -337,7 +347,54 @@ function formatPostDate(value: string | null): string {
     });
 }
 
-export default function Welcome({ upcomingEvents, featuredCourseCategories, featuredCourses, featuredCities, partners = [], recentPosts = [] }: Props) {
+function NewsletterForm() {
+    const { data, setData, post, processing, errors, wasSuccessful, reset } = useForm({ email: '' });
+
+    function handleSubmit(e: React.FormEvent) {
+        e.preventDefault();
+        post('/newsletter/subscribe', { onSuccess: () => reset() });
+    }
+
+    if (wasSuccessful) {
+        return (
+            <p className="text-green-400 text-sm text-center mt-4">Thank you for subscribing!</p>
+        );
+    }
+
+    return (
+        <form className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto" onSubmit={handleSubmit}>
+            <div className="flex-1">
+                <input
+                    type="email"
+                    value={data.email}
+                    onChange={(e) => setData('email', e.target.value)}
+                    placeholder="Your email address"
+                    className="w-full bg-surface-container-high text-white placeholder-on-surface-variant/50 px-5 py-3.5 rounded-full border border-outline-variant/30 focus:border-secondary-container focus:outline-none focus:ring-2 focus:ring-secondary-container/20 transition-all text-sm font-body"
+                    required
+                />
+                {errors.email && <p className="mt-1 text-xs text-red-400 text-center">{errors.email}</p>}
+            </div>
+            <button
+                type="submit"
+                disabled={processing}
+                className="bg-secondary-container text-on-secondary px-7 py-3.5 rounded-full font-headline font-bold text-sm hover:scale-105 transition-transform whitespace-nowrap shadow-lg shadow-secondary-container/20 disabled:opacity-60"
+            >
+                {processing ? '…' : 'Subscribe'}
+            </button>
+        </form>
+    );
+}
+
+const defaultHeroSettings: HeroSettings = {
+    badgeText: 'June 2026 Intake Open',
+    badgeLink: '/apply-now',
+    headingLine1: 'Your Journey to',
+    headingLine2: 'UK Degree',
+    headingLine3: 'Starts Here.',
+    subheading: 'Empowering ambitious students to access top UK universities guiding you from your first enquiry to the right course and a successful career.',
+};
+
+export default function Welcome({ upcomingEvents, featuredCourseCategories, featuredCourses, featuredCities, partners = [], recentPosts = [], heroSettings = defaultHeroSettings }: Props) {
     const [activeCourseCategory, setActiveCourseCategory] = useState<'all' | string>('all');
     const [activeCitySlug, setActiveCitySlug] = useState<string>(featuredCities[0]?.slug ?? '');
 
@@ -404,16 +461,16 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
     return (
         <SiteLayout title="Smart Move Education Group | Your Journey to UK Degree" activePage="home">
             {/* Hero */}
-            <header className="relative min-h-screen flex items-center overflow-hidden bg-[#131313]">
+            <header className="relative min-h-screen flex items-center overflow-hidden bg-[#1e1e1e]">
                 <div className="absolute inset-0 z-0">
                     <img
                         className="w-full h-full object-cover object-center"
                         alt="Students walking through a historic UK university campus at golden hour"
                         src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVUAuny0-qE_Bc2n1thD5RPNlXiKZEsyFkkCXD0Z0hLU-rYQ8tNJ_g2gLKj1IrwKYcvJgZ14DFVj4TVBLz4Oi1dEbjTtTehL9CZBUBngEFEp_iyAMj4nNcV_Og_duUQvNXoP6a8KUdiT2UwsXloWZIDNY-FYuEp3nnp7GqepsR54n2NfN-jPg41nt_AQi971zzy-TUOqbd-INXd7YbVksbjsZndnYxk6ljJ61YFmX9xq7AFtXuq-3kFtfMVQ4ZGiAnmd3ftjgfbiVI"
                     />
-                    <div className="absolute inset-0 bg-[#131313]/40"></div>
-                    <div className="absolute inset-0 bg-gradient-to-r from-[#131313]/98 via-[#131313]/80 to-[#131313]/30"></div>
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#131313]/85 via-transparent to-transparent"></div>
+                    <div className="absolute inset-0 bg-[#1e1e1e]/20"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#1e1e1e]/90 via-[#1e1e1e]/65 to-[#1e1e1e]/10"></div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#1e1e1e]/70 via-transparent to-transparent"></div>
                 </div>
                 <div className="glow-orb w-[700px] h-[700px] bg-[#1a3172] opacity-[0.13] -left-60 top-0 rounded-full"></div>
                 <div className="glow-orb w-[500px] h-[500px] bg-[#00b4e0] opacity-[0.07] left-1/3 -top-20 rounded-full"></div>
@@ -422,20 +479,20 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
                     <div className="max-w-[52rem]">
                         <div className="flex items-center gap-3 mb-8 animate-fadeUp">
                             <Link
-                                href={publicApplicationRoutes.create.url()}
+                                href={heroSettings.badgeLink || publicApplicationRoutes.create.url()}
                                 className="inline-flex items-center gap-2 text-secondary-container bg-secondary-container/10 border border-secondary-container/20 px-4 py-1.5 rounded-full"
                             >
                                 <span className="w-1.5 h-1.5 rounded-full bg-secondary-container animate-pulseGlow inline-block"></span>
-                                <span className="text-[11px] font-label font-bold uppercase tracking-widest">June 2026 Intake Open</span>
+                                <span className="text-[11px] font-label font-bold uppercase tracking-widest">{heroSettings.badgeText}</span>
                             </Link>
                         </div>
                         <h1 className="font-headline font-black leading-[1.14] tracking-[-0.03em] overflow-visible pb-2">
-                            <span className="text-white text-[clamp(3rem,8vw,6.5rem)] block animate-fadeUp">Your Journey to</span>
-                            <span className="text-gradient-gold text-[clamp(3rem,8vw,6.5rem)] block animate-fadeUp-d1">UK Degree</span>
-                            <span className="text-white text-[clamp(3rem,8vw,6.5rem)] block animate-fadeUp-d1">Starts Here.</span>
+                            <span className="text-white text-[clamp(3rem,8vw,6.5rem)] block animate-fadeUp">{heroSettings.headingLine1}</span>
+                            <span className="text-gradient-gold text-[clamp(3rem,8vw,6.5rem)] block animate-fadeUp-d1">{heroSettings.headingLine2}</span>
+                            <span className="text-white text-[clamp(3rem,8vw,6.5rem)] block animate-fadeUp-d1">{heroSettings.headingLine3}</span>
                         </h1>
                         <p className="text-white/75 text-lg md:text-xl xl:text-2xl leading-relaxed max-w-xl font-body mt-8 mb-10 animate-fadeUp-d2">
-                            Empowering ambitious students to access top UK universities guiding you from your first enquiry to the right course and a successful career.
+                            {heroSettings.subheading}
                         </p>
                         <div className="flex flex-wrap gap-4 animate-fadeUp-d2">
                             <a
@@ -477,7 +534,7 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
             </header>
 
             {/* International Student Partner */}
-            <section className="bg-[#131313] py-14 md:py-18">
+            <section className="bg-[#1e1e1e] py-14 md:py-18">
                 <div className="container mx-auto max-w-7xl px-6 lg:px-10">
                     <div className="relative overflow-hidden rounded-2xl border border-secondary-container/30 bg-gradient-to-r from-secondary-container/16 via-secondary-container/8 to-transparent p-5 md:p-7 reveal">
                         <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-secondary-container/20 blur-2xl"></div>
@@ -504,7 +561,7 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
 
 
             {/* Who We Are */}
-            <section className="py-28 bg-[#131313] relative overflow-hidden">
+            <section className="py-28 bg-[#1e1e1e] relative overflow-hidden">
                 <div className="glow-orb blob-a w-[600px] h-[600px] bg-[#1a3172] opacity-[0.08] -right-32 top-0 rounded-full"></div>
                 <div className="glow-orb blob-d w-[500px] h-[500px] bg-[#00b4e0] opacity-[0.05] -left-40 bottom-10 rounded-full"></div>
                 <div className="container mx-auto px-6 lg:px-10 max-w-7xl">
@@ -516,7 +573,7 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
                                     alt="Education consultant meeting with an international student in a London office"
                                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuCoMUPye57nJmFy3zjH8y-hcY_tT3BlWbKPOPRLVz6t1HusizrkmNxHbl8L934h-0UiBQLeTVjN2Msm-KEEa33q1rQBelC3GuRHbsskODWeBLJnTI-HbwzgkLSdgN5B45zYrqMj9m9E0t7ekKxgWmfvi4XPdVAsAyQQgJBfKf4pOCk66FxadKDbSHnQXlbcamKgkekb8EIBq2P4FGMks4cuEXOZQ2hmNmkFHNLmjql-waI3atmKpHz0HJsrOQxmS-0mSaY5vtWtMHNC"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-[#131313]/50 via-transparent to-transparent"></div>
+                                <div className="absolute inset-0 bg-gradient-to-t from-[#1e1e1e]/50 via-transparent to-transparent"></div>
                             </div>
                             <div className="absolute -bottom-6 -right-4 glass-card rounded-xl p-5 w-52 shadow-2xl">
                                 <div className="flex items-center gap-3 mb-2">
@@ -658,7 +715,7 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
             </section>
 
             {/* Study Destinations */}
-            <section className="py-28 relative overflow-hidden bg-[#131313]">
+            <section className="py-28 relative overflow-hidden bg-[#1e1e1e]">
                 <div className="glow-orb blob-c w-[500px] h-[500px] bg-[#50ddb8] opacity-[0.07] -right-20 top-32 rounded-full"></div>
                 <div className="glow-orb blob-a w-[400px] h-[400px] bg-[#00b4e0] opacity-[0.05] -left-20 bottom-0 rounded-full"></div>
                 <div className="container mx-auto px-6 lg:px-10 max-w-7xl">
@@ -775,7 +832,7 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
                         ].map((step) => (
                             <div
                                 key={step.title}
-                                className={`bg-[#131313] rounded-lg p-8 relative overflow-hidden group ${step.shadow} transition-all reveal ${step.delay} ${step.ring}`}
+                                className={`bg-[#1e1e1e] rounded-lg p-8 relative overflow-hidden group ${step.shadow} transition-all reveal ${step.delay} ${step.ring}`}
                             >
                                 <div className={`absolute top-0 right-0 w-24 h-24 ${step.bgCorner} rounded-bl-full transition-colors`}></div>
                                 <div className={`w-12 h-12 rounded-xl ${step.bgIcon} flex items-center justify-center mb-6`}>
@@ -793,7 +850,7 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
                             { stat: '50+', label: 'Institutions' },
                             { stat: '100+', label: 'Expert Consultants' },
                         ].map((item) => (
-                            <div key={item.label} className="bg-[#131313]/50 rounded-xl p-6 text-center">
+                            <div key={item.label} className="bg-[#1e1e1e]/50 rounded-xl p-6 text-center">
                                 <div className="text-5xl font-headline font-extrabold text-white mb-2">{item.stat}</div>
                                 <div className="text-on-surface-variant font-label tracking-widest text-[10px] uppercase">{item.label}</div>
                             </div>
@@ -803,7 +860,7 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
             </section>
 
             {/* Testimonials */}
-            <section className="py-28 bg-[#131313] relative overflow-hidden">
+            <section className="py-28 bg-[#1e1e1e] relative overflow-hidden">
                 <div className="glow-orb blob-b w-[600px] h-[600px] bg-[#00b4e0] opacity-[0.06] left-1/2 -translate-x-1/2 -bottom-40 rounded-full"></div>
                 <div className="glow-orb blob-c w-[400px] h-[400px] bg-[#1a3172] opacity-[0.05] -right-20 top-10 rounded-full"></div>
                 <div className="container mx-auto px-6 lg:px-10 max-w-7xl">
@@ -914,7 +971,7 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
                             return (
                             <div
                                 key={event.id}
-                                className={`group bg-[#131313] rounded-lg p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-5 hover:ring-1 hover:ring-white/10 transition-all reveal ${delay}`}
+                                className={`group bg-[#1e1e1e] rounded-lg p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-5 hover:ring-1 hover:ring-white/10 transition-all reveal ${delay}`}
                             >
                                 <div className="flex flex-col md:flex-row gap-5 md:items-center flex-1">
                                     <div className="w-14 h-14 bg-secondary-container/10 border border-secondary-container/20 rounded-xl flex flex-col items-center justify-center flex-shrink-0">
@@ -950,7 +1007,7 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
                         );
                         })}
                         {upcomingEvents.length === 0 && (
-                            <div className="bg-[#131313] rounded-lg p-8 text-center text-on-surface-variant">
+                            <div className="bg-[#1e1e1e] rounded-lg p-8 text-center text-on-surface-variant">
                                 New events will be announced soon.
                             </div>
                         )}
@@ -959,7 +1016,7 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
             </section>
 
             {/* Blog */}
-            <section className="py-28 bg-[#131313] relative overflow-hidden">
+            <section className="py-28 bg-[#1e1e1e] relative overflow-hidden">
                 <div className="glow-orb blob-a w-[550px] h-[550px] bg-[#00b4e0] opacity-[0.05] -left-20 top-0 rounded-full"></div>
                 <div className="glow-orb blob-c w-[400px] h-[400px] bg-[#1a3172] opacity-[0.05] -right-20 bottom-0 rounded-full"></div>
                 <div className="container mx-auto px-6 lg:px-10 max-w-7xl">
@@ -1021,6 +1078,45 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
 
             <UniversityPartnersCarousel partners={partners} />
 
+            {/* Partner with Us / Become an Agent */}
+            <section className="py-20 bg-[#1e1e1e] relative overflow-hidden">
+                <div className="glow-orb blob-d w-[500px] h-[500px] bg-[#efa500] opacity-[0.06] -left-40 top-0 rounded-full"></div>
+                <div className="container mx-auto px-6 lg:px-10 max-w-7xl relative z-10">
+                    <div className="glass-card rounded-2xl p-10 lg:p-14 flex flex-col lg:flex-row items-center justify-between gap-10 reveal">
+                        <div className="lg:max-w-lg">
+                            <span className="inline-block px-3 py-1 rounded-full text-[11px] font-label font-bold tracking-widest uppercase bg-secondary-container/15 text-secondary-container mb-4">
+                                For Agents &amp; Partners
+                            </span>
+                            <h2 className="text-3xl lg:text-4xl font-headline font-bold text-white leading-tight mb-4">
+                                Partner With <span className="text-gradient-gold">Smart Move</span>
+                            </h2>
+                            <p className="text-[#a09a97] font-body text-base leading-relaxed">
+                                Are you an education agent or consultancy? Join our growing network and earn competitive commissions placing students at top UK
+                                universities. We offer dedicated support, marketing materials, and a transparent partnership programme.
+                            </p>
+                            <ul className="mt-5 space-y-2 text-sm text-[#a09a97]">
+                                {['Competitive commission on every enrolment', 'Dedicated partnership manager', 'Access to exclusive intake slots &amp; scholarships'].map((point) => (
+                                    <li key={point} className="flex items-center gap-2">
+                                        <span className="material-symbols-outlined text-secondary-container text-base" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                                        <span dangerouslySetInnerHTML={{ __html: point }} />
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                        <div className="shrink-0 flex flex-col items-center gap-4 text-center">
+                            <Link
+                                href="/become-an-agent"
+                                className="inline-flex items-center gap-2 px-9 py-4 rounded-full bg-secondary-container text-on-secondary font-headline font-bold text-base hover:opacity-90 transition-opacity shadow-[0_0_32px_rgba(239,165,0,0.25)] whitespace-nowrap"
+                            >
+                                Become an Agent
+                                <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                            </Link>
+                            <p className="text-white/30 text-xs font-label">Free to join &mdash; no upfront fees</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {/* Newsletter */}
             <section className="py-24 bg-surface-container-low relative overflow-hidden">
                 <div className="glow-orb blob-b w-[600px] h-[600px] bg-[#00b4e0] opacity-[0.08] -right-32 -top-20 rounded-full"></div>
@@ -1031,26 +1127,13 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
                     <p className="text-on-surface-variant text-lg mb-8 max-w-lg mx-auto">
                         Get intake dates, scholarship news, visa updates and student success stories delivered to your inbox.
                     </p>
-                    <form className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto" onSubmit={(e) => e.preventDefault()}>
-                        <input
-                            type="email"
-                            placeholder="Your email address"
-                            className="flex-1 bg-surface-container-high text-white placeholder-on-surface-variant/50 px-5 py-3.5 rounded-full border border-outline-variant/30 focus:border-secondary-container focus:outline-none focus:ring-2 focus:ring-secondary-container/20 transition-all text-sm font-body"
-                            required
-                        />
-                        <button
-                            type="submit"
-                            className="bg-secondary-container text-on-secondary px-7 py-3.5 rounded-full font-headline font-bold text-sm hover:scale-105 transition-transform whitespace-nowrap shadow-lg shadow-secondary-container/20"
-                        >
-                            Subscribe
-                        </button>
-                    </form>
+                    <NewsletterForm />
                     <p className="text-on-surface-variant/40 text-xs font-label mt-4">No spam. Unsubscribe at any time.</p>
                 </div>
             </section>
 
             {/* Final CTA */}
-            <section className="py-32 relative overflow-hidden bg-[#131313]">
+            <section className="py-32 relative overflow-hidden bg-[#1e1e1e]">
                 <div className="glow-orb blob-c w-[800px] h-[800px] bg-secondary-container opacity-[0.08] -bottom-60 left-1/2 -translate-x-1/2 rounded-full"></div>
                 <div className="glow-orb blob-a w-[400px] h-[400px] bg-primary-container opacity-[0.09] -top-10 -right-20 rounded-full"></div>
                 <div className="container mx-auto px-6 lg:px-10 max-w-5xl text-center relative z-10 reveal">

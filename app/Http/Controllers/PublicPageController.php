@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AppSetting;
 use App\Models\City;
 use App\Models\CourseCategory;
 use App\Models\CourseType;
@@ -143,6 +144,14 @@ class PublicPageController extends Controller
             'featuredCities' => $featuredCities,
             'partners' => $partners,
             'recentPosts' => $recentPosts,
+            'heroSettings' => [
+                'badgeText' => AppSetting::getValue('hero_badge_text', 'June 2026 Intake Open'),
+                'badgeLink' => AppSetting::getValue('hero_badge_link', '/apply-now'),
+                'headingLine1' => AppSetting::getValue('hero_heading_line1', 'Your Journey to'),
+                'headingLine2' => AppSetting::getValue('hero_heading_line2', 'UK Degree'),
+                'headingLine3' => AppSetting::getValue('hero_heading_line3', 'Starts Here.'),
+                'subheading' => AppSetting::getValue('hero_subheading', 'Empowering ambitious students to access top UK universities guiding you from your first enquiry to the right course and a successful career.'),
+            ],
         ]);
     }
 

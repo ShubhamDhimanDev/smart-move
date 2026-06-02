@@ -9,24 +9,39 @@ import * as publicEventRoutes from '@/routes/events';
 const logo = '/images/smartmove_logo.png';
 const whatsapp = '/images/whatsapp.svg';
 
+type AnnouncementBar = {
+    enabled: boolean;
+    text: string;
+    linkText: string;
+    linkUrl: string;
+};
+
 export default function SiteHeader({ activePage = 'home' }: { activePage?: string }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [mobileCoursesOpen, setMobileCoursesOpen] = useState(false);
-    const { featuredCategories, navFeaturedCities } = usePage().props;
+    const { featuredCategories, navFeaturedCities, announcementBar } = usePage().props as any;
+    const bar: AnnouncementBar = announcementBar ?? { enabled: true, text: 'June 2026 Intake is Now Open !', linkText: 'Apply by 31st March', linkUrl: '#' };
 
     return (
         <>
             {/* Announcement Bar */}
-            <div className="w-full bg-secondary-container text-on-secondary py-2.5 px-4 flex items-center justify-center gap-3 text-xs font-label font-bold tracking-widest uppercase">
-                <span className="w-1.5 h-1.5 rounded-full bg-on-secondary/60 animate-pulse inline-block"></span>
-                <span>
-                    June 2026 Intake is Now Open !{' '}
-                    <a href="#" className="underline underline-offset-2 hover:opacity-70 transition-opacity">
-                        Apply by 31st March
-                    </a>
-                </span>
-                <span className="w-1.5 h-1.5 rounded-full bg-on-secondary/60 animate-pulse inline-block"></span>
-            </div>
+            {bar.enabled && (
+                <div className="w-full bg-secondary-container text-on-secondary py-2.5 px-4 flex items-center justify-center gap-3 text-xs font-label font-bold tracking-widest uppercase">
+                    <span className="w-1.5 h-1.5 rounded-full bg-on-secondary/60 animate-pulse inline-block"></span>
+                    <span>
+                        {bar.text}
+                        {bar.linkText && (
+                            <>
+                                {' '}
+                                <a href={bar.linkUrl || '#'} className="underline underline-offset-2 hover:opacity-70 transition-opacity">
+                                    {bar.linkText}
+                                </a>
+                            </>
+                        )}
+                    </span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-on-secondary/60 animate-pulse inline-block"></span>
+                </div>
+            )}
 
             {/* Navigation */}
             <nav className="sticky top-0 z-50 glass border-b border-white/[0.06] w-full">

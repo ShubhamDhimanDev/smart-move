@@ -48,8 +48,8 @@ export default function SiteLayout({ children, title = 'Smart Move Education Gro
                     .no-scrollbar::-webkit-scrollbar { display:none; }
                     .no-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
                     .text-gradient-gold { background:linear-gradient(135deg,#00b4e0 0%,#a0ecff 60%,#00b4e0 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-                    .glass { background:rgba(19,19,19,0.75); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); }
-                    .glass-card { background:rgba(42,42,42,0.55); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border:1px solid rgba(255,255,255,0.05); }
+                    .glass { background:rgba(30,30,30,0.75); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); }
+                    .glass-card { background:rgba(50,50,50,0.55); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border:1px solid rgba(255,255,255,0.07); }
                     .nav-link { position:relative; }
                     .nav-link::after { content:''; position:absolute; bottom:-3px; left:0; width:0; height:2px; background:#00b4e0; transition:width .25s ease; }
                     .nav-link:hover::after, .nav-link.active::after { width:100%; }
@@ -81,7 +81,7 @@ export default function SiteLayout({ children, title = 'Smart Move Education Gro
                 `}</style>
             </Head>
 
-            <div className="bg-[#131313] text-[#e5e2e1] font-body">
+            <div className="bg-[#1e1e1e] text-[#e5e2e1] font-body">
                 <SiteHeader activePage={activePage} />
                 {children}
                 <SiteFooter />

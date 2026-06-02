@@ -1,9 +1,44 @@
-import { Link, usePage } from '@inertiajs/react';
+import { Link, usePage, useForm } from '@inertiajs/react';
 import * as publicCourseRoutes from '@/routes/courses';
 import * as publicRoutes from '@/routes';
 import * as publicBlogRoutes from '@/routes/blog';
 
 const logo = '/images/smartmove_logo.png';
+
+function NewsletterForm() {
+    const { data, setData, post, processing, errors, wasSuccessful, reset } = useForm({ email: '' });
+
+    function handleSubmit(e: React.FormEvent) {
+        e.preventDefault();
+        post('/newsletter/subscribe', { onSuccess: () => reset() });
+    }
+
+    if (wasSuccessful) {
+        return <p className="text-green-400 text-sm">Thank you for subscribing!</p>;
+    }
+
+    return (
+        <form onSubmit={handleSubmit} className="flex gap-2">
+            <div className="flex-1">
+                <input
+                    type="email"
+                    value={data.email}
+                    onChange={(e) => setData('email', e.target.value)}
+                    placeholder="Your email address"
+                    className="w-full rounded-lg bg-surface-container-high border border-white/10 px-3 py-2 text-sm text-white placeholder-white/30 focus:border-white/30 focus:outline-none"
+                />
+                {errors.email && <p className="mt-1 text-xs text-red-400">{errors.email}</p>}
+            </div>
+            <button
+                type="submit"
+                disabled={processing}
+                className="rounded-lg bg-white text-black px-4 py-2 text-sm font-medium hover:bg-white/90 disabled:opacity-60 transition-colors whitespace-nowrap"
+            >
+                {processing ? '…' : 'Subscribe'}
+            </button>
+        </form>
+    );
+}
 
 export default function SiteFooter() {
     const { featuredCategories } = usePage().props;
@@ -20,7 +55,9 @@ export default function SiteFooter() {
                         </p>
                         <div className="flex gap-3">
                             <a
-                                href="#"
+                                href="https://www.instagram.com/smartmoveeducationgroup/"
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 className="w-9 h-9 rounded-full bg-surface-container-high flex items-center justify-center text-white/50 hover:text-white hover:bg-surface-container-highest transition-all"
                                 aria-label="Instagram"
                             >
@@ -29,7 +66,9 @@ export default function SiteFooter() {
                                 </svg>
                             </a>
                             <a
-                                href="#"
+                                href="https://www.linkedin.com/in/smart-move-education-group-811514189/"
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 className="w-9 h-9 rounded-full bg-surface-container-high flex items-center justify-center text-white/50 hover:text-white hover:bg-surface-container-highest transition-all"
                                 aria-label="LinkedIn"
                             >
@@ -38,12 +77,25 @@ export default function SiteFooter() {
                                 </svg>
                             </a>
                             <a
-                                href="#"
+                                href="https://www.facebook.com/SmartMoveEducationGroup"
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 className="w-9 h-9 rounded-full bg-surface-container-high flex items-center justify-center text-white/50 hover:text-white hover:bg-surface-container-highest transition-all"
                                 aria-label="Facebook"
                             >
                                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                                </svg>
+                            </a>
+                            <a
+                                href="https://www.youtube.com/channel/UCSBqKD_6eb205svIFkvTGqw"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="w-9 h-9 rounded-full bg-surface-container-high flex items-center justify-center text-white/50 hover:text-white hover:bg-surface-container-highest transition-all"
+                                aria-label="YouTube"
+                            >
+                                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 00-1.95 1.96A29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58zM9.75 15.02V8.98L15.5 12l-5.75 3.02z" />
                                 </svg>
                             </a>
                         </div>
@@ -81,7 +133,7 @@ export default function SiteFooter() {
                                                     : item === 'Our Partners'
                                                     ? '/university-partners'
                                                     : item === 'Become an Agent'
-                                                    ? publicRoutes.contact.url()
+                                                    ? '/become-an-agent'
                                                     : item === 'Blog'
                                                     ? publicBlogRoutes.index.url()
                                                     : publicRoutes.contact.url()
@@ -124,6 +176,13 @@ export default function SiteFooter() {
                                 </a>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div className="mt-12 pt-10 border-t border-white/[0.06]">
+                    <div className="max-w-md">
+                        <h4 className="text-white font-bold mb-2 text-xs uppercase tracking-widest font-label">Stay Updated</h4>
+                        <p className="text-white/40 text-sm mb-4">Get the latest news and updates from Smart Move Education Group.</p>
+                        <NewsletterForm />
                     </div>
                 </div>
             </div>

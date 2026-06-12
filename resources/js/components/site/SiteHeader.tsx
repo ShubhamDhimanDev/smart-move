@@ -5,6 +5,7 @@ import * as publicApplicationRoutes from '@/routes/applications';
 import * as publicRoutes from '@/routes';
 import * as publicBlogRoutes from '@/routes/blog';
 import * as publicEventRoutes from '@/routes/events';
+import * as agentEnquiryRoutes from '@/routes/agent-enquiries';
 
 const logo = '/images/smartmove_logo.png';
 const whatsapp = '/images/whatsapp.svg';
@@ -19,6 +20,7 @@ type AnnouncementBar = {
 export default function SiteHeader({ activePage = 'home' }: { activePage?: string }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [mobileCoursesOpen, setMobileCoursesOpen] = useState(false);
+    const [mobileAboutOpen, setMobileAboutOpen] = useState(false);
     const { featuredCategories, navFeaturedCities, announcementBar } = usePage().props as any;
     const bar: AnnouncementBar = announcementBar ?? { enabled: true, text: 'June 2026 Intake is Now Open !', linkText: 'Apply by 31st March', linkUrl: '#' };
 
@@ -53,9 +55,31 @@ export default function SiteHeader({ activePage = 'home' }: { activePage?: strin
                         <Link className={`nav-link ${activePage === 'home' ? 'active text-white' : 'text-white/60 hover:text-white transition-colors'}`} href="/">
                             Home
                         </Link>
-                        <Link className={`nav-link ${activePage === 'about' ? 'active text-white' : 'text-white/60 hover:text-white transition-colors'}`} href={publicRoutes.about.url()}>
-                            About Us
-                        </Link>
+                        <div className="relative group/about">
+                            <Link
+                                className={`nav-link flex items-center gap-1 ${activePage === 'about' ? 'active text-white' : 'text-white/60 hover:text-white transition-colors'}`}
+                                href={publicRoutes.about.url()}
+                            >
+                                About Us
+                                <span className="material-symbols-outlined text-[16px] transition-transform group-hover/about:rotate-180 duration-200">
+                                    expand_more
+                                </span>
+                            </Link>
+                            <div className="absolute top-full -left-4 pt-3 opacity-0 invisible group-hover/about:opacity-100 group-hover/about:visible transition-all duration-200 w-52 z-50">
+                                <div
+                                    className="rounded-sm py-2 shadow-[0_24px_64px_rgba(0,0,0,0.7)]"
+                                    style={{ background: 'rgba(8,8,8,0.97)', border: '1px solid rgba(255,255,255,0.09)' }}
+                                >
+                                    <Link
+                                        href={agentEnquiryRoutes.create.url()}
+                                        className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/[0.05] transition-all"
+                                    >
+                                        <span className="material-symbols-outlined text-secondary-container text-[16px]">handshake</span>
+                                        Partner With Us
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
                         <div className="relative group/courses">
                             <button
                                 type="button"
@@ -198,9 +222,26 @@ export default function SiteHeader({ activePage = 'home' }: { activePage?: strin
                         <Link className="block text-white font-semibold" href={publicRoutes.home.url()}>
                             Home
                         </Link>
-                        <Link className="block text-white/60 font-semibold" href={publicRoutes.about.url()}>
-                            About Us
-                        </Link>
+                        <div>
+                            <button
+                                type="button"
+                                className="w-full text-left flex items-center justify-between text-white/60 font-semibold"
+                                onClick={() => setMobileAboutOpen((v) => !v)}
+                            >
+                                <Link href={publicRoutes.about.url()} className="text-white/60 font-semibold" onClick={(e) => e.stopPropagation()}>
+                                    About Us
+                                </Link>
+                                <span className="material-symbols-outlined text-[18px]">{mobileAboutOpen ? 'expand_less' : 'expand_more'}</span>
+                            </button>
+                            {mobileAboutOpen && (
+                                <div className="mt-2 pl-3 space-y-1 text-sm">
+                                    <Link href={agentEnquiryRoutes.create.url()} className="flex items-center gap-2 text-white/60 hover:text-white py-2">
+                                        <span className="material-symbols-outlined text-secondary-container text-[15px]">handshake</span>
+                                        Partner With Us
+                                    </Link>
+                                </div>
+                            )}
+                        </div>
 
                         <div>
                             <button

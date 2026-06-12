@@ -618,6 +618,45 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
                 </div>
             </section>
 
+            {/* Partner with Us / Become an Agent */}
+            <section className="py-20 bg-[#1e1e1e] relative overflow-hidden">
+                <div className="glow-orb blob-d w-[500px] h-[500px] bg-[#efa500] opacity-[0.06] -left-40 top-0 rounded-full"></div>
+                <div className="container mx-auto px-6 lg:px-10 max-w-7xl relative z-10">
+                    <div className="glass-card rounded-2xl p-10 lg:p-14 flex flex-col lg:flex-row items-center justify-between gap-10 reveal">
+                        <div className="lg:max-w-lg">
+                            <span className="inline-block px-3 py-1 rounded-full text-[11px] font-label font-bold tracking-widest uppercase bg-secondary-container/15 text-secondary-container mb-4">
+                                For Agents &amp; Partners
+                            </span>
+                            <h2 className="text-3xl lg:text-4xl font-headline font-bold text-white leading-tight mb-4">
+                                Partner With <span className="text-gradient-gold">Smart Move</span>
+                            </h2>
+                            <p className="text-[#a09a97] font-body text-base leading-relaxed">
+                                Are you an education agent or consultancy? Join our growing network and earn competitive commissions placing students at top UK
+                                universities. We offer dedicated support, marketing materials, and a transparent partnership programme.
+                            </p>
+                            <ul className="mt-5 space-y-2 text-sm text-[#a09a97]">
+                                {['Competitive commission on every enrolment', 'Dedicated partnership manager', 'Access to exclusive intake slots &amp; scholarships'].map((point) => (
+                                    <li key={point} className="flex items-center gap-2">
+                                        <span className="material-symbols-outlined text-secondary-container text-base" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                                        <span dangerouslySetInnerHTML={{ __html: point }} />
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                        <div className="shrink-0 flex flex-col items-center gap-4 text-center">
+                            <Link
+                                href="/become-an-agent"
+                                className="inline-flex items-center gap-2 px-9 py-4 rounded-full bg-secondary-container text-on-secondary font-headline font-bold text-base hover:opacity-90 transition-opacity shadow-[0_0_32px_rgba(239,165,0,0.25)] whitespace-nowrap"
+                            >
+                                Become an Agent
+                                <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                            </Link>
+                            <p className="text-white/30 text-xs font-label">Free to join &mdash; no upfront fees</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {/* Our Courses */}
             <section className="py-28 bg-surface-container-low relative overflow-hidden" id="courses">
                 <div className="glow-orb blob-b w-[500px] h-[500px] bg-[#00b4e0] opacity-[0.07] -left-20 bottom-0 rounded-full"></div>
@@ -1077,45 +1116,6 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
             </section>
 
             <UniversityPartnersCarousel partners={partners} />
-
-            {/* Partner with Us / Become an Agent */}
-            <section className="py-20 bg-[#1e1e1e] relative overflow-hidden">
-                <div className="glow-orb blob-d w-[500px] h-[500px] bg-[#efa500] opacity-[0.06] -left-40 top-0 rounded-full"></div>
-                <div className="container mx-auto px-6 lg:px-10 max-w-7xl relative z-10">
-                    <div className="glass-card rounded-2xl p-10 lg:p-14 flex flex-col lg:flex-row items-center justify-between gap-10 reveal">
-                        <div className="lg:max-w-lg">
-                            <span className="inline-block px-3 py-1 rounded-full text-[11px] font-label font-bold tracking-widest uppercase bg-secondary-container/15 text-secondary-container mb-4">
-                                For Agents &amp; Partners
-                            </span>
-                            <h2 className="text-3xl lg:text-4xl font-headline font-bold text-white leading-tight mb-4">
-                                Partner With <span className="text-gradient-gold">Smart Move</span>
-                            </h2>
-                            <p className="text-[#a09a97] font-body text-base leading-relaxed">
-                                Are you an education agent or consultancy? Join our growing network and earn competitive commissions placing students at top UK
-                                universities. We offer dedicated support, marketing materials, and a transparent partnership programme.
-                            </p>
-                            <ul className="mt-5 space-y-2 text-sm text-[#a09a97]">
-                                {['Competitive commission on every enrolment', 'Dedicated partnership manager', 'Access to exclusive intake slots &amp; scholarships'].map((point) => (
-                                    <li key={point} className="flex items-center gap-2">
-                                        <span className="material-symbols-outlined text-secondary-container text-base" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-                                        <span dangerouslySetInnerHTML={{ __html: point }} />
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                        <div className="shrink-0 flex flex-col items-center gap-4 text-center">
-                            <Link
-                                href="/become-an-agent"
-                                className="inline-flex items-center gap-2 px-9 py-4 rounded-full bg-secondary-container text-on-secondary font-headline font-bold text-base hover:opacity-90 transition-opacity shadow-[0_0_32px_rgba(239,165,0,0.25)] whitespace-nowrap"
-                            >
-                                Become an Agent
-                                <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
-                            </Link>
-                            <p className="text-white/30 text-xs font-label">Free to join &mdash; no upfront fees</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
 
             {/* Newsletter */}
             <section className="py-24 bg-surface-container-low relative overflow-hidden">

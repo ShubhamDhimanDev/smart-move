@@ -199,51 +199,55 @@ export default function About() {
                         </span>
                         <h2 className="text-3xl lg:text-5xl font-headline font-bold text-white mb-4">Our Offices</h2>
                     </div>
-                    <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
-                        <div className="glass-card rounded-xl p-8 reveal">
+                    <div className="grid md:grid-cols-3 gap-6">
+                        <div className="glass-card rounded-xl p-6 reveal">
                             <div className="w-10 h-10 rounded-lg bg-secondary-container/15 flex items-center justify-center mb-5">
                                 <span className="material-symbols-outlined text-secondary-container text-xl">location_on</span>
                             </div>
                             <h3 className="text-white font-headline font-bold text-lg mb-2">London Office</h3>
-                            <p className="text-[#a09a97] font-body text-sm leading-relaxed mb-4">
+                            <p className="text-[#a09a97] font-body text-sm leading-relaxed">
                                 1st Floor, Botanical Works
                                 <br />2 Jubilee Street
                                 <br />
                                 London, E1 3FU
                             </p>
-                            <div className="space-y-2">
-                                <a
-                                    href="mailto:info@smartmove-eg.com"
-                                    className="flex items-center gap-2 text-secondary-container text-sm hover:underline"
-                                >
-                                    <span className="material-symbols-outlined text-base">mail</span>
-                                    info@smartmove-eg.com
-                                </a>
-                                <a href="tel:02077909233" className="flex items-center gap-2 text-[#a09a97] text-sm hover:text-white transition-colors">
-                                    <span className="material-symbols-outlined text-base">call</span>
-                                    02077909233 / 07894867772
-                                </a>
-                            </div>
                         </div>
-                        <div className="glass-card rounded-xl p-8 reveal reveal-d1 flex flex-col justify-between">
-                            <div>
-                                <div className="w-10 h-10 rounded-lg bg-secondary-container/15 flex items-center justify-center mb-5">
-                                    <span className="material-symbols-outlined text-secondary-container text-xl">location_city</span>
-                                </div>
-                                <h3 className="text-white font-headline font-bold text-lg mb-2">Birmingham Office</h3>
-                                <p className="text-[#a09a97] font-body text-sm leading-relaxed">
-                                    Visit our Birmingham office for in-person consultations. Get directions and book an appointment online.
-                                </p>
+                        <div className="glass-card rounded-xl p-6 reveal reveal-d1">
+                            <div className="w-10 h-10 rounded-lg bg-secondary-container/15 flex items-center justify-center mb-5">
+                                <span className="material-symbols-outlined text-secondary-container text-xl">location_city</span>
                             </div>
-                            <a
-                                href="https://smartmove-eg.com/contact-1"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="mt-6 inline-flex items-center gap-2 text-sm font-headline font-semibold text-secondary-container hover:underline"
-                            >
-                                Get Directions <span className="material-symbols-outlined text-base">arrow_forward</span>
-                            </a>
+                            <h3 className="text-white font-headline font-bold text-lg mb-2">Birmingham Office</h3>
+                            <p className="text-[#a09a97] font-body text-sm leading-relaxed">
+                                Unit 201, Lonsdale House <br />
+                                52 Blucher Street <br />
+                                Birmingham, B1 1QU
+                            </p>
                         </div>
+                        <div className="glass-card rounded-xl p-6 reveal reveal-d2">
+                            <div className="w-10 h-10 rounded-lg bg-secondary-container/15 flex items-center justify-center mb-5">
+                                <span className="material-symbols-outlined text-secondary-container text-xl">location_city</span>
+                            </div>
+                            <h3 className="text-white font-headline font-bold text-lg mb-2">Manchester Office</h3>
+                            <p className="text-[#a09a97] font-body text-sm leading-relaxed">
+                                SPACES Peter House, Unit 4.20 <br />
+                                Oxford Street <br />
+                                Manchester, M1 5AN
+                            </p>
+                        </div>
+                    </div>
+                    <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-6 reveal">
+                        <a
+                            href="mailto:info@smartmove-eg.com"
+                            className="flex items-center gap-2 text-secondary-container text-sm hover:underline"
+                        >
+                            <span className="material-symbols-outlined text-base">mail</span>
+                            info@smartmove-eg.com
+                        </a>
+                        <span className="hidden sm:block w-px h-4 bg-white/20"></span>
+                        <a href="tel:02077909233" className="flex items-center gap-2 text-[#a09a97] text-sm hover:text-white transition-colors">
+                            <span className="material-symbols-outlined text-base">call</span>
+                            02077909233 / 07894867772
+                        </a>
                     </div>
                 </div>
             </section>

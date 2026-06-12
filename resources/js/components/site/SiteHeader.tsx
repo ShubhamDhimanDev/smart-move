@@ -56,20 +56,27 @@ export default function SiteHeader({ activePage = 'home' }: { activePage?: strin
                             Home
                         </Link>
                         <div className="relative group/about">
-                            <Link
+                            <button
+                                type="button"
                                 className={`nav-link flex items-center gap-1 ${activePage === 'about' ? 'active text-white' : 'text-white/60 hover:text-white transition-colors'}`}
-                                href={publicRoutes.about.url()}
                             >
                                 About Us
                                 <span className="material-symbols-outlined text-[16px] transition-transform group-hover/about:rotate-180 duration-200">
                                     expand_more
                                 </span>
-                            </Link>
+                            </button>
                             <div className="absolute top-full -left-4 pt-3 opacity-0 invisible group-hover/about:opacity-100 group-hover/about:visible transition-all duration-200 w-52 z-50">
                                 <div
                                     className="rounded-sm py-2 shadow-[0_24px_64px_rgba(0,0,0,0.7)]"
                                     style={{ background: 'rgba(8,8,8,0.97)', border: '1px solid rgba(255,255,255,0.09)' }}
                                 >
+                                    <Link
+                                        href={publicRoutes.about.url()}
+                                        className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/[0.05] transition-all"
+                                    >
+                                        <span className="material-symbols-outlined text-secondary-container text-[16px]">info</span>
+                                        About Us
+                                    </Link>
                                     <Link
                                         href={agentEnquiryRoutes.create.url()}
                                         className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/[0.05] transition-all"
@@ -228,13 +235,15 @@ export default function SiteHeader({ activePage = 'home' }: { activePage?: strin
                                 className="w-full text-left flex items-center justify-between text-white/60 font-semibold"
                                 onClick={() => setMobileAboutOpen((v) => !v)}
                             >
-                                <Link href={publicRoutes.about.url()} className="text-white/60 font-semibold" onClick={(e) => e.stopPropagation()}>
-                                    About Us
-                                </Link>
+                                <span>About Us</span>
                                 <span className="material-symbols-outlined text-[18px]">{mobileAboutOpen ? 'expand_less' : 'expand_more'}</span>
                             </button>
                             {mobileAboutOpen && (
                                 <div className="mt-2 pl-3 space-y-1 text-sm">
+                                    <Link href={publicRoutes.about.url()} className="flex items-center gap-2 text-white/60 hover:text-white py-2">
+                                        <span className="material-symbols-outlined text-secondary-container text-[15px]">info</span>
+                                        About Us
+                                    </Link>
                                     <Link href={agentEnquiryRoutes.create.url()} className="flex items-center gap-2 text-white/60 hover:text-white py-2">
                                         <span className="material-symbols-outlined text-secondary-container text-[15px]">handshake</span>
                                         Partner With Us

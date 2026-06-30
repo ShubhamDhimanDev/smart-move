@@ -48,6 +48,16 @@ Route::post('/apply-now', [CourseApplicationController::class, 'store'])->name('
 Route::get('/become-an-agent', [AgentEnquiryController::class, 'create'])->name('agent-enquiries.create');
 Route::post('/become-an-agent', [AgentEnquiryController::class, 'store'])->name('agent-enquiries.store');
 
+Route::get('/work-for-us', function(){
+    return redirect(route('agent-enquiries.create'));
+});
+Route::get('/contact-1', function(){
+    return redirect(route('contact'));
+});
+Route::get('/about-us-1', function(){
+    return redirect(route('about'));
+});
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
 });

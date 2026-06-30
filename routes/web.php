@@ -57,6 +57,9 @@ Route::get('/contact-1', function(){
 Route::get('/about-us-1', function(){
     return redirect(route('about'));
 });
+Route::get('/copyright-disclaimer-notice', function(){
+    return redirect(route('home'));
+});
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');

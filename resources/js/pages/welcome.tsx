@@ -1167,8 +1167,8 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
                         </div>
                         <div className="flex flex-col items-center gap-2 text-on-surface-variant">
                             <span className="material-symbols-outlined text-secondary-container text-2xl">mail</span>
-                            <a href="mailto:info@smartmove.org" className="hover:text-white transition-colors">
-                                info@smartmove.org
+                            <a href="mailto:info@smartmove-eg.com" className="hover:text-white transition-colors">
+                                info@smartmove-eg.com
                             </a>
                         </div>
                         <div className="flex flex-col items-center gap-2 text-on-surface-variant">

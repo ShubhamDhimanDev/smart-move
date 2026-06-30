@@ -159,8 +159,8 @@ export default function SiteFooter() {
                                 </a>
                             </li>
                             <li>
-                                <a href="mailto:info@smartmove.org" className="hover:text-white transition-colors">
-                                    info@smartmove.org
+                                <a href="mailto:info@smartmove-eg.com" className="hover:text-white transition-colors">
+                                    info@smartmove-eg.com
                                 </a>
                             </li>
                         </ul>

@@ -337,13 +337,13 @@ export default function SiteHeader({ activePage = 'home' }: { activePage?: strin
                                 <span>+44 789486 7772</span>
                             </a>
                             <a
-                                href="mailto:info@smartmove.org"
+                                href="mailto:info@smartmove-eg.com"
                                 className="flex items-center justify-center gap-2"
                             >
                                 <span className="material-symbols-outlined text-[14px] ">
                                     mail
                                 </span>
-                                info@smartmove.org
+                                info@smartmove-eg.com
                             </a>
                         </div>
                     </div>

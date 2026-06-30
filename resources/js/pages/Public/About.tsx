@@ -66,7 +66,7 @@ export default function About() {
                                 <span className="text-gradient-gold">Education Partner</span>
                             </h1>
                             <p className="text-[#a09a97] font-body text-lg leading-relaxed mb-8">
-                                Smart Move Education Group is a London-based student recruitment consultancy dedicated to helping students unlock their academic and career potential through UK education.
+                                Smart Move Education Group is a UK-based student recruitment consultancy dedicated to helping students unlock their academic and career potential through UK education.
                             </p>
                             <p className="text-[#a09a97] font-body text-base leading-relaxed mb-8">
                                 We understand that the admissions journey can be complex and overwhelming—that’s why we’re here to guide you every step of the way. From choosing the right course and university to navigating applications and understanding entry requirements, we simplify the entire process.

@@ -78,7 +78,7 @@ export default function About() {
                         <div className="relative">
                             <div className="rounded-2xl overflow-hidden border border-white/[0.07] shadow-[0_32px_80px_rgba(0,0,0,0.5)]">
                                 <img
-                                    src="https://smartmove-eg.com/wp-content/uploads/2020/11/Homework-students-HD-picture.jpg"
+                                    src="/images/Homework-students-HD-picture.jpg"
                                     alt="Students studying"
                                     className="w-full h-[420px] object-cover"
                                 />
@@ -156,7 +156,7 @@ export default function About() {
                         <div className="order-2 lg:order-1">
                             <div className="rounded-2xl overflow-hidden border border-white/[0.07] shadow-[0_32px_80px_rgba(0,0,0,0.5)]">
                                 <img
-                                    src="https://smartmove-eg.com/wp-content/uploads/2021/09/female-student-holding-her-books-1024x683.jpg"
+                                    src="/images/female-student-holding-her-books-1024x683.jpg"
                                     alt="Female student holding books"
                                     className="w-full h-[460px] object-cover"
                                 />

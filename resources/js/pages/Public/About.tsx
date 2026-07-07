@@ -40,9 +40,8 @@ const whyChooseUs = [
     'British Council Certified counsellor',
     'UCAS Registered Centre',
     '100% FREE consultation and guidance',
-    'Dedicated visa support for international students',
+    'Support with university applications and required documents',
     'Free eligibility assessment for UK study',
-    'Personal statement review and enhancement',
     'Tailored university and course recommendations',
 ];
 

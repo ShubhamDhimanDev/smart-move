@@ -66,13 +66,6 @@ export default function EventShow({ event }: Props) {
 
                 <div className="mt-8 grid gap-8 lg:grid-cols-[1.4fr_1fr]">
                     <section className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-8">
-                        {event.featured_image && (
-                            <img
-                                src={event.featured_image}
-                                alt={event.title}
-                                className="mb-6 h-auto w-full rounded-xl"
-                            />
-                        )}
 
                         <div className="mb-4 flex items-center gap-3">
                             <span
@@ -92,7 +85,15 @@ export default function EventShow({ event }: Props) {
                             )}
                         </div>
 
-                        <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">{event.title}</h1>
+                        <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl mb-4">{event.title}</h1>
+
+                        {event.featured_image && (
+                            <img
+                                src={event.featured_image}
+                                alt={event.title}
+                                className="mb-6 h-auto w-full rounded-xl"
+                            />
+                        )}
 
                         {event.excerpt && (
                             <p className="mt-4 text-base leading-relaxed text-white/60">{event.excerpt}</p>

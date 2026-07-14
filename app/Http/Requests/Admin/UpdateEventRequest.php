@@ -23,6 +23,7 @@ class UpdateEventRequest extends FormRequest
             'title' => ['required', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'max:255', Rule::unique('events', 'slug')->ignore($eventId)],
             'excerpt' => ['nullable', 'string'],
+            'featured_image' => ['nullable', 'string', 'max:500'],
             'type' => ['required', Rule::in(['online', 'in_person'])],
             'starts_at' => ['required', 'date'],
             'ends_at' => ['nullable', 'date', 'after:starts_at'],

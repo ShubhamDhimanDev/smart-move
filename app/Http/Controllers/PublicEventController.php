@@ -63,6 +63,7 @@ class PublicEventController extends Controller
             'title' => $event->title,
             'slug' => $event->slug,
             'excerpt' => $event->excerpt,
+            'featured_image' => $event->featured_image,
             'type' => $event->type,
             'starts_at' => $event->starts_at?->toISOString(),
             'ends_at' => $event->ends_at?->toISOString(),

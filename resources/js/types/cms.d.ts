@@ -107,6 +107,7 @@ export interface Event {
     title: string;
     slug: string;
     excerpt: string | null;
+    featured_image: string | null;
     type: 'online' | 'in_person';
     starts_at: string;
     ends_at: string | null;

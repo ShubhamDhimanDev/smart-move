@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Concerns\ImageUrlHelpers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreEventRequest;
 use App\Http\Requests\Admin\UpdateEventRequest;
@@ -13,6 +14,8 @@ use Inertia\Response;
 
 class EventController extends Controller
 {
+    use ImageUrlHelpers;
+
     public function __construct(
         private readonly EventService $eventService,
     ) {}
@@ -37,7 +40,9 @@ class EventController extends Controller
 
     public function store(StoreEventRequest $request): RedirectResponse
     {
-        $this->eventService->create($request->validated(), $request->user()->id);
+        $data = $this->sanitizeImageFieldsInArray($request->validated(), ['featured_image']);
+
+        $this->eventService->create($data, $request->user()->id);
 
         return to_route('admin.events.index')->with('success', 'Event created successfully.');
     }
@@ -51,7 +56,9 @@ class EventController extends Controller
 
     public function update(UpdateEventRequest $request, Event $event): RedirectResponse
     {
-        $this->eventService->update($event, $request->validated());
+        $data = $this->sanitizeImageFieldsInArray($request->validated(), ['featured_image']);
+
+        $this->eventService->update($event, $data);
 
         return to_route('admin.events.index')->with('success', 'Event updated successfully.');
     }
@@ -80,6 +87,7 @@ class EventController extends Controller
             'title' => $event->title,
             'slug' => $event->slug,
             'excerpt' => $event->excerpt,
+            'featured_image' => $event->featured_image,
             'type' => $event->type,
             'starts_at' => $event->starts_at?->toISOString(),
             'ends_at' => $event->ends_at?->toISOString(),

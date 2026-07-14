@@ -1,5 +1,6 @@
 import { Head, Link, useForm } from '@inertiajs/react';
 import { ArrowLeft } from 'lucide-react';
+import MediaUrlField from '@/components/cms/media-url-field';
 import { withAdminLayout } from '@/pages/Admin/AdminLayout';
 import * as eventRoutes from '@/routes/admin/events';
 import type { Event } from '@/types/cms';
@@ -46,6 +47,7 @@ export default function EditEvent({ event }: Props) {
         title: event.title,
         slug: event.slug,
         excerpt: event.excerpt || '',
+        featured_image: event.featured_image || '',
         type: event.type,
         starts_at: toDateTimeLocalValue(event.starts_at),
         ends_at: toDateTimeLocalValue(event.ends_at),
@@ -132,6 +134,14 @@ export default function EditEvent({ event }: Props) {
                                 rows={3}
                             />
                         </div>
+
+                        <MediaUrlField
+                            id="featured_image"
+                            label="Featured Image"
+                            value={data.featured_image}
+                            onChange={(value) => setData('featured_image', value)}
+                            error={errors.featured_image}
+                        />
                     </div>
 
                     {/* Event Type & Location */}

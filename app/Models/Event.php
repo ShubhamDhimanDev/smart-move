@@ -24,6 +24,7 @@ class Event extends Model
         'title',
         'slug',
         'excerpt',
+        'featured_image',
         'type',
         'starts_at',
         'ends_at',

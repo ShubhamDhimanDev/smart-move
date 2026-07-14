@@ -1,5 +1,6 @@
 import { Head, Link, useForm } from '@inertiajs/react';
 import { ArrowLeft } from 'lucide-react';
+import MediaUrlField from '@/components/cms/media-url-field';
 import { withAdminLayout } from '@/pages/Admin/AdminLayout';
 import * as eventRoutes from '@/routes/admin/events';
 import { useState } from 'react';
@@ -33,6 +34,7 @@ export default function CreateEvent() {
         title: '',
         slug: '',
         excerpt: '',
+        featured_image: '',
         type: 'online',
         starts_at: '',
         ends_at: '',
@@ -122,6 +124,14 @@ export default function CreateEvent() {
                                 rows={3}
                             />
                         </div>
+
+                        <MediaUrlField
+                            id="featured_image"
+                            label="Featured Image"
+                            value={data.featured_image}
+                            onChange={(value) => setData('featured_image', value)}
+                            error={errors.featured_image}
+                        />
                     </div>
 
                     {/* Event Type & Location */}

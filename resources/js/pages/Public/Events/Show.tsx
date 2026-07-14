@@ -66,6 +66,14 @@ export default function EventShow({ event }: Props) {
 
                 <div className="mt-8 grid gap-8 lg:grid-cols-[1.4fr_1fr]">
                     <section className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-8">
+                        {event.featured_image && (
+                            <img
+                                src={event.featured_image}
+                                alt={event.title}
+                                className="mb-6 h-auto w-full rounded-xl"
+                            />
+                        )}
+
                         <div className="mb-4 flex items-center gap-3">
                             <span
                                 className={`inline-flex rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-wider ${
@@ -124,7 +132,7 @@ export default function EventShow({ event }: Props) {
                         </div>
                     </section>
 
-                    <section className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6 sm:p-8">
+                    <section className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6 sm:p-8 lg:sticky lg:top-24 lg:self-start">
                         <h2 className="text-xl font-bold text-white">Register for this event</h2>
                         <p className="mt-2 text-sm text-white/50">Fill in your details and we will send confirmation to your email.</p>
 

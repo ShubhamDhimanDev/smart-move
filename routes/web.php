@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\Admin\AdminPermissionController;
 use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\AgentEnquiryController as AdminAgentEnquiryController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CityController;
+use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\CourseApplicationController as AdminCourseApplicationController;
 use App\Http\Controllers\Admin\CourseCategoryController;
 use App\Http\Controllers\Admin\CourseController;
@@ -12,20 +14,18 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\EventRegistrantController;
 use App\Http\Controllers\Admin\HomePageSettingsController;
+// use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\MediaUploadController;
-// use App\Http\Controllers\Admin\PageController;
+use App\Http\Controllers\Admin\NewsletterSubscriberController;
 use App\Http\Controllers\Admin\PostCommentController;
 use App\Http\Controllers\Admin\PostController;
-use App\Http\Controllers\Admin\UniversityPartnerController;
 use App\Http\Controllers\Admin\UniversityController;
+use App\Http\Controllers\Admin\UniversityPartnerController;
 use App\Http\Controllers\AgentEnquiryController;
 use App\Http\Controllers\ContactController;
-use App\Http\Controllers\NewsletterController;
-use App\Http\Controllers\Admin\NewsletterSubscriberController;
-use App\Http\Controllers\Admin\AgentEnquiryController as AdminAgentEnquiryController;
-use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\CourseApplicationController;
+use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\PublicCourseController;
 use App\Http\Controllers\PublicEventController;
 use App\Http\Controllers\PublicEventRegistrationController;
@@ -40,6 +40,9 @@ Route::get('/', [PublicPageController::class, 'homePage'])->name('home');
 Route::inertia('/about', 'Public/About')->name('about');
 Route::inertia('/services', 'Public/Services')->name('services');
 Route::inertia('/contact', 'Public/Contact')->name('contact');
+Route::inertia('/privacy-policy', 'Public/PrivacyPolicy')->name('privacy-policy');
+Route::inertia('/terms', 'Public/Terms')->name('terms');
+Route::inertia('/cookies', 'Public/Cookies')->name('cookies');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 Route::post('/newsletter/subscribe', [NewsletterController::class, 'store'])->name('newsletter.subscribe');
 Route::get('/apply-now', [CourseApplicationController::class, 'create'])->name('applications.create');
@@ -48,21 +51,21 @@ Route::post('/apply-now', [CourseApplicationController::class, 'store'])->name('
 Route::get('/become-an-agent', [AgentEnquiryController::class, 'create'])->name('agent-enquiries.create');
 Route::post('/become-an-agent', [AgentEnquiryController::class, 'store'])->name('agent-enquiries.store');
 
-Route::get('/work-for-us', function(){
+Route::get('/work-for-us', function () {
     return redirect(route('agent-enquiries.create'));
 });
-Route::get('/contact-1', function(){
+Route::get('/contact-1', function () {
     return redirect(route('contact'));
 });
-Route::get('/about-us-1', function(){
+Route::get('/about-us-1', function () {
     return redirect(route('about'));
 });
-Route::get('/copyright-disclaimer-notice', function(){
+Route::get('/copyright-disclaimer-notice', function () {
     return redirect(route('home'));
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', function(){
+    Route::get('/dashboard', function () {
         return redirect(route('admin.dashboard'));
     });
 });
@@ -160,7 +163,6 @@ Route::middleware(['auth', 'admin.access'])->prefix('admin')->name('admin.')->gr
         Route::get('newsletter-subscribers/export', [NewsletterSubscriberController::class, 'export'])->name('newsletter-subscribers.export');
         Route::delete('newsletter-subscribers/{newsletterSubscriber}', [NewsletterSubscriberController::class, 'destroy'])->name('newsletter-subscribers.destroy');
     });
-
 
     Route::get('home-page-settings', [HomePageSettingsController::class, 'index'])->name('home-page-settings.index');
     Route::patch('home-page-settings', [HomePageSettingsController::class, 'update'])->name('home-page-settings.update');

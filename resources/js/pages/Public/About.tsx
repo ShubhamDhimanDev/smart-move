@@ -217,9 +217,9 @@ export default function About() {
                             </div>
                             <h3 className="text-white font-headline font-bold text-lg mb-2">Birmingham Office</h3>
                             <p className="text-[#a09a97] font-body text-sm leading-relaxed">
-                                Unit 201, Lonsdale House <br />
-                                52 Blucher Street <br />
-                                Birmingham, B1 1QU
+                                Suite 1, Lower Ground Floor <br />
+                                136 Hagley Road <br />
+                                Birmingham, B16 9NX
                             </p>
                         </div>
                         <div className="glass-card rounded-xl p-6 reveal reveal-d2">

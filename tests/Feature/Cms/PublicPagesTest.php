@@ -48,6 +48,20 @@ it('renders a published CMS page by slug', function () {
         );
 });
 
+it('renders the static legal pages', function () {
+    $this->get('/privacy-policy')
+        ->assertOk()
+        ->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page->component('Public/PrivacyPolicy'));
+
+    $this->get('/terms')
+        ->assertOk()
+        ->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page->component('Public/Terms'));
+
+    $this->get('/cookies')
+        ->assertOk()
+        ->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page->component('Public/Cookies'));
+});
+
 it('returns 404 for draft or future pages', function () {
     Page::query()->create([
         'title' => 'Draft Page',

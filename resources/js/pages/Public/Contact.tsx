@@ -275,11 +275,11 @@ export default function Contact() {
                                     <h3 className="text-white font-headline font-bold">Birmingham Office</h3>
                                 </div>
                                 <p className="text-[#a09a97] text-sm leading-relaxed mb-4">
-                                    Unit 201, Lonsdale House
+                                    Suite 1, Lower Ground Floor
                                     <br />
-                                    52 Blucher Street
+                                    136 Hagley Road
                                     <br />
-                                    Birmingham, B1 1QU
+                                    Birmingham, B16 9NX
                                 </p>
                                 <div className="space-y-2 text-sm">
                                     <a href="mailto:info@smartmove-eg.com" className="flex items-center gap-2 text-[#a09a97] hover:text-white transition-colors">

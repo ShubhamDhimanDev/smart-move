@@ -8,6 +8,8 @@ import * as publicCourseRoutes from '@/routes/courses';
 import * as publicBlogRoutes from '@/routes/blog';
 import * as publicApplicationRoutes from '@/routes/applications';
 import type { Event } from '@/types/cms';
+import heroImg from '../../../public/images/hero-1.png';
+import img2 from '../../../public/images/img-2.png';
 
 const cities = ['london', 'manchester', 'birmingham', 'cardiff', 'swansea', 'leeds', 'nottingham', 'newcastle'] as const;
 type City = (typeof cities)[number];
@@ -466,7 +468,7 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
                     <img
                         className="w-full h-full object-cover object-center"
                         alt="Students walking through a historic UK university campus at golden hour"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVUAuny0-qE_Bc2n1thD5RPNlXiKZEsyFkkCXD0Z0hLU-rYQ8tNJ_g2gLKj1IrwKYcvJgZ14DFVj4TVBLz4Oi1dEbjTtTehL9CZBUBngEFEp_iyAMj4nNcV_Og_duUQvNXoP6a8KUdiT2UwsXloWZIDNY-FYuEp3nnp7GqepsR54n2NfN-jPg41nt_AQi971zzy-TUOqbd-INXd7YbVksbjsZndnYxk6ljJ61YFmX9xq7AFtXuq-3kFtfMVQ4ZGiAnmd3ftjgfbiVI"
+                        src={heroImg}
                     />
                     <div className="absolute inset-0 bg-[#1e1e1e]/20"></div>
                     <div className="absolute inset-0 bg-gradient-to-r from-[#1e1e1e]/90 via-[#1e1e1e]/65 to-[#1e1e1e]/10"></div>
@@ -571,7 +573,7 @@ export default function Welcome({ upcomingEvents, featuredCourseCategories, feat
                                 <img
                                     className="w-full h-full object-cover"
                                     alt="Education consultant meeting with an international student in a London office"
-                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCoMUPye57nJmFy3zjH8y-hcY_tT3BlWbKPOPRLVz6t1HusizrkmNxHbl8L934h-0UiBQLeTVjN2Msm-KEEa33q1rQBelC3GuRHbsskODWeBLJnTI-HbwzgkLSdgN5B45zYrqMj9m9E0t7ekKxgWmfvi4XPdVAsAyQQgJBfKf4pOCk66FxadKDbSHnQXlbcamKgkekb8EIBq2P4FGMks4cuEXOZQ2hmNmkFHNLmjql-waI3atmKpHz0HJsrOQxmS-0mSaY5vtWtMHNC"
+                                    src={img2}
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-[#1e1e1e]/50 via-transparent to-transparent"></div>
                             </div>

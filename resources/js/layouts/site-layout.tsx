@@ -44,7 +44,8 @@ export default function SiteLayout({ children, title = 'Smart Move Education Gro
                 <style>{`
                     .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; }
                     body { overflow-x: hidden; }
-                    .glow-orb { filter:blur(140px); pointer-events:none; position:absolute; z-index:0; }
+                    .glow-orb { pointer-events:none; position:absolute; z-index:0; border-radius:9999px; -webkit-mask-image:radial-gradient(closest-side,#000 0%,rgba(0,0,0,.92) 12%,rgba(0,0,0,.75) 25%,rgba(0,0,0,.52) 40%,rgba(0,0,0,.3) 55%,rgba(0,0,0,.14) 70%,rgba(0,0,0,.05) 85%,transparent 100%); mask-image:radial-gradient(closest-side,#000 0%,rgba(0,0,0,.92) 12%,rgba(0,0,0,.75) 25%,rgba(0,0,0,.52) 40%,rgba(0,0,0,.3) 55%,rgba(0,0,0,.14) 70%,rgba(0,0,0,.05) 85%,transparent 100%); }
+                    .glow-orb::after { content:''; position:absolute; inset:0; background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.2 -0.1'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); opacity:.25; }
                     .no-scrollbar::-webkit-scrollbar { display:none; }
                     .no-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
                     .text-gradient-gold { background:linear-gradient(135deg,#00b4e0 0%,#a0ecff 60%,#00b4e0 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
